@@ -617,6 +617,17 @@ body {
   font-weight: 600;
 }
 
+.form-error {
+  color: #f87171;
+  font-size: 13px;
+  text-align: center;
+}
+
+.session-email {
+  font-size: 14px;
+  color: #a3a3a3;
+}
+
 .footer {
   border-top: 1px solid #262626;
   padding: 56px 48px 32px;

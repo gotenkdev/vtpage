@@ -31,7 +31,7 @@
         <span>or</span>
       </div>
 
-      <form class="sign-in-form">
+      <form class="sign-in-form" data-mode="signin">
         <div class="form-field">
           <label for="email">Email</label>
           <input type="email" id="email" name="email" autocomplete="username" required>
@@ -49,6 +49,8 @@
             </button>
           </div>
         </div>
+
+        <p class="form-error" id="formError" hidden></p>
 
         <button type="submit" class="btn btn-primary btn-submit">Sign in</button>
       </form>
