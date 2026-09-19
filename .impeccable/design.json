@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-20T00:00:00Z",
+  "title": "Design System: VT Page",
+  "extensions": {
+    "colorMeta": {
+      "orange": { "role": "primary", "displayName": "Signal Orange", "canonical": "#FF5A1F", "tonalRamp": ["#3D1102", "#661C05", "#992A09", "#CC390F", "#FF5A1F", "#FF8250", "#FFAE8C", "#FFDACB"] },
+      "orange-deep": { "role": "primary", "displayName": "Orange Deep", "canonical": "#E04310", "tonalRamp": ["#380E02", "#5F1905", "#8C2508", "#B83309", "#E04310", "#F0703F", "#F79E7C", "#FCCDBB"] },
+      "orange-face": { "role": "primary", "displayName": "Orange Face", "canonical": "#E24812", "tonalRamp": ["#380F02", "#601B05", "#8D2808", "#BA360B", "#E24812", "#F0743F", "#F7A17C", "#FCCFBB"] },
+      "cobalt": { "role": "secondary", "displayName": "Account Cobalt", "canonical": "#2450F5", "tonalRamp": ["#08133D", "#0F2170", "#162FA3", "#1C3ED6", "#2450F5", "#5C7DF8", "#94A9FB", "#CCD6FD"] },
+      "ground": { "role": "neutral", "displayName": "Porcelain Ground", "canonical": "#E9EAEE", "tonalRamp": ["#14161A", "#383D48", "#586070", "#8A91A0", "#B9BFCC", "#DCDEE5", "#E9EAEE", "#F6F7F9"] },
+      "plate": { "role": "neutral", "displayName": "Plate", "canonical": "#F6F7F9", "tonalRamp": ["#14161A", "#383D48", "#586070", "#8A91A0", "#C4C7D0", "#DCDEE5", "#F6F7F9", "#FBFBFC"] },
+      "plate-2": { "role": "neutral", "displayName": "Plate Shade", "canonical": "#DCDEE5", "tonalRamp": ["#14161A", "#383D48", "#586070", "#8A91A0", "#B9BFCC", "#C4C7D0", "#DCDEE5", "#E9EAEE"] },
+      "slot": { "role": "neutral", "displayName": "Recessed Slot", "canonical": "#FBFBFC", "tonalRamp": ["#14161A", "#383D48", "#586070", "#8A91A0", "#C4C7D0", "#E9EAEE", "#F6F7F9", "#FBFBFC"] },
+      "line": { "role": "neutral", "displayName": "Seam Line", "canonical": "#C4C7D0", "tonalRamp": ["#14161A", "#383D48", "#586070", "#8A91A0", "#A8ADB9", "#C4C7D0", "#DCDEE5", "#E9EAEE"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#14161A", "tonalRamp": ["#14161A", "#23272E", "#383D48", "#586070", "#8A91A0", "#B9BFCC", "#DCDEE5", "#F6F7F9"] },
+      "ink-2": { "role": "neutral", "displayName": "Ink 2", "canonical": "#383D48", "tonalRamp": ["#14161A", "#23272E", "#383D48", "#4A5160", "#586070", "#8A91A0", "#B9BFCC", "#DCDEE5"] },
+      "ink-3": { "role": "neutral", "displayName": "Ink 3", "canonical": "#586070", "tonalRamp": ["#14161A", "#383D48", "#4A5160", "#586070", "#6F7787", "#8A91A0", "#B9BFCC", "#DCDEE5"] },
+      "led-amber": { "role": "tertiary", "displayName": "LED Amber", "canonical": "#FF9548", "tonalRamp": ["#3D1D05", "#663009", "#99480E", "#C46A22", "#FF9548", "#FFAA63", "#FFC698", "#FFE3CB"] },
+      "led-blue": { "role": "tertiary", "displayName": "LED Blue", "canonical": "#86A6FF", "tonalRamp": ["#0C1A45", "#193378", "#264DA8", "#4C74E0", "#86A6FF", "#A6BEFF", "#C6D4FF", "#E4EBFF"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero and CTA titles. Bricolage Grotesque 800, font-stretch 92%, -0.035em." },
+      "headline": { "displayName": "Headline", "purpose": "Section, comparison and auth headings, same voice as display." },
+      "title": { "displayName": "Title", "purpose": "Spec titles and dropdown titles, Bricolage 700." },
+      "body": { "displayName": "Body", "purpose": "Be Vietnam Pro running text, 38-46ch measure." },
+      "ui": { "displayName": "UI", "purpose": "Buttons and step labels, Be Vietnam Pro 600." },
+      "label": { "displayName": "Label plate", "purpose": "Barlow Condensed uppercase printed plates inside components (lane titles, footer headings, sticker). Never above a heading." },
+      "led": { "displayName": "LED numerals", "purpose": "Doto dot-matrix amounts and the inline 5 GIÂY chip, on ink panels only." }
+    },
+    "shadows": [
+      { "name": "raised-key", "value": "inset 0 1.5px 0 rgba(255,255,255,0.45), inset 0 -4px 6px -2px rgba(140,30,0,0.42), 0 10px 18px -10px rgba(20,22,26,0.6), 0 2px 4px rgba(20,22,26,0.16)", "purpose": "Primary button and raised plastic keys." },
+      { "name": "raised-key-plate", "value": "inset 0 1.5px 0 rgba(255,255,255,0.9), inset 0 -3px 5px -1px rgba(20,22,26,0.14), 0 6px 12px -8px rgba(20,22,26,0.45)", "purpose": "Plate icon keys and the motion toggle." },
+      { "name": "recessed-slot", "value": "inset 0 3px 6px rgba(20,22,26,0.22), 0 2px 0 rgba(255,255,255,0.35)", "purpose": "Username slot; inputs use inset 0 2px 5px rgba(20,22,26,0.2) plus a 1px line ring." },
+      { "name": "panel-lift", "value": "0 0 0 1px #C4C7D0, 0 44px 60px -40px rgba(20,22,26,0.5), 0 6px 14px rgba(20,22,26,0.08)", "purpose": "Auth plate, diagram, dropdown." },
+      { "name": "led-well", "value": "inset 0 0.5em 0.9em rgba(0,0,0,0.6), 0 2px 0 rgba(255,255,255,0.6)", "purpose": "Ink LED display panels." },
+      { "name": "focus-ring", "value": "outline: 3px solid #14161A; outline-offset: 3px", "purpose": "Keyboard focus everywhere." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Exponential ease-out for entrances and state changes." },
+      { "name": "beat", "value": "5000ms loop, TING at 1300ms (26%)", "purpose": "Master clock; beat-* keyframes aligned to document.timeline in fx.js." },
+      { "name": "wave-life", "value": "2500ms", "purpose": "Canvas grille and lattice ripple lifetime from the LED." },
+      { "name": "spec-cycle", "value": "3200ms", "purpose": "Mechanism spec row rotation; pauses on hover." },
+      { "name": "race-loop", "value": "11800ms", "purpose": "Comparison race; VT resolves at about 1.6s, wallet at about 8.5s." },
+      { "name": "reduced-motion", "value": "html[data-motion=off] and prefers-reduced-motion disable all animation and transitions", "purpose": "Header toggle persists choice in localStorage vtpage_motion." }
+    ],
+    "breakpoints": [
+      { "name": "narrow", "value": "560px" },
+      { "name": "lanes-stack", "value": "720px" },
+      { "name": "mobile-toggle", "value": "640px" },
+      { "name": "one-column", "value": "960px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Raised orange plastic key; the one primary action per view.",
+      "html": "<a class=\"ds-btn ds-btn-primary\" href=\"#\">Bắt đầu ngay</a>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 22px; border-radius: 14px; font: 600 15px/1.1 var(--font-text, 'Be Vietnam Pro', sans-serif); color: #14161A; text-decoration: none; transition: transform .18s cubic-bezier(.16,1,.3,1), box-shadow .18s cubic-bezier(.16,1,.3,1); } .ds-btn-primary { background: #FF5A1F; box-shadow: inset 0 1.5px 0 rgba(255,255,255,.45), inset 0 -4px 6px -2px rgba(140,30,0,.42), 0 10px 18px -10px rgba(20,22,26,.6), 0 2px 4px rgba(20,22,26,.16); } .ds-btn-primary:hover { transform: translateY(-2px); } .ds-btn-primary:active { transform: translateY(1px); box-shadow: inset 0 3px 6px rgba(140,30,0,.45), 0 2px 4px rgba(20,22,26,.16); } .ds-btn:focus-visible { outline: 3px solid #14161A; outline-offset: 3px; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary action: ink ring, fills ink on hover.",
+      "html": "<a class=\"ds-btn-outline\" href=\"#\">Xem Demo</a>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 22px; border-radius: 14px; background: transparent; color: #14161A; font: 600 15px/1.1 'Be Vietnam Pro', sans-serif; text-decoration: none; box-shadow: inset 0 0 0 1.5px #14161A; transition: transform .18s cubic-bezier(.16,1,.3,1), background-color .18s, color .18s; } .ds-btn-outline:hover { background: #14161A; color: #F6F7F9; transform: translateY(-1px); } .ds-btn-outline:focus-visible { outline: 3px solid #14161A; outline-offset: 3px; }"
+    },
+    {
+      "name": "Ink Button",
+      "kind": "button",
+      "refersTo": "button-ink",
+      "description": "Ink key used to submit the username slot.",
+      "html": "<button class=\"ds-btn-ink\">Tạo ngay</button>",
+      "css": ".ds-btn-ink { min-height: 56px; padding: 0 28px; border: 0; border-radius: 16px; background: #14161A; color: #F6F7F9; font: 600 15px/1.1 'Be Vietnam Pro', sans-serif; box-shadow: inset 0 1.5px 0 rgba(255,255,255,.16), inset 0 -4px 6px -2px rgba(0,0,0,.6), 0 8px 14px -8px rgba(20,22,26,.7); transition: transform .18s cubic-bezier(.16,1,.3,1), background-color .18s; } .ds-btn-ink:hover { background: #23272E; transform: translateY(-2px); } .ds-btn-ink:active { transform: translateY(1px); } .ds-btn-ink:focus-visible { outline: 3px solid #14161A; outline-offset: 3px; }"
+    },
+    {
+      "name": "Recessed Input Slot",
+      "kind": "input",
+      "refersTo": "input-slot",
+      "description": "Inset field; focus swaps the line ring for a 3px ink ring.",
+      "html": "<input class=\"ds-input\" placeholder=\"Email\">",
+      "css": ".ds-input { width: 100%; height: 52px; padding: 0 16px; border: 0; border-radius: 14px; background: #FBFBFC; color: #14161A; font: 500 16px 'Be Vietnam Pro', sans-serif; outline: none; box-shadow: inset 0 2px 5px rgba(20,22,26,.2), 0 0 0 1px #C4C7D0; transition: box-shadow .2s; } .ds-input::placeholder { color: #586070; } .ds-input:focus { box-shadow: inset 0 2px 5px rgba(20,22,26,.2), 0 0 0 3px #14161A; }"
+    },
+    {
+      "name": "Label Sticker",
+      "kind": "chip",
+      "refersTo": "label-sticker",
+      "description": "Printed plate stuck on the device corner, tilted; never above a heading.",
+      "html": "<span class=\"ds-sticker\">NHÀ SÁNG TẠO</span>",
+      "css": ".ds-sticker { display: inline-flex; align-items: center; gap: 9px; padding: 10px 18px 10px 14px; border-radius: 8px; background: #F6F7F9; color: #14161A; font: 600 1.05rem/1.1 'Barlow Condensed', sans-serif; letter-spacing: .02em; transform: rotate(-4deg); box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 0 0 1px rgba(20,22,26,.1), 0 14px 20px -12px rgba(20,22,26,.6); } .ds-sticker::before { content: ''; width: 9px; height: 9px; border-radius: 50%; background: #FF5A1F; }"
+    },
+    {
+      "name": "LED Chip",
+      "kind": "chip",
+      "refersTo": "led-chip",
+      "description": "Inline dot-matrix panel inside a heading; amber for signal, blue for money.",
+      "html": "<h2 class=\"ds-h\">Nhận donate trong <span class=\"ds-led\">5 GIÂY</span></h2>",
+      "css": ".ds-h { margin: 0; font: 800 2.6rem/1.02 'Bricolage Grotesque', sans-serif; font-stretch: 92%; letter-spacing: -.035em; color: #14161A; } .ds-led { display: inline-block; padding: .02em .2em .12em; border-radius: .18em; background: #14161A; color: #FF9548; font-family: 'Doto', monospace; font-weight: 900; font-stretch: 100%; letter-spacing: .03em; word-spacing: -.22em; line-height: .96; box-shadow: inset 0 .06em .12em rgba(0,0,0,.8), 0 .05em 0 rgba(255,255,255,.6); }"
+    },
+    {
+      "name": "LED Result Panel",
+      "kind": "card",
+      "refersTo": "result-panel",
+      "description": "Ink display panel closing each comparison lane; blue Doto amount.",
+      "html": "<div class=\"ds-result\"><div class=\"ds-amount\">100.000 VND</div><p class=\"ds-note\">Tiền về thẳng tài khoản</p></div>",
+      "css": ".ds-result { padding: 18px 20px; border-radius: 18px; background: #14161A; box-shadow: inset 0 .5em .9em rgba(0,0,0,.6), 0 2px 0 rgba(255,255,255,.6); } .ds-amount { font: 900 2.4rem/1 'Doto', monospace; letter-spacing: .02em; color: #86A6FF; } .ds-note { margin: 10px 0 0; font: 400 .88rem 'Be Vietnam Pro', sans-serif; color: #D6DAE4; }"
+    },
+    {
+      "name": "Comparison Step",
+      "kind": "custom",
+      "refersTo": "lane-vt",
+      "description": "Step node with connector: cobalt when done, ink when held, ring when pending.",
+      "html": "<div class=\"ds-step\"><span class=\"ds-node\">1</span><div><strong>Fan chuyển khoản</strong><span>100.000 VND</span></div></div>",
+      "css": ".ds-step { display: grid; grid-template-columns: 38px 1fr; gap: 14px; align-items: start; font-family: 'Be Vietnam Pro', sans-serif; } .ds-node { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: #2450F5; color: #fff; font-weight: 700; } .ds-step strong { display: block; font-weight: 600; color: #14161A; } .ds-step span:last-child { font-size: .9rem; color: #586070; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Speaker Alert Chip",
+      "kind": "custom",
+      "refersTo": "label-sticker",
+      "description": "Plate pill that pops out of the speaker on the beat: orange disc, cobalt LED amount.",
+      "html": "<div class=\"ds-alert\"><span class=\"ds-disc\"></span><b>+15.000</b></div>",
+      "css": ".ds-alert { display: inline-flex; align-items: center; gap: 10px; padding: 8px 18px 8px 8px; border-radius: 99px; background: #F6F7F9; color: #14161A; box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 14px 22px -8px rgba(20,22,26,.45), 0 2px 6px rgba(20,22,26,.16); } .ds-disc { width: 34px; height: 34px; border-radius: 50%; background: #FF5A1F; } .ds-alert b { font: 900 1.3rem/1 'Doto', monospace; color: #2450F5; letter-spacing: .02em; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Loa Báo Tiền",
+    "overview": "The payment soundbox on every Vietnamese counter. The whole site is that object and its shop: a matte signal-orange plastic shell, a cool porcelain-grey ground, ink-black type and grille. The recurring material is the perforated dot lattice: a canvas grille that swells in waves, dot-matrix LED numerals, condensed printed label plates, raised plastic keys, recessed input slots, and a footer that reads as the regulatory label on the back of the device.\n\nThe system is calm between beats and precise during them. Surfaces are matte and physical (soft bevels, soft offset shadows), never glassy or luminous. One 5-second beat drives every animation, so the page behaves like one machine, not a collection of effects. The story it tells: money lands in your own account, the box only rings.",
+    "keyCharacteristics": [
+      "Orange is the signal; cobalt is money; ink is structure and blocked states. Colour is a law, not a mood.",
+      "Hardware vocabulary: raised keys, recessed slots, label plates, LED panels, a barcode label.",
+      "Dot lattice is the one recurring texture (hero canvas, speaker grille, diagram paper, CTA, footer slot).",
+      "Editorial display type (wide-tight Bricolage) against printed-plate condensed labels and dot-matrix numerals.",
+      "Depth is soft and physical. No glow halos, no hard offset shadows.",
+      "One phase-locked beat; everything stops on pause or reduced motion."
+    ],
+    "rules": [
+      { "name": "The Signal-Money-Ink Rule", "body": "Orange means signal, alert, or the primary action. Cobalt means money or the creator's account. Ink means type, grille, or a held or blocked state. A colour never crosses its meaning.", "section": "colors" },
+      { "name": "The Ink-Panel Rule", "body": "LED colours (amber, blue) appear only on ink display panels with Doto numerals. They are never used on the grey ground, never as text colour elsewhere.", "section": "colors" },
+      { "name": "The Ink-on-Orange Rule", "body": "Text on orange is ink, never white.", "section": "colors" },
+      { "name": "The Plate-Not-Kicker Rule", "body": "Condensed uppercase labels are printed plates inside a component (lane title, footer heading, sticker on the shell). They never sit above a heading as an intro line.", "section": "typography" },
+      { "name": "The LED Numeral Rule", "body": "Only amounts and the 5-second promise are set in Doto, always on an ink panel.", "section": "typography" },
+      { "name": "The Soft-Offset Rule", "body": "Every shadow has a blur and a negative spread and is tinted from ink. A shadow with zero blur is forbidden, and a coloured glow around a light source is forbidden: light is drawn as fill (LED radial dot), never as halo.", "section": "elevation" },
+      { "name": "The Press Rule", "body": "Hover lifts a key 1-2px; active presses it 1px down and flips the bevel inward.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep orange for signal, alert and the primary action; cobalt for money and the creator's account; ink for type, grille and held or blocked states.",
+      "Do put LED amber and blue only on ink panels, set in Doto.",
+      "Do build depth from soft inner bevels plus soft, negative-spread, ink-tinted offset shadows.",
+      "Do set headings in Bricolage 800 at 92% width and -0.035em; labels in Barlow Condensed uppercase inside plates.",
+      "Do draw every icon in the sprite at 1.75 stroke, round caps.",
+      "Do drive any new motion off the 5s beat, with exponential ease-out, and honour the pause toggle and reduced motion.",
+      "Do use the dot lattice as the one recurring texture."
+    ],
+    "donts": [
+      "Don't go dark neon gaming: no black-page with glowing accents, no glow halos or coloured blooms.",
+      "Don't use gradient text, glossy hardware-on-gradient hero staging, or hard offset (zero-blur) shadows.",
+      "Don't place a kicker, eyebrow or small label above a heading.",
+      "Don't lay out features as equal icon-card grids.",
+      "Don't use emoji, glyph characters or icon fonts as icons.",
+      "Don't put white text on orange, or use cobalt for anything that is not money or the account."
+    ]
+  }
+}

@@ -57,12 +57,17 @@ const authForm = document.querySelector('.sign-in-form');
 if (authForm) {
   const emailInput = document.getElementById('email');
   const errorBox = document.getElementById('formError');
+  const errorText = document.getElementById('formErrorText');
   const mode = authForm.dataset.mode; // 'signup' | 'signin'
 
   const showError = (message) => {
     if (!errorBox) return;
-    errorBox.textContent = message;
+    // gỡ rồi gắn lại để hiệu ứng rung chạy lại ở mỗi lần lỗi
+    errorBox.hidden = true;
+    errorText.textContent = message;
+    void errorBox.offsetWidth;
     errorBox.hidden = false;
+    if (window.VTFX) window.VTFX.buzz();
   };
 
   const hideError = () => {
@@ -103,7 +108,15 @@ if (authForm) {
 }
 
 // --- Trạng thái đăng nhập ở header (trang chủ) ---
-const AVATAR_COLORS = ['#c6ff3d', '#8b5cf6', '#22d3ee', '#f472b6', '#fb923c', '#34d399'];
+// Mỗi màu avatar đi kèm màu chữ đủ tương phản.
+const AVATAR_COLORS = [
+  { bg: '#FF5A1F', fg: '#14161A' },
+  { bg: '#2450F5', fg: '#F6F7F9' },
+  { bg: '#14161A', fg: '#FF5A1F' },
+  { bg: '#F6F7F9', fg: '#2450F5' },
+  { bg: '#7C2504', fg: '#F6F7F9' },
+  { bg: '#DCDEE5', fg: '#14161A' },
+];
 
 function avatarColorFor(email) {
   let hash = 0;
@@ -121,13 +134,12 @@ const authButtons = document.getElementById('authButtons');
 if (authButtons) {
   const session = getSession();
   if (session) {
+    const color = avatarColorFor(session);
     authButtons.innerHTML = `
       <div class="user-bar">
         <div class="icon-btn-group">
           <button type="button" class="icon-btn" id="chatBtn" aria-label="Tin nhắn" aria-expanded="false">
-            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-            </svg>
+            <svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>
           </button>
           <div class="dropdown-panel" id="chatPanel" hidden>
             <div class="dropdown-title">Tin nhắn</div>
@@ -135,10 +147,7 @@ if (authButtons) {
           </div>
 
           <button type="button" class="icon-btn" id="notifBtn" aria-label="Thông báo" aria-expanded="false">
-            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-            </svg>
+            <svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg>
           </button>
           <div class="dropdown-panel" id="notifPanel" hidden>
             <div class="dropdown-title">Thông báo</div>
@@ -149,7 +158,7 @@ if (authButtons) {
         <div class="header-divider"></div>
 
         <div class="user-menu">
-          <button type="button" class="avatar-btn" id="avatarBtn" aria-label="Tài khoản" aria-expanded="false" style="background-color:${avatarColorFor(session)}">${escapeHtml(avatarInitial(session))}</button>
+          <button type="button" class="avatar-btn" id="avatarBtn" aria-label="Tài khoản" aria-expanded="false" style="background-color:${color.bg};color:${color.fg}">${escapeHtml(avatarInitial(session))}</button>
           <div class="dropdown-panel" id="userPanel" hidden>
             <div class="dropdown-email">${escapeHtml(session)}</div>
             <button type="button" class="dropdown-item" id="logoutBtn">Đăng xuất</button>
@@ -182,6 +191,9 @@ if (authButtons) {
     });
 
     document.addEventListener('click', closeAllPanels);
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeAllPanels();
+    });
 
     document.getElementById('logoutBtn').addEventListener('click', () => {
       clearSession();

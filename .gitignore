@@ -1,3 +1,9 @@
 .DS_Store
 *.log
 .vscode/
+
+# Impeccable: ảnh chụp và cache tạm của phiên thiết kế
+.impeccable/review/
+.impeccable/questions/
+.impeccable/build/
+.impeccable/surfaces/
