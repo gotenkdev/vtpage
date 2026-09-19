@@ -103,15 +103,86 @@ if (authForm) {
 }
 
 // --- Trạng thái đăng nhập ở header (trang chủ) ---
+const AVATAR_COLORS = ['#4ade80', '#a78bfa', '#38bdf8', '#facc15', '#f87171', '#fb923c'];
+
+function avatarColorFor(email) {
+  let hash = 0;
+  for (let i = 0; i < email.length; i++) hash = (hash + email.charCodeAt(i)) % AVATAR_COLORS.length;
+  return AVATAR_COLORS[hash];
+}
+
+function avatarInitial(email) {
+  const name = email.split('@')[0] || email;
+  return name.charAt(0).toUpperCase();
+}
+
 const authButtons = document.getElementById('authButtons');
 
 if (authButtons) {
   const session = getSession();
   if (session) {
     authButtons.innerHTML = `
-      <span class="session-email">${escapeHtml(session)}</span>
-      <button type="button" class="btn btn-outline" id="logoutBtn">Đăng xuất</button>
+      <div class="user-bar">
+        <div class="icon-btn-group">
+          <button type="button" class="icon-btn" id="chatBtn" aria-label="Tin nhắn" aria-expanded="false">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+            </svg>
+          </button>
+          <div class="dropdown-panel" id="chatPanel" hidden>
+            <div class="dropdown-title">Tin nhắn</div>
+            <p class="dropdown-empty">Chưa có cuộc trò chuyện nào.<br>Bản xem giao diện — nhắn tin thật giữa các thành viên sẽ có sau.</p>
+          </div>
+
+          <button type="button" class="icon-btn" id="notifBtn" aria-label="Thông báo" aria-expanded="false">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+          </button>
+          <div class="dropdown-panel" id="notifPanel" hidden>
+            <div class="dropdown-title">Thông báo</div>
+            <p class="dropdown-empty">Chưa có thông báo nào từ hệ thống.</p>
+          </div>
+        </div>
+
+        <div class="header-divider"></div>
+
+        <div class="user-menu">
+          <button type="button" class="avatar-btn" id="avatarBtn" aria-label="Tài khoản" aria-expanded="false" style="background-color:${avatarColorFor(session)}">${escapeHtml(avatarInitial(session))}</button>
+          <div class="dropdown-panel" id="userPanel" hidden>
+            <div class="dropdown-email">${escapeHtml(session)}</div>
+            <button type="button" class="dropdown-item" id="logoutBtn">Đăng xuất</button>
+          </div>
+        </div>
+      </div>
     `;
+
+    const panels = [
+      { button: document.getElementById('chatBtn'), panel: document.getElementById('chatPanel') },
+      { button: document.getElementById('notifBtn'), panel: document.getElementById('notifPanel') },
+      { button: document.getElementById('avatarBtn'), panel: document.getElementById('userPanel') },
+    ];
+
+    const closeAllPanels = () => {
+      panels.forEach(({ button, panel }) => {
+        panel.hidden = true;
+        button.setAttribute('aria-expanded', 'false');
+      });
+    };
+
+    panels.forEach(({ button, panel }) => {
+      button.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const willOpen = panel.hidden;
+        closeAllPanels();
+        panel.hidden = !willOpen;
+        button.setAttribute('aria-expanded', String(willOpen));
+      });
+    });
+
+    document.addEventListener('click', closeAllPanels);
+
     document.getElementById('logoutBtn').addEventListener('click', () => {
       clearSession();
       window.location.reload();
