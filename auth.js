@@ -103,7 +103,7 @@ if (authForm) {
 }
 
 // --- Trạng thái đăng nhập ở header (trang chủ) ---
-const AVATAR_COLORS = ['#4ade80', '#a78bfa', '#38bdf8', '#facc15', '#f87171', '#fb923c'];
+const AVATAR_COLORS = ['#c6ff3d', '#8b5cf6', '#22d3ee', '#f472b6', '#fb923c', '#34d399'];
 
 function avatarColorFor(email) {
   let hash = 0;
