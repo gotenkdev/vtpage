@@ -975,6 +975,9 @@ input { caret-color: var(--ink); }
 .donate-paid { color: #1A7A3C; }
 .donate-expired { color: #7C2504; }
 .countdown { font: 800 1.4rem/1 var(--font-led), monospace; text-align: center; margin: 10px 0; color: var(--ink); }
+
+.qr-wrap { display: grid; justify-items: center; gap: 10px; margin: 18px 0; }
+.qr-image { width: 220px; height: 220px; border-radius: 16px; box-shadow: 0 0 0 1px var(--line), 0 20px 30px -20px rgba(20, 22, 26, 0.4); background: #fff; }
 .link-btn { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; color: var(--ink); font-weight: 700; text-decoration: underline; text-decoration-thickness: 2px; text-decoration-color: var(--orange); text-underline-offset: 0.22em; }
 .link-btn:hover { background: var(--orange); text-decoration-color: var(--ink); }
 

@@ -863,6 +863,8 @@ if (donateProfile && notFoundBox) {
   const instHolder = document.getElementById('instHolder');
   const instAmount = document.getElementById('instAmount');
   const instContent = document.getElementById('instContent');
+  const qrWrap = document.getElementById('qrWrap');
+  const instQr = document.getElementById('instQr');
   const donateWaiting = document.getElementById('donateWaiting');
   const donatePaid = document.getElementById('donatePaid');
   const donateExpired = document.getElementById('donateExpired');
@@ -953,6 +955,9 @@ if (donateProfile && notFoundBox) {
     donateWaiting.hidden = false;
     donatePaid.hidden = true;
     donateExpired.hidden = true;
+    qrWrap.hidden = true;
+    instQr.hidden = true;
+    instQr.removeAttribute('src');
     donateForm.reset();
     for (const b of amountPresets.querySelectorAll('.amount-preset')) b.classList.remove('is-active');
     donateFormCard.hidden = false;
@@ -982,6 +987,24 @@ if (donateProfile && notFoundBox) {
         instAmount.textContent = vnd(donation.amount);
         instContent.textContent = donation.content;
         donateInstructions.hidden = false;
+        // Mã QR do SePay dựng sẵn (không tự sinh ở phía chúng ta): dữ liệu trong đó (số tài khoản,
+        // số tiền, nội dung) vốn đã hiện ở dạng chữ ngay bên dưới, không phải thông tin mới lộ ra.
+        // Nếu dịch vụ này lỗi/chậm, ẩn hẳn đi — người donate vẫn chuyển khoản thủ công được bình
+        // thường bằng các trường bên dưới.
+        const qrUrl = new URL('https://qr.sepay.vn/img');
+        qrUrl.searchParams.set('acc', donation.bank.accountNumber);
+        qrUrl.searchParams.set('bank', donation.bank.bankCode);
+        qrUrl.searchParams.set('amount', String(donation.amount));
+        qrUrl.searchParams.set('des', donation.content);
+        instQr.onerror = () => {
+          qrWrap.hidden = true;
+          instQr.hidden = true;
+        };
+        instQr.onload = () => {
+          qrWrap.hidden = false;
+          instQr.hidden = false;
+        };
+        instQr.src = qrUrl.toString();
         startCountdown(donation.expiresAt);
         pollStatus(donation.id, donation.expiresAt);
       } catch (err) {
