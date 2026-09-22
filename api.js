@@ -38,6 +38,20 @@
     'avatar:type_mismatch': 'Đuôi tệp không khớp nội dung ảnh thật.',
     'avatar:animated': 'Không nhận ảnh động (GIF/WebP động).',
     'avatar:corrupt': 'Tệp ảnh bị hỏng, không đọc được.',
+    mfa_required: 'Cần hoàn tất đăng nhập hai lớp trước.',
+    mfa_setup_required: 'Bạn cần bật xác thực hai lớp (2FA) trước khi làm việc này.',
+    step_up_required: 'Cần xác minh lại để tiếp tục.',
+    mfa_already_enabled: 'Bạn đã bật 2FA rồi.',
+    'mfa:not_started': 'Chưa bắt đầu thiết lập 2FA, hãy thử lại.',
+    'mfa:not_enabled': '2FA chưa được bật.',
+    bank_unsupported: 'Ngân hàng này chưa được hỗ trợ.',
+    profile_required: 'Bạn cần tạo hồ sơ trước khi liên kết tài khoản ngân hàng.',
+    bank_account_unavailable: 'Không thể lưu tài khoản này lúc này, hãy thử lại.',
+    not_changeable: 'Tài khoản này không còn thay đổi được nữa.',
+    'accountNumber:invalid_format': 'Số tài khoản chỉ được gồm chữ số.',
+    'accountNumber:invalid_length': 'Số tài khoản phải có 6-19 chữ số.',
+    'holderName:invalid': 'Tên chủ tài khoản không hợp lệ (chỉ chữ cái, khoảng trắng, dấu chấm, gạch ngang).',
+    'holderName:forbidden_characters': 'Tên chủ tài khoản chứa ký tự không hợp lệ.',
   };
   const FALLBACK_MESSAGE = 'Dữ liệu chưa hợp lệ, vui lòng kiểm tra lại.';
 

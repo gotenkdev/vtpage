@@ -496,6 +496,205 @@ if (createForm && editSection) {
     });
 }
 
+// Bọc một hành động nhạy cảm (@RequireStepUp ở backend): thử gọi ngay; nếu bị chặn vì "cần xác minh
+// lại" (đã bật 2FA nhưng lần xác minh gần nhất đã quá 10 phút), hiện ô nhập mã ngay tại chỗ (panel
+// dùng chung của trang), xác minh xong thì tự làm lại hành động ban đầu — người dùng không cần bấm
+// lại nút gốc. Dùng cho gửi/huỷ tài khoản ngân hàng, tạo lại mã khôi phục...
+function withStepUp(panel, action) {
+  if (!panel) return action();
+  const form = panel.querySelector('form');
+  const codeInput = panel.querySelector('input');
+  const errorBox = panel.querySelector('.form-error');
+  const errorText = errorBox ? errorBox.querySelector('span') : null;
+
+  async function attempt() {
+    try {
+      return await action();
+    } catch (err) {
+      const needsStepUp =
+        err instanceof window.VTApi.ApiError && err.body && err.body.message === 'step_up_required';
+      if (!needsStepUp) throw err;
+      return new Promise((resolve, reject) => {
+        panel.hidden = false;
+        codeInput.value = '';
+        codeInput.focus();
+        const onSubmit = async (event) => {
+          event.preventDefault();
+          hideError(errorBox);
+          const code = codeInput.value.trim();
+          if (!code) return;
+          const button = form.querySelector('button[type="submit"]');
+          await submitWithLock(button, async () => {
+            try {
+              await window.VTApi.call('POST', '/auth/mfa/verify', { code });
+              panel.hidden = true;
+              form.removeEventListener('submit', onSubmit);
+              try {
+                resolve(await attempt());
+              } catch (retryErr) {
+                reject(retryErr);
+              }
+            } catch (verifyErr) {
+              showError(errorBox, errorText, verifyErr.message);
+            }
+          });
+        };
+        form.addEventListener('submit', onSubmit);
+      });
+    }
+  }
+  return attempt();
+}
+
+// --- Trang security.html: bật/tắt 2FA, tạo lại mã khôi phục (cần đăng nhập) ---
+const mfaOff = document.getElementById('mfaOff');
+const mfaOn = document.getElementById('mfaOn');
+if (mfaOff && mfaOn) {
+  const skeleton = document.getElementById('settingsSkeleton');
+  const subtitle = document.getElementById('settingsSubtitle');
+  const startSetupBtn = document.getElementById('startSetupBtn');
+  const mfaSetup = document.getElementById('mfaSetup');
+  const secretBox = document.getElementById('secretBox');
+  const otpauthLink = document.getElementById('otpauthLink');
+  const enableForm = document.getElementById('enableForm');
+  const enableCodeInput = document.getElementById('enableCode');
+  const enableErrorBox = document.getElementById('enableError');
+  const enableErrorText = document.getElementById('enableErrorText');
+  const recoveryShow = document.getElementById('recoveryShow');
+  const recoveryCodesBox = document.getElementById('recoveryCodes');
+  const recoverySavedBtn = document.getElementById('recoverySavedBtn');
+  const regenerateBtn = document.getElementById('regenerateBtn');
+  const showDisableBtn = document.getElementById('showDisableBtn');
+  const disableForm = document.getElementById('disableForm');
+  const disableCodeInput = document.getElementById('disableCode');
+  const disableErrorBox = document.getElementById('disableError');
+  const disableErrorText = document.getElementById('disableErrorText');
+  const stepUpPanel = document.getElementById('stepUpPanel');
+
+  const hideAllPanels = () => {
+    mfaOff.hidden = true;
+    mfaSetup.hidden = true;
+    recoveryShow.hidden = true;
+    mfaOn.hidden = true;
+  };
+
+  const showRecoveryCodes = (codes) => {
+    hideAllPanels();
+    recoveryCodesBox.textContent = codes.join('\n');
+    recoveryShow.hidden = false;
+  };
+
+  const showOn = () => {
+    hideAllPanels();
+    disableForm.hidden = true;
+    mfaOn.hidden = false;
+    subtitle.textContent = 'Tài khoản của bạn được bảo vệ bằng xác thực hai lớp.';
+  };
+
+  const showOff = () => {
+    hideAllPanels();
+    mfaOff.hidden = false;
+    subtitle.textContent = 'Xác thực hai lớp (2FA) đang tắt.';
+  };
+
+  startSetupBtn.addEventListener('click', () => {
+    void submitWithLock(startSetupBtn, async () => {
+      try {
+        const result = await window.VTApi.call('POST', '/auth/mfa/totp/setup');
+        hideAllPanels();
+        const grouped = result.secret.match(/.{1,4}/g).join(' ');
+        secretBox.textContent = grouped;
+        otpauthLink.innerHTML = `<a href="${result.otpauthUri}">Mở trong ứng dụng xác thực trên điện thoại</a>`;
+        mfaSetup.hidden = false;
+        enableCodeInput.value = '';
+        enableCodeInput.focus();
+      } catch (err) {
+        subtitle.textContent = err.message;
+      }
+    });
+  });
+
+  enableForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    hideError(enableErrorBox);
+    const code = enableCodeInput.value.trim();
+    if (!code) return;
+    const button = enableForm.querySelector('button[type="submit"]');
+    void submitWithLock(button, async () => {
+      try {
+        const result = await window.VTApi.call('POST', '/auth/mfa/totp/enable', { code });
+        showRecoveryCodes(result.recoveryCodes);
+      } catch (err) {
+        showError(enableErrorBox, enableErrorText, err.message);
+      }
+    });
+  });
+
+  recoverySavedBtn.addEventListener('click', () => {
+    showOn();
+  });
+
+  regenerateBtn.addEventListener('click', () => {
+    void submitWithLock(regenerateBtn, async () => {
+      try {
+        const result = await withStepUp(stepUpPanel, () =>
+          window.VTApi.call('POST', '/auth/mfa/recovery-codes'),
+        );
+        showRecoveryCodes(result.recoveryCodes);
+      } catch (err) {
+        subtitle.textContent = err.message;
+        showOn();
+      }
+    });
+  });
+
+  showDisableBtn.addEventListener('click', () => {
+    disableForm.hidden = !disableForm.hidden;
+    if (!disableForm.hidden) {
+      disableCodeInput.value = '';
+      disableCodeInput.focus();
+    }
+  });
+
+  disableForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    hideError(disableErrorBox);
+    const code = disableCodeInput.value.trim();
+    if (!code) return;
+    const button = disableForm.querySelector('button[type="submit"]');
+    void submitWithLock(button, async () => {
+      try {
+        await withStepUp(stepUpPanel, () =>
+          window.VTApi.call('POST', '/auth/mfa/totp/disable', { code }),
+        );
+        showOff();
+      } catch (err) {
+        showError(disableErrorBox, disableErrorText, err.message);
+      }
+    });
+  });
+
+  window.VTApi.me()
+    .then((me) => {
+      if (!me) {
+        window.location.href = 'sign-in.html';
+        return;
+      }
+      if (me.mfa.enabled && !me.mfa.verified) {
+        window.location.href = 'sign-in.html';
+        return;
+      }
+      skeleton.hidden = true;
+      if (me.mfa.enabled) showOn();
+      else showOff();
+    })
+    .catch((err) => {
+      console.error(err);
+      skeleton.hidden = true;
+      subtitle.textContent = 'Không tải được. Hãy tải lại trang.';
+    });
+}
+
 // --- Trạng thái đăng nhập ở header (trang chủ) ---
 const AVATAR_COLORS = [
   { bg: '#FF5A1F', fg: '#14161A' },
@@ -557,6 +756,8 @@ if (authButtons) {
             <div class="dropdown-panel" id="userPanel" hidden>
               <div class="dropdown-email">${escapeHtml(email)}</div>
               <a class="dropdown-item" href="profile.html">Hồ sơ</a>
+              <a class="dropdown-item" href="security.html">Bảo mật</a>
+              <a class="dropdown-item" href="bank-account.html">Ngân hàng</a>
               <button type="button" class="dropdown-item" id="logoutBtn">Đăng xuất</button>
             </div>
           </div>
