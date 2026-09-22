@@ -847,6 +847,10 @@ input { caret-color: var(--ink); }
 .auth-switch a { color: var(--ink); font-weight: 700; text-decoration-thickness: 2px; text-decoration-color: var(--orange); text-underline-offset: 0.22em; }
 .auth-switch a:hover { background: var(--orange); text-decoration-color: var(--ink); }
 
+.forgot-link { margin-top: 8px; text-align: right; font-size: 0.88rem; }
+.forgot-link a { color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--orange); text-underline-offset: 0.2em; }
+.forgot-link a:hover { color: var(--ink); }
+
 .signup-done { display: grid; gap: 10px; }
 .link-btn { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; color: var(--ink); font-weight: 700; text-decoration: underline; text-decoration-thickness: 2px; text-decoration-color: var(--orange); text-underline-offset: 0.22em; }
 .link-btn:hover { background: var(--orange); text-decoration-color: var(--ink); }

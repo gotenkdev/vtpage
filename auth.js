@@ -219,6 +219,85 @@ if (completeForm) {
   }
 }
 
+// --- Trang forgot-password.html: gửi liên kết đặt lại mật khẩu ---
+const forgotForm = document.getElementById('forgotForm');
+if (forgotForm) {
+  const emailInput = document.getElementById('email');
+  const errorBox = document.getElementById('formError');
+  const errorText = document.getElementById('formErrorText');
+  const doneBox = document.getElementById('forgotDone');
+  const retryBtn = document.getElementById('forgotRetry');
+
+  forgotForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    hideError(errorBox);
+    const email = emailInput.value.trim();
+    if (!email) return;
+    const button = forgotForm.querySelector('button[type="submit"]');
+    void submitWithLock(button, async () => {
+      try {
+        await window.VTApi.call('POST', '/auth/password/forgot', { email });
+        forgotForm.hidden = true;
+        doneBox.hidden = false;
+      } catch (err) {
+        showError(errorBox, errorText, err.message);
+      }
+    });
+  });
+
+  if (retryBtn) {
+    retryBtn.addEventListener('click', () => {
+      doneBox.hidden = true;
+      forgotForm.hidden = false;
+      emailInput.value = '';
+      emailInput.focus();
+    });
+  }
+}
+
+// --- Trang reset-password.html: đặt mật khẩu mới bằng token trong liên kết đã gửi qua email ---
+const resetForm = document.getElementById('resetForm');
+if (resetForm) {
+  const token = new URLSearchParams(window.location.hash.replace(/^#/, '')).get('token');
+  const passwordInput = document.getElementById('password');
+  const confirmInput = document.getElementById('passwordConfirm');
+  const errorBox = document.getElementById('formError');
+  const errorText = document.getElementById('formErrorText');
+  const authSwitch = document.getElementById('authSwitch');
+  const authSubtitle = document.getElementById('authSubtitle');
+  const doneBox = document.getElementById('resetDone');
+
+  if (!token) {
+    authSubtitle.textContent = 'Liên kết không hợp lệ hoặc thiếu mã xác nhận.';
+    authSwitch.innerHTML = 'Hãy thử <a href="forgot-password.html">gửi lại liên kết</a>.';
+  } else {
+    resetForm.hidden = false;
+    resetForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      hideError(errorBox);
+      const password = passwordInput.value;
+      if (password !== confirmInput.value) {
+        showError(errorBox, errorText, 'Hai mật khẩu chưa khớp nhau.');
+        return;
+      }
+      const button = resetForm.querySelector('button[type="submit"]');
+      void submitWithLock(button, async () => {
+        try {
+          await window.VTApi.call('POST', '/auth/password/reset', { token, password });
+          resetForm.hidden = true;
+          authSwitch.hidden = true;
+          doneBox.hidden = false;
+        } catch (err) {
+          showError(errorBox, errorText, err.message);
+          if (err.status === 400 && err.body && err.body.message === 'Liên kết không hợp lệ hoặc đã hết hạn') {
+            authSwitch.innerHTML = 'Liên kết đã dùng hoặc hết hạn. Hãy <a href="forgot-password.html">gửi lại liên kết</a>.';
+          }
+        }
+      });
+    });
+  }
+}
+
 // --- Trạng thái đăng nhập ở header (trang chủ) ---
 const AVATAR_COLORS = [
   { bg: '#FF5A1F', fg: '#14161A' },
