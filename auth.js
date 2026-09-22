@@ -834,6 +834,214 @@ if (bankForm && bankGate) {
     });
 }
 
+// --- Trang u.html: trang donate công khai của một streamer (vtpage.com/<username>), không cần đăng nhập ---
+const donateProfile = document.getElementById('donateProfile');
+const notFoundBox = document.getElementById('notFound');
+if (donateProfile && notFoundBox) {
+  const skeleton = document.getElementById('donateSkeleton');
+  const username = window.location.pathname.replace(/^\/+/, '').split('/')[0];
+
+  const avatarImg = document.getElementById('creatorAvatarImg');
+  const avatarFallback = document.getElementById('creatorAvatarFallback');
+  const nameEl = document.getElementById('creatorName');
+  const usernameEl = document.getElementById('creatorUsername');
+  const bioEl = document.getElementById('creatorBio');
+  const verifiedBadge = document.getElementById('verifiedBadge');
+  const donateNotReady = document.getElementById('donateNotReady');
+  const donateFormCard = document.getElementById('donateFormCard');
+  const donateForm = document.getElementById('donateForm');
+  const amountPresets = document.getElementById('amountPresets');
+  const amountInput = document.getElementById('donateAmount');
+  const donorNameInput = document.getElementById('donorName');
+  const messageInput = document.getElementById('donateMessage');
+  const donateErrorBox = document.getElementById('donateError');
+  const donateErrorText = document.getElementById('donateErrorText');
+  const donateInstructions = document.getElementById('donateInstructions');
+  const countdownEl = document.getElementById('countdown');
+  const instBank = document.getElementById('instBank');
+  const instAccount = document.getElementById('instAccount');
+  const instHolder = document.getElementById('instHolder');
+  const instAmount = document.getElementById('instAmount');
+  const instContent = document.getElementById('instContent');
+  const donateWaiting = document.getElementById('donateWaiting');
+  const donatePaid = document.getElementById('donatePaid');
+  const donateExpired = document.getElementById('donateExpired');
+  const retryBtn = document.getElementById('retryBtn');
+
+  const vnd = (n) => `${n.toLocaleString('vi-VN')} đ`;
+
+  amountPresets.addEventListener('click', (event) => {
+    const btn = event.target.closest('.amount-preset');
+    if (!btn) return;
+    amountInput.value = btn.dataset.amount;
+    for (const b of amountPresets.querySelectorAll('.amount-preset')) {
+      b.classList.toggle('is-active', b === btn);
+    }
+  });
+  amountInput.addEventListener('input', () => {
+    for (const b of amountPresets.querySelectorAll('.amount-preset')) {
+      b.classList.toggle('is-active', b.dataset.amount === amountInput.value);
+    }
+  });
+
+  let pollTimer = null;
+  let countdownTimer = null;
+
+  function stopTimers() {
+    if (pollTimer) clearTimeout(pollTimer);
+    if (countdownTimer) clearInterval(countdownTimer);
+    pollTimer = null;
+    countdownTimer = null;
+  }
+
+  function startCountdown(expiresAt) {
+    const tick = () => {
+      const ms = new Date(expiresAt).getTime() - Date.now();
+      if (ms <= 0) {
+        countdownEl.textContent = '00:00';
+        return false;
+      }
+      const totalSec = Math.floor(ms / 1000);
+      const m = Math.floor(totalSec / 60);
+      const s = totalSec % 60;
+      countdownEl.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      return true;
+    };
+    if (!tick()) return;
+    countdownTimer = setInterval(() => {
+      if (!tick()) clearInterval(countdownTimer);
+    }, 1000);
+  }
+
+  // Hỏi máy chủ đều đặn cho tới khi đơn "paid" hoặc "expired". Máy khách có thể lệch giờ nên vẫn hỏi
+  // thêm một chút sau khi đồng hồ hiển thị 00:00, lấy trạng thái THẬT từ máy chủ làm chuẩn.
+  function pollStatus(id, expiresAt) {
+    const check = async () => {
+      let status;
+      try {
+        status = await window.VTApi.call('GET', `/donations/${id}`);
+      } catch {
+        pollTimer = setTimeout(check, 4000);
+        return;
+      }
+      if (status.status === 'paid') {
+        stopTimers();
+        donateWaiting.hidden = true;
+        donatePaid.hidden = false;
+        return;
+      }
+      if (status.status === 'expired') {
+        stopTimers();
+        donateWaiting.hidden = true;
+        donateExpired.hidden = false;
+        return;
+      }
+      if (Date.now() > new Date(expiresAt).getTime() + 5000) {
+        stopTimers();
+        donateWaiting.hidden = true;
+        donateExpired.hidden = false;
+        return;
+      }
+      pollTimer = setTimeout(check, 3000);
+    };
+    void check();
+  }
+
+  retryBtn.addEventListener('click', () => {
+    stopTimers();
+    donateInstructions.hidden = true;
+    donateWaiting.hidden = false;
+    donatePaid.hidden = true;
+    donateExpired.hidden = true;
+    donateForm.reset();
+    for (const b of amountPresets.querySelectorAll('.amount-preset')) b.classList.remove('is-active');
+    donateFormCard.hidden = false;
+  });
+
+  donateForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    hideError(donateErrorBox);
+    const amount = Number(amountInput.value);
+    const donorName = donorNameInput.value.trim();
+    const message = messageInput.value.trim();
+    const body = { amount };
+    if (donorName) body.donorName = donorName;
+    if (message) body.message = message;
+    const button = donateForm.querySelector('button[type="submit"]');
+    void submitWithLock(button, async () => {
+      try {
+        const { donation } = await window.VTApi.call(
+          'POST',
+          `/profiles/${encodeURIComponent(username)}/donations`,
+          body,
+        );
+        donateFormCard.hidden = true;
+        instBank.textContent = donation.bank.bankName;
+        instAccount.textContent = donation.bank.accountNumber;
+        instHolder.textContent = donation.bank.holderName;
+        instAmount.textContent = vnd(donation.amount);
+        instContent.textContent = donation.content;
+        donateInstructions.hidden = false;
+        startCountdown(donation.expiresAt);
+        pollStatus(donation.id, donation.expiresAt);
+      } catch (err) {
+        showError(donateErrorBox, donateErrorText, err.message);
+      }
+    });
+  });
+
+  donateInstructions.addEventListener('click', (event) => {
+    const btn = event.target.closest('.copy-btn');
+    if (!btn) return;
+    const target = document.getElementById(btn.dataset.copy);
+    const text = target ? target.textContent : '';
+    const done = () => {
+      const original = btn.textContent;
+      btn.textContent = 'Đã sao chép';
+      setTimeout(() => {
+        btn.textContent = original;
+      }, 1500);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(done);
+    } else {
+      done();
+    }
+  });
+
+  void (async () => {
+    try {
+      const profile = await window.VTApi.call('GET', `/profiles/${encodeURIComponent(username)}`);
+      skeleton.hidden = true;
+      document.title = `${profile.displayName} - VT Page`;
+      nameEl.textContent = profile.displayName;
+      usernameEl.textContent = `@${profile.username}`;
+      if (profile.bio) {
+        bioEl.textContent = profile.bio;
+        bioEl.hidden = false;
+      }
+      if (profile.verified) verifiedBadge.hidden = false;
+      if (profile.avatarUrl) {
+        avatarImg.src = profile.avatarUrl;
+        avatarImg.hidden = false;
+        avatarFallback.hidden = true;
+      } else {
+        const color = avatarColorFor(profile.username);
+        avatarFallback.style.backgroundColor = color.bg;
+        avatarFallback.style.color = color.fg;
+        avatarFallback.textContent = avatarInitial(profile.username);
+      }
+      donateProfile.hidden = false;
+      if (profile.bank) donateFormCard.hidden = false;
+      else donateNotReady.hidden = false;
+    } catch (err) {
+      console.error(err);
+      skeleton.hidden = true;
+      notFoundBox.hidden = false;
+    }
+  })();
+}
+
 // --- Trạng thái đăng nhập ở header (trang chủ) ---
 const AVATAR_COLORS = [
   { bg: '#FF5A1F', fg: '#14161A' },

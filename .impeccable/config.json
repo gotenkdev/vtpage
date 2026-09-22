@@ -20,6 +20,15 @@
         ],
         "createdAt": "2026-09-22T07:11:42.237Z",
         "reason": "cố ý: #avatarPreview có hidden và không có src trong HTML tĩnh, JS (auth.js) luôn đặt src thật rồi mới bỏ hidden khi có ảnh — nếu không có ảnh thì hiện #avatarFallback (chữ cái màu) thay thế, ảnh vỡ không bao giờ hiển thị"
+      },
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": [
+          "u.html"
+        ],
+        "createdAt": "2026-09-22T07:48:23.271Z",
+        "reason": "cố ý: #creatorAvatarImg có hidden và không có src trong HTML tĩnh, JS (auth.js) luôn đặt src thật rồi mới bỏ hidden khi có ảnh — nếu không có ảnh thì hiện #creatorAvatarFallback (chữ cái màu) thay thế, giống hệt cách đã làm ở profile.html"
       }
     ]
   }
