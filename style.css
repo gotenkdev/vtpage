@@ -327,7 +327,7 @@ input { caret-color: var(--ink); }
   background: #0F1013;
   display: grid;
   place-items: center;
-  padding: 0 1cqw;
+  padding: 0.8cqw 1cqw;
   font: 900 4.5cqw/1 var(--font-led);
   letter-spacing: 0.02em;
   color: var(--led-blue);
