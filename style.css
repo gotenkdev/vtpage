@@ -792,7 +792,7 @@ input { caret-color: var(--ink); }
 .divider { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; color: var(--ink-3); font-size: 0.9rem; }
 .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 
-.sign-in-form { display: grid; gap: 18px; }
+.sign-in-form, .mfa-form { display: grid; gap: 18px; }
 .form-field { display: grid; gap: 7px; }
 .form-field label { font-weight: 600; font-size: 0.92rem; }
 .form-field input {
@@ -846,6 +846,10 @@ input { caret-color: var(--ink); }
 .auth-switch { margin-top: 24px; text-align: center; color: var(--ink-2); font-size: 0.95rem; }
 .auth-switch a { color: var(--ink); font-weight: 700; text-decoration-thickness: 2px; text-decoration-color: var(--orange); text-underline-offset: 0.22em; }
 .auth-switch a:hover { background: var(--orange); text-decoration-color: var(--ink); }
+
+.signup-done { display: grid; gap: 10px; }
+.link-btn { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; color: var(--ink); font-weight: 700; text-decoration: underline; text-decoration-thickness: 2px; text-decoration-color: var(--orange); text-underline-offset: 0.22em; }
+.link-btn:hover { background: var(--orange); text-decoration-color: var(--ink); }
 
 /* =====================================================================
    Nút tạm dừng chuyển động

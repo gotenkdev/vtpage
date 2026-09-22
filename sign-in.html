@@ -76,9 +76,9 @@
 
       <section class="auth-plate" aria-labelledby="auth-title">
         <h1 class="auth-title" id="auth-title">Sign in</h1>
-        <p class="auth-subtitle">Chào mừng bạn quay lại VT Page.</p>
+        <p class="auth-subtitle" id="authSubtitle">Chào mừng bạn quay lại VT Page.</p>
 
-        <div class="federated-buttons">
+        <div class="federated-buttons" id="federatedButtons">
           <button type="button" class="btn btn-federated">
             <svg class="ic-brand" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-google"/></svg>
             Continue with Google
@@ -89,11 +89,11 @@
           </button>
         </div>
 
-        <div class="divider">
+        <div class="divider" id="authDivider">
           <span>or</span>
         </div>
 
-        <form class="sign-in-form" data-mode="signin">
+        <form class="sign-in-form" id="signinForm" data-mode="signin">
           <div class="form-field">
             <label for="email">Email</label>
             <input type="email" id="email" name="email" autocomplete="username" required>
@@ -115,12 +115,24 @@
           <button type="submit" class="btn btn-primary btn-lg btn-submit">Sign in</button>
         </form>
 
-        <p class="auth-switch">Chưa có tài khoản? <a href="sign-up.html">Sign up</a></p>
+        <form class="mfa-form" id="mfaForm" hidden>
+          <div class="form-field">
+            <label for="mfaCode">Mã xác thực (2FA)</label>
+            <input type="text" id="mfaCode" name="code" inputmode="numeric" autocomplete="one-time-code" placeholder="123456 hoặc mã khôi phục" required>
+          </div>
+
+          <p class="form-error" id="mfaError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="mfaErrorText"></span></p>
+
+          <button type="submit" class="btn btn-primary btn-lg btn-submit">Xác nhận</button>
+        </form>
+
+        <p class="auth-switch" id="authSwitch">Chưa có tài khoản? <a href="sign-up.html">Sign up</a></p>
       </section>
     </div>
   </main>
 
   <script src="fx.js"></script>
+  <script src="api.js"></script>
   <script src="auth.js"></script>
 </body>
 </html>
