@@ -10,48 +10,68 @@
   // Thông điệp lỗi thường gặp (mã máy do backend trả cho lỗi dữ liệu đầu vào) dịch sang tiếng Việt.
   // Backend đã tự lọc lỗi 5xx và 404 thành thông điệp chung không tiết lộ gì; lỗi nghiệp vụ (sai mật
   // khẩu, liên kết hỏng...) backend đã trả sẵn câu tiếng Việt, không cần dịch thêm.
+  // QUAN TRỌNG: khoá là "field:<mã lỗi zod>", KHÔNG PHẢI "field:<lý do đọc được>". zod gộp MỌI lỗi .refine()
+  // tuỳ chỉnh (kể cả khi có truyền câu lý do riêng) thành đúng một mã chung 'custom' — lý do cụ thể KHÔNG
+  // tới được frontend. Đã xác minh từng mã bằng cách gọi API thật (không đoán): 'invalid_format' cho
+  // .regex()/định dạng chuỗi (email, username, số tài khoản), 'invalid_type' cho thiếu trường hoặc sai kiểu,
+  // 'too_small'/'too_big' cho .min()/.max() thô, 'invalid_value' cho enum (bankCode), 'custom' cho MỌI
+  // .refine() dù thông điệp gốc là gì. Vì vậy nhiều trường (displayName, bio, holderName, username 3 chữ/số)
+  // chỉ có được MỘT thông điệp chung cho tất cả lý do .refine() của trường đó — không giả vờ có nhiều hơn.
   const MESSAGES = {
-    'email:invalid_email': 'Email không hợp lệ.',
-    'email:too_big': 'Email quá dài.',
     'email:invalid_type': 'Vui lòng nhập email.',
+    'email:invalid_format': 'Email không hợp lệ.',
+    'email:too_big': 'Email quá dài.',
+    'email:custom': 'Email không hợp lệ.',
+    // password:too_short/too_long/too_simple/same_as_email/breached: backend tự kiểm tra chính sách mật
+    // khẩu SAU zod (không qua parseBody), trả thẳng đúng các mã này — không phải mã zod.
+    'password:invalid_type': 'Vui lòng nhập mật khẩu.',
+    'password:too_small': 'Vui lòng nhập mật khẩu.',
+    'password:too_big': 'Mật khẩu quá dài.',
     'password:too_short': 'Mật khẩu cần ít nhất 10 ký tự.',
     'password:too_long': 'Mật khẩu quá dài.',
     'password:too_simple': 'Mật khẩu quá đơn giản, hãy dùng nhiều ký tự khác nhau hơn.',
     'password:same_as_email': 'Mật khẩu không được trùng với email.',
     'password:breached': 'Mật khẩu này đã từng bị lộ trong các vụ rò rỉ dữ liệu khác. Hãy chọn mật khẩu khác.',
-    'password:invalid_type': 'Vui lòng nhập mật khẩu.',
-    'code:invalid': 'Mã xác thực không đúng.',
+    'token:invalid_type': 'Liên kết không hợp lệ.',
     'token:too_big': 'Liên kết không hợp lệ.',
-    username_reserved: 'Username này đã được dành riêng, không dùng được.',
-    username_taken: 'Username này đã có người dùng.',
-    profile_exists: 'Bạn đã có hồ sơ rồi.',
-    email_not_verified: 'Email của bạn chưa được xác minh.',
+    'code:invalid_type': 'Vui lòng nhập mã xác thực.',
+    'code:too_small': 'Vui lòng nhập mã xác thực.',
+    'code:too_big': 'Mã xác thực không hợp lệ.',
+    'code:invalid': 'Mã xác thực không đúng.', // mã riêng của backend (checkCode), không phải mã zod
+    'username:invalid_type': 'Vui lòng nhập username.',
     'username:invalid_format': 'Username không hợp lệ: chỉ chữ, số, gạch dưới, 3-20 ký tự.',
-    'displayName:empty': 'Tên hiển thị không được để trống.',
-    'displayName:too_long': 'Tên hiển thị quá dài (tối đa 50 ký tự).',
-    'displayName:forbidden_characters': 'Tên hiển thị chứa ký tự không hợp lệ.',
-    'bio:too_long': 'Giới thiệu quá dài (tối đa 300 ký tự).',
-    'bio:too_many_lines': 'Giới thiệu chỉ được tối đa 6 dòng.',
-    'bio:forbidden_characters': 'Giới thiệu chứa ký tự không hợp lệ.',
+    'username:custom': 'Username cần ít nhất 3 chữ hoặc số.',
+    'displayName:invalid_type': 'Vui lòng nhập tên hiển thị.',
+    'displayName:custom': 'Tên hiển thị không hợp lệ (1-50 ký tự, không chứa ký tự lạ).',
+    'bio:custom': 'Giới thiệu không hợp lệ (tối đa 300 ký tự, 6 dòng, không chứa ký tự lạ).',
+    'bankCode:invalid_value': 'Vui lòng chọn ngân hàng hợp lệ.',
+    'bankCode:invalid_type': 'Vui lòng chọn ngân hàng.',
+    'accountNumber:invalid_type': 'Vui lòng nhập số tài khoản.',
+    'accountNumber:invalid_format': 'Số tài khoản chỉ được gồm chữ số.',
+    'accountNumber:custom': 'Số tài khoản phải có 6-19 chữ số.',
+    'holderName:invalid_type': 'Vui lòng nhập tên chủ tài khoản.',
+    'holderName:custom': 'Tên chủ tài khoản không hợp lệ (chỉ chữ cái, khoảng trắng, dấu chấm, gạch ngang, không ký tự lạ).',
+    // Các mã dưới đây do backend tự ném thẳng (Conflict/Forbidden/BadRequest với chuỗi cố định), không
+    // qua zod nên không có dạng "field:mã".
     'avatar:empty': 'Chưa chọn ảnh.',
     'avatar:unsupported_type': 'Định dạng ảnh không được hỗ trợ (chỉ PNG, JPEG, WebP).',
     'avatar:type_mismatch': 'Đuôi tệp không khớp nội dung ảnh thật.',
     'avatar:animated': 'Không nhận ảnh động (GIF/WebP động).',
     'avatar:corrupt': 'Tệp ảnh bị hỏng, không đọc được.',
+    'mfa:not_started': 'Chưa bắt đầu thiết lập 2FA, hãy thử lại.',
+    'mfa:not_enabled': '2FA chưa được bật.',
+    username_reserved: 'Username này đã được dành riêng, không dùng được.',
+    username_taken: 'Username này đã có người dùng.',
+    profile_exists: 'Bạn đã có hồ sơ rồi.',
+    email_not_verified: 'Email của bạn chưa được xác minh.',
     mfa_required: 'Cần hoàn tất đăng nhập hai lớp trước.',
     mfa_setup_required: 'Bạn cần bật xác thực hai lớp (2FA) trước khi làm việc này.',
     step_up_required: 'Cần xác minh lại để tiếp tục.',
     mfa_already_enabled: 'Bạn đã bật 2FA rồi.',
-    'mfa:not_started': 'Chưa bắt đầu thiết lập 2FA, hãy thử lại.',
-    'mfa:not_enabled': '2FA chưa được bật.',
     bank_unsupported: 'Ngân hàng này chưa được hỗ trợ.',
     profile_required: 'Bạn cần tạo hồ sơ trước khi liên kết tài khoản ngân hàng.',
     bank_account_unavailable: 'Không thể lưu tài khoản này lúc này, hãy thử lại.',
     not_changeable: 'Tài khoản này không còn thay đổi được nữa.',
-    'accountNumber:invalid_format': 'Số tài khoản chỉ được gồm chữ số.',
-    'accountNumber:invalid_length': 'Số tài khoản phải có 6-19 chữ số.',
-    'holderName:invalid': 'Tên chủ tài khoản không hợp lệ (chỉ chữ cái, khoảng trắng, dấu chấm, gạch ngang).',
-    'holderName:forbidden_characters': 'Tên chủ tài khoản chứa ký tự không hợp lệ.',
   };
   const FALLBACK_MESSAGE = 'Dữ liệu chưa hợp lệ, vui lòng kiểm tra lại.';
 

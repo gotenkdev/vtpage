@@ -909,6 +909,39 @@ input { caret-color: var(--ink); }
 .mfa-status .ic { color: #1A7A3C; }
 .settings-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .step-up-panel { margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--line); }
+
+/* =====================================================================
+   NGÂN HÀNG (bank-account.html)
+   ===================================================================== */
+.form-field select {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--slot);
+  outline: none;
+  box-shadow: inset 0 2px 5px rgba(20, 22, 26, 0.2), 0 0 0 1px var(--line);
+  font: inherit;
+  color: inherit;
+}
+.form-field select:focus { box-shadow: inset 0 2px 5px rgba(20, 22, 26, 0.2), 0 0 0 3px var(--ink); }
+
+.section-heading { font: 800 1.15rem/1.2 var(--font-display); font-stretch: 92%; margin: 28px 0 14px; }
+.section-heading:first-child { margin-top: 0; }
+
+.bank-list { display: grid; gap: 12px; margin-bottom: 8px; }
+.bank-item { padding: 16px 18px; border-radius: 16px; background: var(--slot); box-shadow: 0 0 0 1px var(--line); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+.bank-item-info { display: grid; gap: 4px; }
+.bank-item-bank { font-weight: 700; }
+.bank-item-meta { font-size: 0.86rem; color: var(--ink-3); }
+.bank-item-note { font-size: 0.86rem; color: var(--orange-deep); }
+
+.status-badge { display: inline-flex; align-items: center; padding: 5px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; }
+.status-badge.st-pending { background: #FFE8C2; color: #7A4A00; }
+.status-badge.st-active { background: #CFF3DA; color: #1A7A3C; }
+.status-badge.st-rejected { background: #FFE1D4; color: #7C2504; }
+.status-badge.st-off { background: var(--plate-2); color: var(--ink-3); }
 .link-btn { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; color: var(--ink); font-weight: 700; text-decoration: underline; text-decoration-thickness: 2px; text-decoration-color: var(--orange); text-underline-offset: 0.22em; }
 .link-btn:hover { background: var(--orange); text-decoration-color: var(--ink); }
 

@@ -695,6 +695,145 @@ if (mfaOff && mfaOn) {
     });
 }
 
+// --- Trang bank-account.html: liên kết/huỷ/tắt tài khoản ngân hàng nhận donate (cần đăng nhập) ---
+const bankForm = document.getElementById('bankForm');
+const bankGate = document.getElementById('bankGate');
+if (bankForm && bankGate) {
+  const skeleton = document.getElementById('settingsSkeleton');
+  const subtitle = document.getElementById('settingsSubtitle');
+  const gateText = document.getElementById('gateText');
+  const bankContent = document.getElementById('bankContent');
+  const bankListEl = document.getElementById('bankList');
+  const bankEmpty = document.getElementById('bankEmpty');
+  const bankCodeSelect = document.getElementById('bankCode');
+  const accountNumberInput = document.getElementById('accountNumber');
+  const holderNameInput = document.getElementById('holderName');
+  const bankErrorBox = document.getElementById('bankError');
+  const bankErrorText = document.getElementById('bankErrorText');
+  const stepUpPanel = document.getElementById('stepUpPanel');
+
+  const STATUS_LABELS = {
+    pending_review: ['Đang chờ duyệt', 'st-pending'],
+    active: ['Đang hoạt động', 'st-active'],
+    rejected: ['Bị từ chối', 'st-rejected'],
+    cancelled: ['Đã huỷ', 'st-off'],
+    superseded: ['Đã thay thế', 'st-off'],
+    disabled: ['Đã tắt', 'st-off'],
+  };
+
+  const formatDate = (iso) => new Date(iso).toLocaleString('vi-VN');
+
+  async function loadBankList() {
+    const { bankAccounts } = await window.VTApi.call('GET', '/me/bank-accounts');
+    bankListEl.innerHTML = '';
+    bankEmpty.hidden = bankAccounts.length > 0;
+    for (const account of bankAccounts) {
+      const [label, cls] = STATUS_LABELS[account.status] || [account.status, 'st-off'];
+      const canChange = account.status === 'pending_review' || account.status === 'active';
+      const actionLabel = account.status === 'active' ? 'Tắt' : 'Huỷ';
+
+      const row = document.createElement('div');
+      row.className = 'bank-item';
+      const noteHtml =
+        account.status === 'rejected' && account.reviewNote
+          ? `<div class="bank-item-note">Lý do: ${escapeHtml(account.reviewNote)}</div>`
+          : '';
+      row.innerHTML = `
+        <div class="bank-item-info">
+          <div class="bank-item-bank">${escapeHtml(account.bankName)} · **** ${escapeHtml(account.accountLast4)}</div>
+          <div class="bank-item-meta">${escapeHtml(account.holderName)} · gửi lúc ${formatDate(account.createdAt)}</div>
+          ${noteHtml}
+        </div>
+        <span class="status-badge ${cls}">${label}</span>
+      `;
+      if (canChange) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn btn-ghost btn-sm';
+        btn.textContent = actionLabel;
+        btn.addEventListener('click', () => {
+          const ok = window.confirm(
+            `${actionLabel} tài khoản ${account.bankName} **** ${account.accountLast4}?`,
+          );
+          if (!ok) return;
+          void submitWithLock(btn, async () => {
+            try {
+              await withStepUp(stepUpPanel, () =>
+                window.VTApi.call('DELETE', '/me/bank-accounts/' + account.id),
+              );
+              await loadBankList();
+            } catch (err) {
+              subtitle.textContent = err.message;
+            }
+          });
+        });
+        row.appendChild(btn);
+      }
+      bankListEl.appendChild(row);
+    }
+  }
+
+  bankForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    hideError(bankErrorBox);
+    const bankCode = bankCodeSelect.value;
+    const accountNumber = accountNumberInput.value.trim();
+    const holderName = holderNameInput.value.trim();
+    const button = bankForm.querySelector('button[type="submit"]');
+    void submitWithLock(button, async () => {
+      try {
+        await withStepUp(stepUpPanel, () =>
+          window.VTApi.call('POST', '/me/bank-accounts', { bankCode, accountNumber, holderName }),
+        );
+        bankForm.reset();
+        await loadBankList();
+      } catch (err) {
+        showError(bankErrorBox, bankErrorText, err.message);
+      }
+    });
+  });
+
+  window.VTApi.me()
+    .then(async (me) => {
+      if (!me) {
+        window.location.href = 'sign-in.html';
+        return;
+      }
+      if (me.mfa.enabled && !me.mfa.verified) {
+        window.location.href = 'sign-in.html';
+        return;
+      }
+
+      const [profileData, banksData] = await Promise.all([
+        window.VTApi.call('GET', '/me/profile'),
+        window.VTApi.call('GET', '/me/bank-accounts/banks'),
+      ]);
+
+      const missing = [];
+      if (profileData.profile === null) missing.push('<a href="profile.html">tạo hồ sơ</a>');
+      if (!me.mfa.enabled) missing.push('<a href="security.html">bật xác thực hai lớp (2FA)</a>');
+      skeleton.hidden = true;
+      if (missing.length > 0) {
+        subtitle.textContent = 'Cần thêm bước sau trước khi liên kết tài khoản ngân hàng:';
+        gateText.innerHTML = missing.join(' và ') + '.';
+        bankGate.hidden = false;
+        return;
+      }
+
+      subtitle.textContent = 'Tài khoản nhận donate của bạn.';
+      bankCodeSelect.innerHTML = banksData.banks
+        .map((bank) => `<option value="${escapeHtml(bank.code)}">${escapeHtml(bank.name)}</option>`)
+        .join('');
+      bankContent.hidden = false;
+      await loadBankList();
+    })
+    .catch((err) => {
+      console.error(err);
+      skeleton.hidden = true;
+      subtitle.textContent = 'Không tải được. Hãy tải lại trang.';
+    });
+}
+
 // --- Trạng thái đăng nhập ở header (trang chủ) ---
 const AVATAR_COLORS = [
   { bg: '#FF5A1F', fg: '#14161A' },
