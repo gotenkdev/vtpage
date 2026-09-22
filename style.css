@@ -978,6 +978,63 @@ input { caret-color: var(--ink); }
 
 .qr-wrap { display: grid; justify-items: center; gap: 10px; margin: 18px 0; }
 .qr-image { width: 220px; height: 220px; border-radius: 16px; box-shadow: 0 0 0 1px var(--line), 0 20px 30px -20px rgba(20, 22, 26, 0.4); background: #fff; }
+
+/* =====================================================================
+   OVERLAY OBS (overlay.html) — nền phải TRONG SUỐT, không dùng --ground
+   ===================================================================== */
+body.page-overlay { background: transparent; }
+
+.donate-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 64px;
+  transform: translate(-50%, 32px);
+  opacity: 0;
+  transition: transform 0.5s var(--ease-out), opacity 0.5s var(--ease-out);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  max-width: min(90vw, 620px);
+  padding: 20px 28px;
+  border-radius: 22px;
+  background: var(--plate);
+  box-shadow: 0 0 0 1px var(--line), 0 30px 50px -20px rgba(20, 22, 26, 0.55), 0 8px 16px rgba(20, 22, 26, 0.2);
+}
+.donate-toast.is-shown { transform: translate(-50%, 0); opacity: 1; }
+.donate-toast-icon {
+  flex: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 0.45), inset 0 -4px 6px -2px rgba(140, 30, 0, 0.42);
+}
+.donate-toast-icon .ic { width: 30px; height: 30px; }
+.donate-toast-body { display: grid; gap: 4px; min-width: 0; }
+.donate-toast-name { font: 800 1.2rem/1.2 var(--font-display); font-stretch: 92%; }
+.donate-toast-amount { font: 900 1.5rem/1 var(--font-led); color: var(--cobalt); letter-spacing: 0.02em; }
+.donate-toast-message { font-size: 1rem; color: var(--ink-2); overflow-wrap: anywhere; }
+
+/* =====================================================================
+   overlay-settings.html — khung xem trước overlay
+   ===================================================================== */
+.overlay-preview {
+  position: relative;
+  height: 220px;
+  border-radius: 16px;
+  overflow: hidden;
+  background:
+    linear-gradient(45deg, var(--slot) 25%, transparent 25%) 0 0 / 20px 20px,
+    linear-gradient(-45deg, var(--slot) 25%, transparent 25%) 0 0 / 20px 20px,
+    linear-gradient(45deg, transparent 75%, var(--slot) 75%) 0 0 / 20px 20px,
+    linear-gradient(-45deg, transparent 75%, var(--slot) 75%) 0 0 / 20px 20px,
+    var(--ground);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.overlay-preview iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .link-btn { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; color: var(--ink); font-weight: 700; text-decoration: underline; text-decoration-thickness: 2px; text-decoration-color: var(--orange); text-underline-offset: 0.22em; }
 .link-btn:hover { background: var(--orange); text-decoration-color: var(--ink); }
 

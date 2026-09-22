@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overlay - VT Page</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/bricolage-grotesque-latin-600-800.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/doto-latin-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="fonts.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="page-overlay">
+  <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
+    <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4"/></symbol>
+  </svg>
+
+  <!-- Chỉ hiện khi mở trực tiếp thiếu/sai token (để tự kiểm tra) — bình thường trong OBS sẽ không thấy gì. -->
+  <p id="overlayNotice" class="donate-expired" style="position:fixed;top:24px;left:24px;right:24px;" hidden></p>
+
+  <div id="toast" class="donate-toast" aria-live="polite">
+    <div class="donate-toast-icon"><svg class="ic"><use href="#i-coin"/></svg></div>
+    <div class="donate-toast-body">
+      <div class="donate-toast-name" id="toastName"></div>
+      <div class="donate-toast-amount" id="toastAmount"></div>
+      <div class="donate-toast-message" id="toastMessage"></div>
+    </div>
+  </div>
+
+  <script>
+    // Trang này chạy trong OBS Browser Source (nền phải trong suốt) hoặc để streamer tự xem trước.
+    // Token nằm ở #hash, không phải ?query, để KHÔNG BAO GIỜ lọt vào log máy chủ hay lịch sử trình duyệt
+    // gửi qua Referer — cùng quy ước với complete-signup.html/reset-password.html.
+    (function () {
+      const token = new URLSearchParams(window.location.hash.replace(/^#/, '')).get('token');
+      const notice = document.getElementById('overlayNotice');
+      const toast = document.getElementById('toast');
+      const toastName = document.getElementById('toastName');
+      const toastAmount = document.getElementById('toastAmount');
+      const toastMessage = document.getElementById('toastMessage');
+
+      function showNotice(text) {
+        notice.textContent = text;
+        notice.hidden = false;
+      }
+
+      if (!token || !/^vtol_[0-9a-f]{64}$/.test(token)) {
+        showNotice('Thiếu hoặc sai token overlay. Lấy địa chỉ đúng ở trang Overlay trong hồ sơ của bạn.');
+        return;
+      }
+
+      const amountFormatter = new Intl.NumberFormat('vi-VN');
+      let hideTimer = null;
+
+      function showToast(donorName, amount, message) {
+        clearTimeout(hideTimer);
+        toastName.textContent = donorName || 'Người ủng hộ ẩn danh';
+        toastAmount.textContent = amountFormatter.format(amount) + 'đ';
+        toastMessage.textContent = message || '';
+        toastMessage.hidden = !message;
+        toast.classList.remove('is-shown');
+        // Buộc reflow để lần donate liên tiếp cũng chạy lại animation từ đầu, không bị gộp.
+        void toast.offsetWidth;
+        toast.classList.add('is-shown');
+        hideTimer = setTimeout(() => toast.classList.remove('is-shown'), 8000);
+      }
+
+      function connect() {
+        const source = new EventSource('/api/v1/overlay/' + encodeURIComponent(token) + '/stream');
+
+        source.addEventListener('donation.confirmed', (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            showToast(data.donorName, data.amount, data.message);
+          } catch (err) {
+            console.error('Không đọc được sự kiện donate', err);
+          }
+        });
+
+        source.addEventListener('overlay.test', (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            showToast(data.donorName || 'Sự kiện thử', data.amount || 0, data.message || 'Đây là sự kiện thử.');
+          } catch {
+            showToast('Sự kiện thử', 0, 'Đây là sự kiện thử.');
+          }
+        });
+
+        // Token sai/đã bị xoay (server đóng bằng 404) hoặc mất mạng tạm thời: EventSource tự nối lại theo
+        // chuẩn SSE (không cần code tay), Last-Event-ID gửi kèm tự động nên không bỏ sót donate nào.
+        source.onerror = () => {
+          console.warn('Kết nối overlay bị ngắt, trình duyệt sẽ tự thử lại.');
+        };
+      }
+
+      connect();
+    })();
+  </script>
+</body>
+</html>

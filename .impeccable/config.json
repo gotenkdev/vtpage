@@ -29,6 +29,15 @@
         ],
         "createdAt": "2026-09-22T07:48:23.271Z",
         "reason": "cố ý: #creatorAvatarImg có hidden và không có src trong HTML tĩnh, JS (auth.js) luôn đặt src thật rồi mới bỏ hidden khi có ảnh — nếu không có ảnh thì hiện #creatorAvatarFallback (chữ cái màu) thay thế, giống hệt cách đã làm ở profile.html"
+      },
+      {
+        "rule": "dark-glow",
+        "value": "*",
+        "files": [
+          "overlay.html"
+        ],
+        "createdAt": "2026-09-22T10:15:00.000Z",
+        "reason": "false positive: .donate-toast-icon dùng ĐÚNG token inset-shadow rgba(140,30,0,0.42) đã có sẵn trong hệ thiết kế (.btn-primary, .loa-chip...) khắp các trang khác — tái dùng để đồng bộ giao diện, không phải hiệu ứng glow tự chế mới"
       }
     ]
   }

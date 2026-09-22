@@ -50,6 +50,30 @@ async function submitWithLock(button, work) {
   }
 }
 
+// Nút .copy-btn với data-copy="<id>": sao chép textContent của phần tử đó. Gắn một lần lên vùng chứa
+// (ủy quyền sự kiện), dùng chung cho mọi trang có nút sao chép (donate công khai, cài đặt overlay...).
+function bindCopyButtons(container) {
+  if (!container) return;
+  container.addEventListener('click', (event) => {
+    const btn = event.target.closest('.copy-btn');
+    if (!btn) return;
+    const target = document.getElementById(btn.dataset.copy);
+    const text = target ? target.textContent : '';
+    const done = () => {
+      const original = btn.textContent;
+      btn.textContent = 'Đã sao chép';
+      setTimeout(() => {
+        btn.textContent = original;
+      }, 1500);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(done);
+    } else {
+      done();
+    }
+  });
+}
+
 // --- Trang sign-up.html: bước 1, chỉ email ---
 const signupForm = document.getElementById('signupForm');
 if (signupForm) {
@@ -834,6 +858,104 @@ if (bankForm && bankGate) {
     });
 }
 
+// --- Trang overlay-settings.html: token overlay OBS (cần đăng nhập; xoay token cần đã bật 2FA + step-up) ---
+const rotateBtn = document.getElementById('rotateBtn');
+const overlayGate = document.getElementById('overlayGate');
+if (rotateBtn && overlayGate) {
+  const skeleton = document.getElementById('settingsSkeleton');
+  const subtitle = document.getElementById('settingsSubtitle');
+  const gateText = document.getElementById('gateText');
+  const overlayContent = document.getElementById('overlayContent');
+  const tokenStatusText = document.getElementById('tokenStatusText');
+  const testEventBtn = document.getElementById('testEventBtn');
+  const overlayErrorBox = document.getElementById('overlayError');
+  const overlayErrorText = document.getElementById('overlayErrorText');
+  const testEventOk = document.getElementById('testEventOk');
+  const tokenReveal = document.getElementById('tokenReveal');
+  const overlayUrlBox = document.getElementById('overlayUrlBox');
+  const overlayPreviewFrame = document.getElementById('overlayPreviewFrame');
+  const stepUpPanel = document.getElementById('stepUpPanel');
+
+  const formatDate = (iso) => new Date(iso).toLocaleString('vi-VN');
+  let hasToken = false;
+
+  async function refreshStatus() {
+    const { token } = await window.VTApi.call('GET', '/me/overlay-token');
+    hasToken = token !== null;
+    tokenStatusText.textContent = hasToken
+      ? `Token overlay đã tạo lúc ${formatDate(token.createdAt)}.`
+      : 'Chưa tạo token overlay nào — bấm "Xoay token" để tạo.';
+  }
+
+  bindCopyButtons(tokenReveal);
+
+  rotateBtn.addEventListener('click', () => {
+    if (hasToken) {
+      const ok = window.confirm(
+        'Xoay token sẽ tạo địa chỉ overlay mới và làm địa chỉ cũ mất hiệu lực ngay — overlay đang mở (nếu có) sẽ ngắt kết nối trong vài giây. Tiếp tục?',
+      );
+      if (!ok) return;
+    }
+    hideError(overlayErrorBox);
+    testEventOk.hidden = true;
+    void submitWithLock(rotateBtn, async () => {
+      try {
+        const result = await withStepUp(stepUpPanel, () =>
+          window.VTApi.call('POST', '/me/overlay-token/rotate'),
+        );
+        overlayUrlBox.textContent = window.location.origin + '/overlay.html#token=' + result.token;
+        overlayPreviewFrame.src = 'overlay.html#token=' + result.token;
+        tokenReveal.hidden = false;
+        await refreshStatus();
+      } catch (err) {
+        showError(overlayErrorBox, overlayErrorText, err.message);
+      }
+    });
+  });
+
+  testEventBtn.addEventListener('click', () => {
+    hideError(overlayErrorBox);
+    testEventOk.hidden = true;
+    void submitWithLock(testEventBtn, async () => {
+      try {
+        await window.VTApi.call('POST', '/me/overlay-token/test-event');
+        testEventOk.hidden = false;
+      } catch (err) {
+        showError(overlayErrorBox, overlayErrorText, err.message);
+      }
+    });
+  });
+
+  window.VTApi.me()
+    .then(async (me) => {
+      if (!me) {
+        window.location.href = 'sign-in.html';
+        return;
+      }
+      if (me.mfa.enabled && !me.mfa.verified) {
+        window.location.href = 'sign-in.html';
+        return;
+      }
+
+      skeleton.hidden = true;
+      if (!me.mfa.enabled) {
+        subtitle.textContent = 'Cần thêm bước sau trước khi dùng overlay:';
+        gateText.innerHTML = '<a href="security.html">bật xác thực hai lớp (2FA)</a>.';
+        overlayGate.hidden = false;
+        return;
+      }
+
+      subtitle.textContent = 'Overlay hiện thông báo donate theo thời gian thực cho OBS.';
+      overlayContent.hidden = false;
+      await refreshStatus();
+    })
+    .catch((err) => {
+      console.error(err);
+      skeleton.hidden = true;
+      subtitle.textContent = 'Không tải được. Hãy tải lại trang.';
+    });
+}
+
 // --- Trang u.html: trang donate công khai của một streamer (vtpage.com/<username>), không cần đăng nhập ---
 const donateProfile = document.getElementById('donateProfile');
 const notFoundBox = document.getElementById('notFound');
@@ -1013,24 +1135,7 @@ if (donateProfile && notFoundBox) {
     });
   });
 
-  donateInstructions.addEventListener('click', (event) => {
-    const btn = event.target.closest('.copy-btn');
-    if (!btn) return;
-    const target = document.getElementById(btn.dataset.copy);
-    const text = target ? target.textContent : '';
-    const done = () => {
-      const original = btn.textContent;
-      btn.textContent = 'Đã sao chép';
-      setTimeout(() => {
-        btn.textContent = original;
-      }, 1500);
-    };
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(done).catch(done);
-    } else {
-      done();
-    }
-  });
+  bindCopyButtons(donateInstructions);
 
   void (async () => {
     try {
@@ -1128,6 +1233,7 @@ if (authButtons) {
               <a class="dropdown-item" href="profile.html">Hồ sơ</a>
               <a class="dropdown-item" href="security.html">Bảo mật</a>
               <a class="dropdown-item" href="bank-account.html">Ngân hàng</a>
+              <a class="dropdown-item" href="overlay-settings.html">Overlay</a>
               <button type="button" class="dropdown-item" id="logoutBtn">Đăng xuất</button>
             </div>
           </div>
