@@ -22,14 +22,38 @@
     'password:invalid_type': 'Vui lòng nhập mật khẩu.',
     'code:invalid': 'Mã xác thực không đúng.',
     'token:too_big': 'Liên kết không hợp lệ.',
+    username_reserved: 'Username này đã được dành riêng, không dùng được.',
+    username_taken: 'Username này đã có người dùng.',
+    profile_exists: 'Bạn đã có hồ sơ rồi.',
+    email_not_verified: 'Email của bạn chưa được xác minh.',
+    'username:invalid_format': 'Username không hợp lệ: chỉ chữ, số, gạch dưới, 3-20 ký tự.',
+    'displayName:empty': 'Tên hiển thị không được để trống.',
+    'displayName:too_long': 'Tên hiển thị quá dài (tối đa 50 ký tự).',
+    'displayName:forbidden_characters': 'Tên hiển thị chứa ký tự không hợp lệ.',
+    'bio:too_long': 'Giới thiệu quá dài (tối đa 300 ký tự).',
+    'bio:too_many_lines': 'Giới thiệu chỉ được tối đa 6 dòng.',
+    'bio:forbidden_characters': 'Giới thiệu chứa ký tự không hợp lệ.',
+    'avatar:empty': 'Chưa chọn ảnh.',
+    'avatar:unsupported_type': 'Định dạng ảnh không được hỗ trợ (chỉ PNG, JPEG, WebP).',
+    'avatar:type_mismatch': 'Đuôi tệp không khớp nội dung ảnh thật.',
+    'avatar:animated': 'Không nhận ảnh động (GIF/WebP động).',
+    'avatar:corrupt': 'Tệp ảnh bị hỏng, không đọc được.',
   };
   const FALLBACK_MESSAGE = 'Dữ liệu chưa hợp lệ, vui lòng kiểm tra lại.';
 
   function describe(message) {
-    if (typeof message === 'string' && !message.includes(':')) return message; // đã là câu tiếng Việt sẵn
     const list = Array.isArray(message) ? message : [message];
-    const known = list.map((code) => MESSAGES[code]).filter(Boolean);
-    return known.length > 0 ? known.join(' ') : FALLBACK_MESSAGE;
+    const parts = list
+      .map((item) => {
+        if (typeof item !== 'string') return null;
+        if (MESSAGES[item]) return MESSAGES[item];
+        // Không có trong từ điển: nếu có khoảng trắng thì coi là câu tiếng Việt backend đã soạn sẵn
+        // (vd "Email hoặc mật khẩu không đúng"); mã máy (vd "username_taken") không có khoảng trắng,
+        // không bao giờ hiện thẳng ra cho người dùng.
+        return item.includes(' ') ? item : null;
+      })
+      .filter(Boolean);
+    return parts.length > 0 ? parts.join(' ') : FALLBACK_MESSAGE;
   }
 
   class ApiError extends Error {
@@ -90,5 +114,31 @@
     csrfToken = token;
   }
 
-  window.VTApi = { call, me, setCsrf, ApiError, describe };
+  // Thân là chính byte của ảnh (không multipart, không JSON) nên đi đường riêng, không qua call().
+  async function uploadAvatar(file) {
+    const headers = { 'content-type': file.type };
+    if (csrfToken) headers['x-csrf-token'] = csrfToken;
+    let response;
+    try {
+      response = await fetch(API_PREFIX + '/me/avatar', {
+        method: 'PUT',
+        headers,
+        credentials: 'same-origin',
+        body: file,
+      });
+    } catch {
+      throw new ApiError(0, { message: 'Không kết nối được tới máy chủ. Kiểm tra lại mạng và thử lại.' });
+    }
+    const text = await response.text();
+    let data = null;
+    try {
+      data = text ? JSON.parse(text) : null;
+    } catch {
+      data = null;
+    }
+    if (!response.ok) throw new ApiError(response.status, data ?? {});
+    return data;
+  }
+
+  window.VTApi = { call, me, setCsrf, uploadAvatar, ApiError, describe };
 })();

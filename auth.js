@@ -298,6 +298,204 @@ if (resetForm) {
   }
 }
 
+// --- Trang profile.html: xem/tạo/sửa hồ sơ, đổi/xoá ảnh đại diện (cần đăng nhập) ---
+const createForm = document.getElementById('createForm');
+const editSection = document.getElementById('editSection');
+if (createForm && editSection) {
+  const skeleton = document.getElementById('settingsSkeleton');
+  const subtitle = document.getElementById('settingsSubtitle');
+
+  const usernameInput = document.getElementById('username');
+  const usernameHint = document.getElementById('usernameHint');
+  const displayNameInput = document.getElementById('displayName');
+  const bioInput = document.getElementById('bio');
+  const createErrorBox = document.getElementById('createError');
+  const createErrorText = document.getElementById('createErrorText');
+
+  const avatarPreview = document.getElementById('avatarPreview');
+  const avatarFallback = document.getElementById('avatarFallback');
+  const avatarInput = document.getElementById('avatarInput');
+  const avatarRemoveBtn = document.getElementById('avatarRemoveBtn');
+  const avatarErrorBox = document.getElementById('avatarError');
+  const avatarErrorText = document.getElementById('avatarErrorText');
+  const usernameDisplay = document.getElementById('usernameDisplay');
+  const editForm = document.getElementById('editForm');
+  const editDisplayNameInput = document.getElementById('editDisplayName');
+  const editBioInput = document.getElementById('editBio');
+  const editErrorBox = document.getElementById('editError');
+  const editErrorText = document.getElementById('editErrorText');
+  const editSaved = document.getElementById('editSaved');
+
+  const DEFAULT_USERNAME_HINT =
+    'vtpage.com/username — chữ, số, gạch dưới, 3-20 ký tự. Không đổi được sau khi tạo.';
+
+  function renderAvatar(url, nameForFallback) {
+    if (url) {
+      avatarPreview.src = url;
+      avatarPreview.hidden = false;
+      avatarFallback.hidden = true;
+    } else {
+      avatarPreview.hidden = true;
+      avatarPreview.removeAttribute('src');
+      const color = avatarColorFor(nameForFallback);
+      avatarFallback.style.backgroundColor = color.bg;
+      avatarFallback.style.color = color.fg;
+      avatarFallback.textContent = avatarInitial(nameForFallback);
+      avatarFallback.hidden = false;
+    }
+  }
+
+  function showEdit(profile) {
+    skeleton.hidden = true;
+    subtitle.textContent = 'Trang công khai của bạn: vtpage.com/' + profile.username;
+    createForm.hidden = true;
+    editSection.hidden = false;
+    usernameDisplay.textContent = profile.username;
+    editDisplayNameInput.value = profile.displayName;
+    editBioInput.value = profile.bio || '';
+    renderAvatar(profile.avatarUrl, profile.displayName || profile.username);
+  }
+
+  function showCreate() {
+    skeleton.hidden = true;
+    subtitle.textContent = 'Bạn chưa có hồ sơ. Tạo ngay để nhận donate.';
+    createForm.hidden = false;
+  }
+
+  // Kiểm tra username còn dùng được không ngay khi gõ, có chống dồn request (chờ 400ms sau lần gõ cuối).
+  let usernameTimer;
+  usernameInput.addEventListener('input', () => {
+    clearTimeout(usernameTimer);
+    const value = usernameInput.value.trim();
+    if (!value) {
+      usernameHint.textContent = DEFAULT_USERNAME_HINT;
+      usernameHint.className = 'form-hint';
+      return;
+    }
+    usernameTimer = setTimeout(async () => {
+      try {
+        const result = await window.VTApi.call(
+          'GET',
+          '/username-availability?username=' + encodeURIComponent(value),
+        );
+        if (result.available) {
+          usernameHint.textContent = 'vtpage.com/' + value + ' — dùng được.';
+          usernameHint.className = 'form-hint is-good';
+        } else {
+          const reason =
+            result.reason === 'invalid'
+              ? 'không hợp lệ'
+              : result.reason === 'reserved'
+                ? 'đã được dành riêng'
+                : 'đã có người dùng';
+          usernameHint.textContent = 'vtpage.com/' + value + ' — ' + reason + '.';
+          usernameHint.className = 'form-hint is-bad';
+        }
+      } catch {
+        // Lỗi mạng lúc gõ: bỏ qua, lúc bấm Tạo hồ sơ sẽ tự báo lỗi.
+      }
+    }, 400);
+  });
+
+  createForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    hideError(createErrorBox);
+    const username = usernameInput.value.trim();
+    const displayName = displayNameInput.value.trim();
+    const bio = bioInput.value.trim();
+    const button = createForm.querySelector('button[type="submit"]');
+    void submitWithLock(button, async () => {
+      try {
+        const body = { username, displayName };
+        if (bio) body.bio = bio;
+        const result = await window.VTApi.call('POST', '/me/profile', body);
+        showEdit(result.profile);
+      } catch (err) {
+        showError(createErrorBox, createErrorText, err.message);
+      }
+    });
+  });
+
+  editForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    hideError(editErrorBox);
+    editSaved.hidden = true;
+    const displayName = editDisplayNameInput.value.trim();
+    const bio = editBioInput.value.trim();
+    const button = editForm.querySelector('button[type="submit"]');
+    void submitWithLock(button, async () => {
+      try {
+        const result = await window.VTApi.call('PATCH', '/me/profile', { displayName, bio });
+        editDisplayNameInput.value = result.profile.displayName;
+        editBioInput.value = result.profile.bio || '';
+        editSaved.hidden = false;
+      } catch (err) {
+        showError(editErrorBox, editErrorText, err.message);
+      }
+    });
+  });
+
+  const AVATAR_MAX_BYTES = 2 * 1024 * 1024;
+  const AVATAR_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
+
+  avatarInput.addEventListener('change', () => {
+    const file = avatarInput.files && avatarInput.files[0];
+    avatarInput.value = '';
+    if (!file) return;
+    hideError(avatarErrorBox);
+    if (!AVATAR_TYPES.includes(file.type)) {
+      showError(avatarErrorBox, avatarErrorText, 'Chỉ nhận ảnh PNG, JPEG hoặc WebP.');
+      return;
+    }
+    if (file.size > AVATAR_MAX_BYTES) {
+      showError(avatarErrorBox, avatarErrorText, 'Ảnh quá lớn (tối đa 2MB).');
+      return;
+    }
+    void (async () => {
+      try {
+        const result = await window.VTApi.uploadAvatar(file);
+        renderAvatar(result.avatarUrl, editDisplayNameInput.value || usernameDisplay.textContent);
+      } catch (err) {
+        showError(avatarErrorBox, avatarErrorText, err.message);
+      }
+    })();
+  });
+
+  avatarRemoveBtn.addEventListener('click', () => {
+    if (!window.confirm('Xoá ảnh đại diện hiện tại?')) return;
+    hideError(avatarErrorBox);
+    void (async () => {
+      try {
+        await window.VTApi.call('DELETE', '/me/avatar');
+        renderAvatar(null, editDisplayNameInput.value || usernameDisplay.textContent);
+      } catch (err) {
+        showError(avatarErrorBox, avatarErrorText, err.message);
+      }
+    })();
+  });
+
+  // Trang này bắt buộc đăng nhập: chưa đăng nhập hoặc đang chờ 2FA thì đưa về sign-in.html.
+  window.VTApi.me()
+    .then(async (me) => {
+      if (!me) {
+        window.location.href = 'sign-in.html';
+        return;
+      }
+      if (me.mfa.enabled && !me.mfa.verified) {
+        window.location.href = 'sign-in.html';
+        return;
+      }
+      const data = await window.VTApi.call('GET', '/me/profile');
+      if (data.profile) showEdit(data.profile);
+      else showCreate();
+    })
+    .catch((err) => {
+      console.error(err);
+      skeleton.hidden = true;
+      subtitle.textContent = 'Không tải được hồ sơ. Hãy tải lại trang.';
+    });
+}
+
 // --- Trạng thái đăng nhập ở header (trang chủ) ---
 const AVATAR_COLORS = [
   { bg: '#FF5A1F', fg: '#14161A' },
@@ -358,6 +556,7 @@ if (authButtons) {
             <button type="button" class="avatar-btn" id="avatarBtn" aria-label="Tài khoản" aria-expanded="false" style="background-color:${color.bg};color:${color.fg}">${escapeHtml(avatarInitial(email))}</button>
             <div class="dropdown-panel" id="userPanel" hidden>
               <div class="dropdown-email">${escapeHtml(email)}</div>
+              <a class="dropdown-item" href="profile.html">Hồ sơ</a>
               <button type="button" class="dropdown-item" id="logoutBtn">Đăng xuất</button>
             </div>
           </div>

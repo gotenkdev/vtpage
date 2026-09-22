@@ -11,6 +11,15 @@
         ],
         "createdAt": "2026-09-22T06:43:40.299Z",
         "reason": "false positive: .cta đã có padding dọc clamp(56px,7vw,96px) rõ ràng (kiểm bằng ảnh chụp Chrome, không cramped); công cụ có vẻ đọc nhầm lớp nền chấm bi trang trí (::before, inset:0, không chứa chữ) là nội dung sát viền"
+      },
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": [
+          "profile.html"
+        ],
+        "createdAt": "2026-09-22T07:11:42.237Z",
+        "reason": "cố ý: #avatarPreview có hidden và không có src trong HTML tĩnh, JS (auth.js) luôn đặt src thật rồi mới bỏ hidden khi có ảnh — nếu không có ảnh thì hiện #avatarFallback (chữ cái màu) thay thế, ảnh vỡ không bao giờ hiển thị"
       }
     ]
   }
