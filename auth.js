@@ -956,6 +956,196 @@ if (rotateBtn && overlayGate) {
     });
 }
 
+// --- Trang admin.html: hàng đợi duyệt ngân hàng + nhật ký kiểm toán (chỉ vai trò admin, đã bật 2FA) ---
+const queueList = document.getElementById('queueList');
+const adminGate = document.getElementById('adminGate');
+if (queueList && adminGate) {
+  const skeleton = document.getElementById('settingsSkeleton');
+  const subtitle = document.getElementById('settingsSubtitle');
+  const adminContent = document.getElementById('adminContent');
+  const queueEmpty = document.getElementById('queueEmpty');
+  const queueErrorBox = document.getElementById('queueError');
+  const queueErrorText = document.getElementById('queueErrorText');
+  const auditList = document.getElementById('auditList');
+  const verifyChainBtn = document.getElementById('verifyChainBtn');
+  const chainStatus = document.getElementById('chainStatus');
+  const chainStatusText = document.getElementById('chainStatusText');
+  const stepUpPanel = document.getElementById('stepUpPanel');
+  const rejectPanel = document.getElementById('rejectPanel');
+  const rejectForm = document.getElementById('rejectForm');
+  const rejectReasonInput = document.getElementById('rejectReason');
+  const rejectErrorBox = document.getElementById('rejectError');
+  const rejectErrorText = document.getElementById('rejectErrorText');
+  const rejectCancelBtn = document.getElementById('rejectCancelBtn');
+
+  const formatDate = (iso) => new Date(iso).toLocaleString('vi-VN');
+  let rejectingId = null;
+
+  function renderQueueItem(item) {
+    const row = document.createElement('div');
+    row.className = 'bank-item';
+    const who = item.user.displayName || item.user.username || item.user.id;
+    const currentHtml = item.current
+      ? `Đang dùng: ${escapeHtml(item.current.bankName)} **** ${escapeHtml(item.current.accountLast4)}`
+      : 'Chưa có tài khoản đang hoạt động';
+    row.innerHTML = `
+      <div class="bank-item-info">
+        <div class="bank-item-bank">${escapeHtml(item.bankName)} · **** ${escapeHtml(item.accountLast4)} · ${escapeHtml(item.holderName)}</div>
+        <div class="bank-item-meta">${escapeHtml(who)} · gửi lúc ${formatDate(item.submittedAt)} · ${item.submissionsLast30Days} lần gửi/30 ngày</div>
+        <div class="bank-item-meta">${currentHtml}${item.ownershipProvedAt ? ' · đã có giao dịch thật xác minh' : ''}</div>
+      </div>
+    `;
+    const actions = document.createElement('div');
+    actions.className = 'settings-actions';
+
+    const approveBtn = document.createElement('button');
+    approveBtn.type = 'button';
+    approveBtn.className = 'btn btn-primary btn-sm';
+    approveBtn.textContent = 'Duyệt';
+    approveBtn.addEventListener('click', () => {
+      const ok = window.confirm(
+        `Duyệt ${item.bankName} **** ${item.accountLast4} của ${who}? Tài khoản này sẽ hiện trên trang donate và nhận tiền ngay.`,
+      );
+      if (!ok) return;
+      void submitWithLock(approveBtn, async () => {
+        try {
+          await withStepUp(stepUpPanel, () =>
+            window.VTApi.call('POST', `/admin/bank-accounts/${item.id}/approve`),
+          );
+          await loadQueue();
+        } catch (err) {
+          showError(queueErrorBox, queueErrorText, err.message);
+        }
+      });
+    });
+
+    const rejectBtn = document.createElement('button');
+    rejectBtn.type = 'button';
+    rejectBtn.className = 'btn btn-ghost btn-sm';
+    rejectBtn.textContent = 'Từ chối';
+    rejectBtn.addEventListener('click', () => {
+      rejectingId = item.id;
+      hideError(rejectErrorBox);
+      rejectReasonInput.value = '';
+      rejectPanel.hidden = false;
+      rejectReasonInput.focus();
+    });
+
+    actions.appendChild(approveBtn);
+    actions.appendChild(rejectBtn);
+    row.appendChild(actions);
+    return row;
+  }
+
+  async function loadQueue() {
+    const { bankAccounts } = await withStepUp(stepUpPanel, () =>
+      window.VTApi.call('GET', '/admin/bank-accounts'),
+    );
+    queueList.innerHTML = '';
+    queueEmpty.hidden = bankAccounts.length > 0;
+    for (const item of bankAccounts) queueList.appendChild(renderQueueItem(item));
+  }
+
+  rejectForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    hideError(rejectErrorBox);
+    const reason = rejectReasonInput.value.trim();
+    if (!reason) return;
+    const button = rejectForm.querySelector('button[type="submit"]');
+    void submitWithLock(button, async () => {
+      try {
+        await withStepUp(stepUpPanel, () =>
+          window.VTApi.call('POST', `/admin/bank-accounts/${rejectingId}/reject`, { reason }),
+        );
+        rejectPanel.hidden = true;
+        rejectingId = null;
+        await loadQueue();
+      } catch (err) {
+        showError(rejectErrorBox, rejectErrorText, err.message);
+      }
+    });
+  });
+
+  rejectCancelBtn.addEventListener('click', () => {
+    rejectPanel.hidden = true;
+    rejectingId = null;
+  });
+
+  function renderAuditItem(entry) {
+    const row = document.createElement('div');
+    row.className = 'bank-item';
+    const actor = entry.actorEmail || entry.actorId || 'hệ thống';
+    const subject = entry.subjectEmail || entry.subjectUserId || '—';
+    row.innerHTML = `
+      <div class="bank-item-info">
+        <div class="bank-item-bank">${escapeHtml(entry.action)}</div>
+        <div class="bank-item-meta">${formatDate(entry.at)} · ai làm: ${escapeHtml(actor)} · với ai: ${escapeHtml(subject)}</div>
+        <div class="bank-item-meta">${escapeHtml(entry.targetType)}/${escapeHtml(entry.targetId)}${entry.ip ? ' · IP ' + escapeHtml(entry.ip) : ''}</div>
+      </div>
+    `;
+    return row;
+  }
+
+  async function loadAuditLog() {
+    const { entries } = await window.VTApi.call('GET', '/admin/audit-log?limit=50');
+    auditList.innerHTML = '';
+    for (const entry of entries) auditList.appendChild(renderAuditItem(entry));
+  }
+
+  verifyChainBtn.addEventListener('click', () => {
+    void submitWithLock(verifyChainBtn, async () => {
+      try {
+        const result = await window.VTApi.call('GET', '/admin/audit-log/verify');
+        chainStatus.hidden = false;
+        chainStatusText.textContent =
+          result.breaks.length === 0
+            ? `Nguyên vẹn — đã kiểm ${result.rowsChecked} dòng, không phát hiện sai lệch.`
+            : `PHÁT HIỆN ${result.breaks.length} SAI LỆCH trong ${result.rowsChecked} dòng: ${result.breaks.map((b) => `id=${b.id} (${b.reason})`).join(', ')}`;
+      } catch (err) {
+        chainStatus.hidden = false;
+        chainStatusText.textContent = err.message;
+      }
+    });
+  });
+
+  window.VTApi.me()
+    .then(async (me) => {
+      if (!me) {
+        window.location.href = 'sign-in.html';
+        return;
+      }
+      if (me.mfa.enabled && !me.mfa.verified) {
+        window.location.href = 'sign-in.html';
+        return;
+      }
+
+      skeleton.hidden = true;
+      if (me.user.role !== 'admin') {
+        subtitle.textContent = 'Trang này chỉ dành cho quản trị viên.';
+        adminGate.hidden = false;
+        return;
+      }
+
+      subtitle.textContent = 'Duyệt tài khoản ngân hàng và kiểm tra nhật ký hệ thống.';
+      adminContent.hidden = false;
+      try {
+        await loadQueue();
+      } catch (err) {
+        showError(queueErrorBox, queueErrorText, err.message);
+      }
+      try {
+        await loadAuditLog();
+      } catch (err) {
+        console.error(err);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      skeleton.hidden = true;
+      subtitle.textContent = 'Không tải được. Hãy tải lại trang.';
+    });
+}
+
 // --- Trang u.html: trang donate công khai của một streamer (vtpage.com/<username>), không cần đăng nhập ---
 const donateProfile = document.getElementById('donateProfile');
 const notFoundBox = document.getElementById('notFound');
@@ -1234,6 +1424,7 @@ if (authButtons) {
               <a class="dropdown-item" href="security.html">Bảo mật</a>
               <a class="dropdown-item" href="bank-account.html">Ngân hàng</a>
               <a class="dropdown-item" href="overlay-settings.html">Overlay</a>
+              ${me.user.role === 'admin' ? '<a class="dropdown-item" href="admin.html">Quản trị</a>' : ''}
               <button type="button" class="dropdown-item" id="logoutBtn">Đăng xuất</button>
             </div>
           </div>
