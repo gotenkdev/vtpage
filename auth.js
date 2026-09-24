@@ -956,6 +956,106 @@ if (rotateBtn && overlayGate) {
     });
 }
 
+// --- Trang donations.html: donate của streamer + duyệt/ẩn khoản cần xem (cần đăng nhập, không cần 2FA) ---
+const donationList = document.getElementById('donationList');
+const reviewList = document.getElementById('reviewList');
+if (donationList && reviewList) {
+  const skeleton = document.getElementById('settingsSkeleton');
+  const subtitle = document.getElementById('settingsSubtitle');
+  const content = document.getElementById('donationsContent');
+  const reviewSection = document.getElementById('reviewSection');
+  const donationEmpty = document.getElementById('donationEmpty');
+  const reviewErrorBox = document.getElementById('reviewError');
+  const reviewErrorText = document.getElementById('reviewErrorText');
+
+  const formatDate = (iso) => new Date(iso).toLocaleString('vi-VN');
+  const formatMoney = (n) => `${new Intl.NumberFormat('vi-VN').format(n)}đ`;
+  const MATCH_LABELS = {
+    exact: 'khớp mã đơn',
+    amount_mismatch: 'lệch số tiền so với đơn',
+    no_code: 'không có mã đối soát',
+  };
+  const REVIEW_BADGES = {
+    pending: ['Chờ bạn xem', 'st-pending'],
+    approved: ['Đã hiện lên overlay', 'st-active'],
+    hidden: ['Đã ẩn', 'st-off'],
+  };
+
+  function renderRow(donation, withActions) {
+    const row = document.createElement('div');
+    row.className = 'bank-item';
+    const message = donation.message
+      ? `<div class="bank-item-meta">“${escapeHtml(donation.message)}”</div>`
+      : '';
+    const badge = donation.needsReview
+      ? REVIEW_BADGES[donation.reviewStatus]
+      : ['Đã nhận', 'st-active'];
+    row.innerHTML = `
+      <div class="bank-item-info">
+        <div class="bank-item-bank">${escapeHtml(donation.donorName)} · ${formatMoney(donation.amount)}</div>
+        <div class="bank-item-meta">${formatDate(donation.createdAt)} · ${MATCH_LABELS[donation.matchType] || ''}</div>
+        ${message}
+      </div>
+      <span class="status-badge ${badge[1]}">${badge[0]}</span>
+    `;
+    if (withActions) {
+      const actions = document.createElement('div');
+      actions.className = 'settings-actions';
+      for (const [decision, label, cls] of [
+        ['approve', 'Hiện lên overlay', 'btn btn-primary btn-sm'],
+        ['hide', 'Ẩn', 'btn btn-ghost btn-sm'],
+      ]) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = cls;
+        btn.textContent = label;
+        btn.addEventListener('click', () => {
+          void submitWithLock(btn, async () => {
+            hideError(reviewErrorBox);
+            try {
+              await window.VTApi.call('POST', `/me/donations/${donation.id}/review`, { decision });
+            } catch (err) {
+              showError(reviewErrorBox, reviewErrorText, err.message);
+            }
+            await load();
+          });
+        });
+        actions.appendChild(btn);
+      }
+      row.appendChild(actions);
+    }
+    return row;
+  }
+
+  async function load() {
+    const { donations } = await window.VTApi.call('GET', '/me/donations?limit=100');
+    reviewList.innerHTML = '';
+    donationList.innerHTML = '';
+    const pending = donations.filter((d) => d.needsReview && d.reviewStatus === 'pending');
+    reviewSection.hidden = pending.length === 0;
+    for (const donation of pending) reviewList.appendChild(renderRow(donation, true));
+    donationEmpty.hidden = donations.length > 0;
+    for (const donation of donations) donationList.appendChild(renderRow(donation, false));
+  }
+
+  window.VTApi.me()
+    .then(async (me) => {
+      if (!me || (me.mfa.enabled && !me.mfa.verified)) {
+        window.location.href = 'sign-in.html';
+        return;
+      }
+      skeleton.hidden = true;
+      subtitle.textContent = 'Các khoản donate đã về tài khoản của bạn.';
+      content.hidden = false;
+      await load();
+    })
+    .catch((err) => {
+      console.error(err);
+      skeleton.hidden = true;
+      subtitle.textContent = 'Không tải được. Hãy tải lại trang.';
+    });
+}
+
 // --- Trang admin.html: hàng đợi duyệt ngân hàng + nhật ký kiểm toán (chỉ vai trò admin, đã bật 2FA) ---
 const queueList = document.getElementById('queueList');
 const adminGate = document.getElementById('adminGate');
@@ -1423,6 +1523,7 @@ if (authButtons) {
               <a class="dropdown-item" href="profile.html">Hồ sơ</a>
               <a class="dropdown-item" href="security.html">Bảo mật</a>
               <a class="dropdown-item" href="bank-account.html">Ngân hàng</a>
+              <a class="dropdown-item" href="donations.html">Donate</a>
               <a class="dropdown-item" href="overlay-settings.html">Overlay</a>
               ${me.user.role === 'admin' ? '<a class="dropdown-item" href="admin.html">Quản trị</a>' : ''}
               <button type="button" class="dropdown-item" id="logoutBtn">Đăng xuất</button>

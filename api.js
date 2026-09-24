@@ -80,6 +80,8 @@
     'message:invalid_type': 'Lời nhắn không hợp lệ.',
     'message:custom': 'Lời nhắn không hợp lệ (một dòng, tối đa 200 ký tự, không chứa ký tự lạ).',
     streamer_not_ready: 'Streamer chưa sẵn sàng nhận donate lúc này. Hãy quay lại sau.',
+    not_reviewable: 'Khoản donate này không cần xem.',
+    already_reviewed: 'Khoản donate này đã được xử lý rồi.',
     not_pending: 'Tài khoản này không còn ở trạng thái chờ duyệt (có thể admin khác vừa xử lý).',
     cannot_review_own: 'Bạn không thể tự duyệt/từ chối tài khoản của chính mình.',
     'reason:invalid_type': 'Vui lòng nhập lý do.',
