@@ -1487,24 +1487,23 @@ if (donateProfile && notFoundBox) {
         instAmount.textContent = vnd(donation.amount);
         instContent.textContent = donation.content;
         donateInstructions.hidden = false;
-        // Mã QR do SePay dựng sẵn (không tự sinh ở phía chúng ta): dữ liệu trong đó (số tài khoản,
-        // số tiền, nội dung) vốn đã hiện ở dạng chữ ngay bên dưới, không phải thông tin mới lộ ra.
-        // Nếu dịch vụ này lỗi/chậm, ẩn hẳn đi — người donate vẫn chuyển khoản thủ công được bình
-        // thường bằng các trường bên dưới.
-        const qrUrl = new URL('https://qr.sepay.vn/img');
-        qrUrl.searchParams.set('acc', donation.bank.accountNumber);
-        qrUrl.searchParams.set('bank', donation.bank.bankCode);
-        qrUrl.searchParams.set('amount', String(donation.amount));
-        qrUrl.searchParams.set('des', donation.content);
+        // Mã QR VietQR do CHÍNH SERVER dựng (backend/src/donations/vietqr.ts), nhúng sẵn dạng data URI
+        // trong phản hồi — không còn gọi ảnh dựng sẵn của qr.sepay.vn (bên thứ ba) như trước. qrDataUri
+        // null nếu dựng lỗi; người donate vẫn chuyển khoản thủ công được bằng các trường chữ bên dưới.
         instQr.onerror = () => {
           qrWrap.hidden = true;
           instQr.hidden = true;
         };
-        instQr.onload = () => {
-          qrWrap.hidden = false;
-          instQr.hidden = false;
-        };
-        instQr.src = qrUrl.toString();
+        if (donation.qrDataUri) {
+          instQr.onload = () => {
+            qrWrap.hidden = false;
+            instQr.hidden = false;
+          };
+          instQr.src = donation.qrDataUri;
+        } else {
+          qrWrap.hidden = true;
+          instQr.hidden = true;
+        }
         startCountdown(donation.expiresAt);
         pollStatus(donation.id, donation.expiresAt);
       } catch (err) {
