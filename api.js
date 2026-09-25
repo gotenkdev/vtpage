@@ -86,6 +86,26 @@
     cannot_review_own: 'Bạn không thể tự duyệt/từ chối tài khoản của chính mình.',
     'reason:invalid_type': 'Vui lòng nhập lý do.',
     'reason:custom': 'Lý do không hợp lệ (1-200 ký tự, không chứa ký tự lạ).',
+    'currentPassword:invalid_type': 'Vui lòng nhập mật khẩu hiện tại.',
+    'currentPassword:too_small': 'Vui lòng nhập mật khẩu hiện tại.',
+    'currentPassword:too_big': 'Mật khẩu quá dài.',
+    current_password_invalid: 'Mật khẩu hiện tại không đúng.',
+    // newPassword:*: cùng bộ mã checkPasswordPolicy trả cho password:* lúc đăng ký, chỉ khác tên trường.
+    'newPassword:invalid_type': 'Vui lòng nhập mật khẩu mới.',
+    'newPassword:too_small': 'Vui lòng nhập mật khẩu mới.',
+    'newPassword:too_big': 'Mật khẩu quá dài.',
+    'newPassword:too_short': 'Mật khẩu cần ít nhất 10 ký tự.',
+    'newPassword:too_long': 'Mật khẩu quá dài.',
+    'newPassword:too_simple': 'Mật khẩu quá đơn giản, hãy dùng nhiều ký tự khác nhau hơn.',
+    'newPassword:same_as_email': 'Mật khẩu không được trùng với email.',
+    'newPassword:same_as_current': 'Mật khẩu mới không được trùng với mật khẩu hiện tại.',
+    'newPassword:breached': 'Mật khẩu này đã từng bị lộ trong các vụ rò rỉ dữ liệu khác. Hãy chọn mật khẩu khác.',
+    'newEmail:invalid_type': 'Vui lòng nhập email mới.',
+    'newEmail:invalid_format': 'Email không hợp lệ.',
+    'newEmail:too_big': 'Email quá dài.',
+    'newEmail:custom': 'Email không hợp lệ.',
+    email_taken: 'Email này đã có người dùng.',
+    email_unchanged: 'Đây đã là email hiện tại của bạn rồi.',
   };
   const FALLBACK_MESSAGE = 'Dữ liệu chưa hợp lệ, vui lòng kiểm tra lại.';
 

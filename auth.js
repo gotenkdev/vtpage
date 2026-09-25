@@ -322,6 +322,32 @@ if (resetForm) {
   }
 }
 
+// --- Trang confirm-email.html: xác nhận đổi email bằng token trong liên kết gửi tới email MỚI.
+// Không cần đăng nhập (liên kết có thể mở ở máy/trình duyệt khác) — token tự nó là bằng chứng đủ. ---
+const confirmDone = document.getElementById('confirmDone');
+if (confirmDone) {
+  const token = new URLSearchParams(window.location.hash.replace(/^#/, '')).get('token');
+  const authSwitch = document.getElementById('authSwitch');
+  const authSubtitle = document.getElementById('authSubtitle');
+  const errorBox = document.getElementById('formError');
+  const errorText = document.getElementById('formErrorText');
+
+  if (!token) {
+    authSubtitle.textContent = 'Liên kết không hợp lệ hoặc thiếu mã xác nhận.';
+  } else {
+    window.VTApi.call('POST', '/auth/email/confirm', { token })
+      .then(() => {
+        authSubtitle.hidden = true;
+        confirmDone.hidden = false;
+      })
+      .catch((err) => {
+        authSubtitle.textContent = 'Không xác nhận được.';
+        showError(errorBox, errorText, err.message);
+        authSwitch.innerHTML = 'Hãy thử đổi email lại từ <a href="security.html">trang bảo mật</a>.';
+      });
+  }
+}
+
 // --- Trang profile.html: xem/tạo/sửa hồ sơ, đổi/xoá ảnh đại diện (cần đăng nhập) ---
 const createForm = document.getElementById('createForm');
 const editSection = document.getElementById('editSection');
@@ -711,12 +737,74 @@ if (mfaOff && mfaOn) {
       skeleton.hidden = true;
       if (me.mfa.enabled) showOn();
       else showOff();
+      const currentEmailText = document.getElementById('currentEmailText');
+      if (currentEmailText) currentEmailText.textContent = me.user.email;
     })
     .catch((err) => {
       console.error(err);
       skeleton.hidden = true;
       subtitle.textContent = 'Không tải được. Hãy tải lại trang.';
     });
+}
+
+// --- Trang security.html: đổi mật khẩu khi đang đăng nhập (xác minh bằng mật khẩu hiện tại, không cần
+// 2FA — không phải ai cũng đã bật, và đây không phải đổi kênh nhận tiền) ---
+const changePasswordForm = document.getElementById('changePasswordForm');
+if (changePasswordForm) {
+  const currentPasswordInput = document.getElementById('currentPassword');
+  const newPasswordInput = document.getElementById('newPassword');
+  const errorBox = document.getElementById('passwordFormError');
+  const errorText = document.getElementById('passwordFormErrorText');
+  const savedBox = document.getElementById('passwordFormSaved');
+
+  changePasswordForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    hideError(errorBox);
+    savedBox.hidden = true;
+    const button = changePasswordForm.querySelector('button[type="submit"]');
+    void submitWithLock(button, async () => {
+      try {
+        await window.VTApi.call('POST', '/me/password', {
+          currentPassword: currentPasswordInput.value,
+          newPassword: newPasswordInput.value,
+        });
+        changePasswordForm.reset();
+        savedBox.hidden = false;
+      } catch (err) {
+        showError(errorBox, errorText, err.message);
+      }
+    });
+  });
+}
+
+// --- Trang security.html: đổi email khi đang đăng nhập (2 bước: yêu cầu ở đây, xác nhận ở
+// confirm-email.html qua liên kết gửi tới email MỚI) ---
+const changeEmailForm = document.getElementById('changeEmailForm');
+if (changeEmailForm) {
+  const newEmailInput = document.getElementById('newEmail');
+  const currentPasswordInput = document.getElementById('emailCurrentPassword');
+  const errorBox = document.getElementById('emailFormError');
+  const errorText = document.getElementById('emailFormErrorText');
+  const savedBox = document.getElementById('emailFormSaved');
+
+  changeEmailForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    hideError(errorBox);
+    savedBox.hidden = true;
+    const button = changeEmailForm.querySelector('button[type="submit"]');
+    void submitWithLock(button, async () => {
+      try {
+        await window.VTApi.call('POST', '/me/email', {
+          newEmail: newEmailInput.value.trim(),
+          currentPassword: currentPasswordInput.value,
+        });
+        changeEmailForm.reset();
+        savedBox.hidden = false;
+      } catch (err) {
+        showError(errorBox, errorText, err.message);
+      }
+    });
+  });
 }
 
 // --- Trang bank-account.html: liên kết/huỷ/tắt tài khoản ngân hàng nhận donate (cần đăng nhập) ---

@@ -15,6 +15,8 @@
 </head>
 <body class="page-auth">
   <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M6.3 6.3C3.3 8.2 1.5 12 1.5 12S5.5 19 12 19a10 10 0 0 0 4.3-.9"/><path d="M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10.5 7 10.5 7a17 17 0 0 1-3.1 3.9"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
     <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.6h.01"/></symbol>
     <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></symbol>
     <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></symbol>
@@ -121,6 +123,62 @@
             <button type="submit" class="btn btn-primary btn-lg btn-submit">Xác nhận</button>
           </form>
         </div>
+      </section>
+
+      <section class="auth-plate settings-card" aria-labelledby="password-title">
+        <h2 class="auth-title" id="password-title">Đổi mật khẩu</h2>
+        <p class="auth-subtitle">Thiết bị đang dùng để đổi vẫn giữ đăng nhập, các thiết bị khác sẽ bị đăng xuất.</p>
+
+        <form class="sign-in-form" id="changePasswordForm">
+          <div class="form-field">
+            <label for="currentPassword">Mật khẩu hiện tại</label>
+            <div class="password-field">
+              <input type="password" id="currentPassword" autocomplete="current-password" required>
+              <button type="button" class="password-toggle" aria-label="Show password" aria-pressed="false">
+                <svg class="ic icon-eye"><use href="#i-eye"/></svg>
+                <svg class="ic icon-eye-off"><use href="#i-eye-off"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="newPassword">Mật khẩu mới</label>
+            <div class="password-field">
+              <input type="password" id="newPassword" autocomplete="new-password" required minlength="10">
+              <button type="button" class="password-toggle" aria-label="Show password" aria-pressed="false">
+                <svg class="ic icon-eye"><use href="#i-eye"/></svg>
+                <svg class="ic icon-eye-off"><use href="#i-eye-off"/></svg>
+              </button>
+            </div>
+          </div>
+          <p class="form-error" id="passwordFormError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="passwordFormErrorText"></span></p>
+          <p class="form-hint is-good" id="passwordFormSaved" hidden>Đã đổi mật khẩu.</p>
+          <button type="submit" class="btn btn-primary btn-lg btn-submit">Đổi mật khẩu</button>
+        </form>
+      </section>
+
+      <section class="auth-plate settings-card" aria-labelledby="email-title">
+        <h2 class="auth-title" id="email-title">Đổi email</h2>
+        <p class="auth-subtitle" id="emailSubtitle">Email hiện tại: <span id="currentEmailText">...</span></p>
+
+        <form class="sign-in-form" id="changeEmailForm">
+          <div class="form-field">
+            <label for="newEmail">Email mới</label>
+            <input type="email" id="newEmail" autocomplete="email" required>
+          </div>
+          <div class="form-field">
+            <label for="emailCurrentPassword">Mật khẩu hiện tại</label>
+            <div class="password-field">
+              <input type="password" id="emailCurrentPassword" autocomplete="current-password" required>
+              <button type="button" class="password-toggle" aria-label="Show password" aria-pressed="false">
+                <svg class="ic icon-eye"><use href="#i-eye"/></svg>
+                <svg class="ic icon-eye-off"><use href="#i-eye-off"/></svg>
+              </button>
+            </div>
+          </div>
+          <p class="form-error" id="emailFormError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="emailFormErrorText"></span></p>
+          <p class="form-hint is-good" id="emailFormSaved" hidden>Đã gửi liên kết xác nhận tới email mới. Mở hộp thư đó để hoàn tất — email hiện tại chưa đổi cho tới khi bạn bấm liên kết.</p>
+          <button type="submit" class="btn btn-primary btn-lg btn-submit">Gửi liên kết xác nhận</button>
+        </form>
       </section>
     </div>
   </main>
