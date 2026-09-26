@@ -968,7 +968,6 @@ if (bankForm && bankGate) {
 
       const missing = [];
       if (profileData.profile === null) missing.push('<a href="profile.html">tạo hồ sơ</a>');
-      if (!me.mfa.enabled) missing.push('<a href="security.html">bật xác thực hai lớp (2FA)</a>');
       skeleton.hidden = true;
       if (missing.length > 0) {
         subtitle.textContent = 'Cần thêm bước sau trước khi liên kết tài khoản ngân hàng:';
@@ -1071,13 +1070,6 @@ if (rotateBtn && overlayGate) {
       }
 
       skeleton.hidden = true;
-      if (!me.mfa.enabled) {
-        subtitle.textContent = 'Cần thêm bước sau trước khi dùng overlay:';
-        gateText.innerHTML = '<a href="security.html">bật xác thực hai lớp (2FA)</a>.';
-        overlayGate.hidden = false;
-        return;
-      }
-
       subtitle.textContent = 'Overlay hiện thông báo donate theo thời gian thực cho OBS.';
       overlayContent.hidden = false;
       await refreshStatus();
