@@ -271,6 +271,141 @@
       </div>
     </section>
 
+    <section class="guide" aria-labelledby="guide-title" id="huong-dan">
+      <div class="wrap">
+        <div class="guide-head reveal">
+          <p class="guide-eyebrow">Hướng dẫn cho người xem</p>
+          <h2 class="h2" id="guide-title">Donate cho streamer <span class="under">chỉ với một lần quét</span></h2>
+          <p class="lede">Không cần tài khoản, không cần cài thêm gì. Mở app ngân hàng bạn đang dùng, quét mã QR trên trang donate — số tiền và nội dung đã điền sẵn.</p>
+        </div>
+
+        <div class="guide-body">
+          <ol class="guide-steps reveal" id="guideSteps">
+            <li class="guide-step is-active" data-step="0">
+              <button type="button" class="guide-step-btn">
+                <span class="guide-num">1</span>
+                <span class="guide-text"><strong>Mở trang donate của streamer</strong><span>Vào vtpage.com/tên-streamer, chọn số tiền, nhập tên và lời nhắn rồi bấm tạo lệnh.</span></span>
+              </button>
+            </li>
+            <li class="guide-step" data-step="1">
+              <button type="button" class="guide-step-btn">
+                <span class="guide-num">2</span>
+                <span class="guide-text"><strong>Quét mã QR bằng app ngân hàng</strong><span>Mở app ngân hàng hoặc ví, chọn Quét QR và đưa camera vào mã trên màn hình.</span></span>
+              </button>
+            </li>
+            <li class="guide-step" data-step="2">
+              <button type="button" class="guide-step-btn">
+                <span class="guide-num">3</span>
+                <span class="guide-text"><strong>Kiểm tra số tiền và nội dung</strong><span>Mọi thứ đã điền sẵn. Giữ nguyên nội dung chuyển khoản — đó là mã để hệ thống nhận ra donate của bạn.</span></span>
+              </button>
+            </li>
+            <li class="guide-step" data-step="3">
+              <button type="button" class="guide-step-btn">
+                <span class="guide-num">4</span>
+                <span class="guide-text"><strong>Xác nhận — donate hiện lên stream</strong><span>Tiền vào thẳng tài khoản streamer, lời nhắn của bạn bật lên màn hình livestream sau vài giây.</span></span>
+              </button>
+            </li>
+          </ol>
+
+          <div class="guide-stage-wrap reveal">
+            <div class="guide-stage" id="guideStage" data-phase="0" aria-hidden="true">
+              <!-- Màn hình trang donate của streamer (có mã QR) -->
+              <div class="gs-screen">
+                <div class="gs-screen-bar"><i></i><i></i><i></i><span>vtpage.com/streamer</span></div>
+                <div class="gs-screen-body">
+                  <div class="gs-profile">
+                    <svg class="gs-avatar" viewBox="0 0 64 64"><use href="#av-1"/></svg>
+                    <div><strong>Streamer</strong><span>@streamer</span></div>
+                  </div>
+                  <div class="gs-qr-card">
+                    <svg class="gs-qr" viewBox="0 0 21 21"><use href="#i-qr"/></svg>
+                    <span class="gs-qr-scan"></span>
+                  </div>
+                  <div class="gs-amount">50.000 đ</div>
+                  <div class="gs-content">VTPAGE VTK7M2Q9XP</div>
+                </div>
+                <div class="gs-toast">
+                  <svg class="ic ic-fill"><use href="#i-heart"/></svg>
+                  <div><strong>Minh donate 50.000 đ</strong><span>Chúc stream vui nha!</span></div>
+                </div>
+              </div>
+
+              <!-- Bàn tay cầm điện thoại -->
+              <div class="gs-rig">
+                <div class="gs-hold">
+                  <svg class="gs-hand gs-hand-back" viewBox="0 0 300 420">
+                    <defs>
+                      <linearGradient id="skinBack" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0" stop-color="#F1C9A5"/><stop offset=".55" stop-color="#E2A97F"/><stop offset="1" stop-color="#C98B62"/>
+                      </linearGradient>
+                    </defs>
+                    <path fill="url(#skinBack)" d="M86 402c-14-44-22-86-18-128 2-26 8-46 18-60l20-26c6-8 14-8 18-2l4 8 50-2c20 0 40 10 50 28 14 24 18 56 16 92-2 36-10 64-20 88z"/>
+                    <path fill="url(#skinBack)" d="M72 118c-8-4-18 0-20 10l-6 30c-2 10 4 18 14 18l18-2z"/>
+                    <path fill="url(#skinBack)" d="M66 176c-9-3-18 2-19 12l-4 28c-1 10 5 17 15 17l18-3z"/>
+                    <path fill="url(#skinBack)" d="M68 236c-9-2-17 4-17 13l-2 24c0 9 6 15 15 15l16-3z"/>
+                    <path fill="url(#skinBack)" d="M74 292c-8-1-15 5-15 13v18c1 8 7 13 15 12l14-3z"/>
+                  </svg>
+
+                  <div class="gs-phone">
+                    <div class="gs-phone-side gs-side-l"></div>
+                    <div class="gs-phone-side gs-side-r"><i class="gs-btn gs-btn-power"></i></div>
+                    <div class="gs-phone-face">
+                      <div class="gs-island"><i></i></div>
+                      <div class="gs-display">
+                        <!-- Pha 0: app ngân hàng -->
+                        <div class="gs-view gs-view-app">
+                          <div class="gs-app-top"><svg class="ic"><use href="#i-bank"/></svg><span>Ngân hàng của bạn</span></div>
+                          <div class="gs-app-balance"><span>Số dư</span><strong>••••••</strong></div>
+                          <div class="gs-app-grid">
+                            <span class="gs-app-tile is-qr"><svg viewBox="0 0 21 21"><use href="#i-qr"/></svg>Quét QR</span>
+                            <span class="gs-app-tile"><i></i>Chuyển tiền</span>
+                            <span class="gs-app-tile"><i></i>Thanh toán</span>
+                            <span class="gs-app-tile"><i></i>Tiết kiệm</span>
+                          </div>
+                        </div>
+                        <!-- Pha 1: camera quét QR -->
+                        <div class="gs-view gs-view-cam">
+                          <div class="gs-cam-feed"><svg class="gs-cam-qr" viewBox="0 0 21 21"><use href="#i-qr"/></svg></div>
+                          <div class="gs-cam-frame"><i></i><i></i><i></i><i></i><span class="gs-cam-line"></span></div>
+                          <div class="gs-cam-hint">Đưa mã QR vào khung</div>
+                        </div>
+                        <!-- Pha 2: kiểm tra thông tin -->
+                        <div class="gs-view gs-view-confirm">
+                          <div class="gs-cf-title">Xác nhận chuyển khoản</div>
+                          <div class="gs-cf-row"><span>Người nhận</span><strong>STREAMER</strong></div>
+                          <div class="gs-cf-row"><span>Số tiền</span><strong class="is-money">50.000 đ</strong></div>
+                          <div class="gs-cf-row"><span>Nội dung</span><strong>VTPAGE VTK7M2Q9XP</strong></div>
+                          <span class="gs-cf-btn">Xác nhận</span>
+                        </div>
+                        <!-- Pha 3: thành công -->
+                        <div class="gs-view gs-view-done">
+                          <span class="gs-done-check"><svg class="ic"><use href="#i-check"/></svg></span>
+                          <strong>Chuyển khoản thành công</strong>
+                          <span class="gs-done-amount">50.000 đ</span>
+                        </div>
+                      </div>
+                      <span class="gs-glare"></span>
+                    </div>
+                  </div>
+
+                  <svg class="gs-hand gs-hand-front" viewBox="0 0 300 420">
+                    <defs>
+                      <linearGradient id="skinFront" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0" stop-color="#F6D3B3"/><stop offset=".6" stop-color="#E7B089"/><stop offset="1" stop-color="#CF9068"/>
+                      </linearGradient>
+                    </defs>
+                    <path fill="url(#skinFront)" d="M232 300c10-10 26-14 36-6 10 8 8 22 0 34l-30 44c-10 14-26 30-46 34l-32 6-8-44 30-18z"/>
+                    <path fill="#000" opacity=".08" d="M238 330c8-4 16-4 22 0l-24 34c-6 8-14 16-24 20z"/>
+                    <ellipse fill="#F8DFC8" opacity=".7" cx="252" cy="304" rx="12" ry="7" transform="rotate(-35 252 304)"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="cta" aria-labelledby="cta-title">
       <div class="wrap cta-inner reveal">
         <div class="cta-text">
@@ -344,5 +479,6 @@
   <script src="fx.js"></script>
   <script src="api.js"></script>
   <script src="auth.js"></script>
+  <script src="donate-guide.js"></script>
 </body>
 </html>
