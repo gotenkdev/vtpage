@@ -11,6 +11,51 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
+// --- Đăng nhập bằng Google (sign-in.html, sign-up.html) ---
+// Chỉ hiện nút khi máy chủ đã cấu hình Google; chưa cấu hình thì gỡ hẳn khối nút khỏi trang (các đoạn code bên dưới có bật lại
+// khối này cũng không hiện ra). Bấm nút là chuyển thẳng sang Google (máy chủ lo state, PKCE, cookie chống giả mạo).
+(function initGoogleSignIn() {
+  const federated = document.getElementById('federatedButtons');
+  const googleBtn = document.getElementById('googleBtn');
+  if (!federated || !googleBtn) return;
+  const divider = document.getElementById('authDivider');
+  googleBtn.addEventListener('click', () => {
+    googleBtn.disabled = true;
+    window.location.href = '/api/v1/auth/google/start';
+  });
+  window.VTApi.call('GET', '/auth/providers')
+    .then((p) => {
+      if (p && p.google) {
+        federated.hidden = false;
+        if (divider) divider.hidden = false;
+      } else {
+        federated.remove();
+        if (divider) divider.remove();
+      }
+    })
+    .catch(() => {
+      federated.remove();
+      if (divider) divider.remove();
+    });
+
+  // Google trả về lỗi: hiện lý do dễ hiểu (mã ngắn trong #oauth_error, không chứa gì nhạy cảm).
+  const match = /(?:^|&)oauth_error=([a-z_]+)/.exec(window.location.hash.slice(1));
+  if (match) {
+    const OAUTH_ERRORS = {
+      cancelled: 'Bạn đã hủy đăng nhập bằng Google.',
+      expired: 'Phiên đăng nhập Google đã hết hạn, hãy thử lại.',
+      invalid: 'Không xác minh được đăng nhập Google, hãy thử lại.',
+      email_unverified: 'Email Google của bạn chưa được xác minh.',
+      inactive: 'Tài khoản này đang bị khóa.',
+      busy: 'Thao tác quá nhiều lần, hãy chờ một lát rồi thử lại.',
+    };
+    const box = document.getElementById('formError');
+    const text = document.getElementById('formErrorText');
+    if (box && text) showError(box, text, OAUTH_ERRORS[match[1]] || 'Đăng nhập bằng Google không thành công.');
+    history.replaceState(null, '', window.location.pathname);
+  }
+})();
+
 // --- Password show/hide (mọi trang có ô mật khẩu) ---
 document.querySelectorAll('.password-field').forEach((field) => {
   const input = field.querySelector('input');
