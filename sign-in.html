@@ -10,7 +10,7 @@
   <link rel="preload" href="fonts/bricolage-grotesque-latin-600-800.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/doto-latin-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=6">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
 </head>
 <body class="page-auth">
@@ -121,6 +121,8 @@
           <p class="form-error" id="mfaError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="mfaErrorText"></span></p>
 
           <button type="submit" class="btn btn-primary btn-lg btn-submit">Xác nhận</button>
+          <p class="mfa-hint" id="mfaEmailHint" hidden></p>
+          <button type="button" class="btn btn-ghost btn-sm mfa-email-btn" id="mfaEmailBtn" hidden>Không cầm điện thoại? Gửi mã về email</button>
         </form>
 
         <p class="auth-switch" id="authSwitch">Chưa có tài khoản? <a href="sign-up.html">Sign up</a></p>
@@ -130,6 +132,6 @@
 
   <script src="fx.js"></script>
   <script src="api.js"></script>
-  <script src="auth.js?v=3"></script>
+  <script src="auth.js?v=5"></script>
 </body>
 </html>

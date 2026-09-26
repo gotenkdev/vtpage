@@ -1414,3 +1414,7 @@ html[data-motion="off"] .reveal { opacity: 1 !important; transform: none !import
   mask-image: linear-gradient(to bottom, #000 62%, transparent 96%), linear-gradient(to left, transparent 0%, #000 10%);
   mask-composite: intersect;
 }
+
+/* Bước 2FA: mã dự phòng qua email */
+.mfa-hint { margin: 12px 0 0; color: var(--ink-3); font-size: 0.92rem; }
+.mfa-email-btn { margin-top: 10px; width: 100%; }

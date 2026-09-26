@@ -184,7 +184,41 @@ if (signinForm) {
   const mfaErrorBox = document.getElementById('mfaError');
   const mfaErrorText = document.getElementById('mfaErrorText');
 
+  const mfaEmailBtn = document.getElementById('mfaEmailBtn');
+  const mfaEmailHint = document.getElementById('mfaEmailHint');
+  // 'app': mã từ ứng dụng xác thực hoặc mã khôi phục; 'email': mã vừa gửi về email (dự phòng).
+  let mfaMode = 'app';
+
+  // Chỉ hiện nút gửi mã về email khi máy chủ cho phép (đã bật app, đăng nhập bằng mật khẩu).
+  const refreshEmailFallback = () =>
+    window.VTApi.me()
+      .then((me) => {
+        if (me && me.mfa && me.mfa.emailFallback && mfaEmailBtn) mfaEmailBtn.hidden = false;
+      })
+      .catch(() => {});
+
+  if (mfaEmailBtn) {
+    mfaEmailBtn.addEventListener('click', () => {
+      hideError(mfaErrorBox);
+      void submitWithLock(mfaEmailBtn, async () => {
+        try {
+          const res = await window.VTApi.call('POST', '/auth/mfa/email/send');
+          mfaMode = 'email';
+          mfaEmailHint.textContent = `Đã gửi mã 6 số tới ${res.sentTo}. Mã hết hạn sau 10 phút.`;
+          mfaEmailHint.hidden = false;
+          if (authSubtitle) authSubtitle.textContent = 'Nhập mã 6 số vừa gửi về email của bạn.';
+          mfaCodeInput.value = '';
+          mfaCodeInput.placeholder = 'Mã 6 số trong email';
+          mfaCodeInput.focus();
+        } catch (err) {
+          showError(mfaErrorBox, mfaErrorText, err.message);
+        }
+      });
+    });
+  }
+
   const showMfaStep = () => {
+    void refreshEmailFallback();
     signinForm.hidden = true;
     if (federated) federated.hidden = true;
     if (divider) divider.hidden = true;
@@ -224,7 +258,11 @@ if (signinForm) {
     const button = mfaForm.querySelector('button[type="submit"]');
     void submitWithLock(button, async () => {
       try {
-        await window.VTApi.call('POST', '/auth/mfa/verify', { code });
+        await window.VTApi.call(
+          'POST',
+          mfaMode === 'email' ? '/auth/mfa/email/verify' : '/auth/mfa/verify',
+          { code },
+        );
         window.location.href = 'index.html';
       } catch (err) {
         showError(mfaErrorBox, mfaErrorText, err.message);
