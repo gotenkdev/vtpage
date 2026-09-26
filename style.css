@@ -1327,42 +1327,33 @@ html[data-motion="off"] .reveal { opacity: 1 !important; transform: none !import
 .gs-toast span { font-size: 0.72rem; opacity: 0.75; }
 .guide-stage[data-phase="3"] .gs-toast { opacity: 1; transform: translate(-50%, 0) scale(1); transition-delay: 0.7s; }
 
-/* Tay + điện thoại */
+/* Tay + điện thoại: ẢNH THẬT (hand-phone.webp, nền đã tách trong suốt). Các màn hình đặt đúng vùng màn hình trắng đo từ ảnh;
+   hand-finger.webp là riêng ngón trỏ đè lên màn hình, phủ TRÊN nội dung để ngón tay trông như đang chạm thật. */
 .gs-rig {
-  right: 0; top: 4%; width: 46%;
-  transform: translate3d(0, 6%, 60px) rotateX(calc(8deg + var(--rx))) rotateY(calc(-22deg + var(--ry))) rotateZ(5deg);
+  right: -4%; top: 2%; width: 62%;
+  transform: translate3d(0, 4%, 60px) rotateX(calc(6deg + var(--rx))) rotateY(calc(-16deg + var(--ry))) rotateZ(3deg);
   transition: transform 1.1s var(--ease-out);
 }
-.guide-stage[data-phase="1"] .gs-rig { transform: translate3d(-34%, -2%, 110px) rotateX(calc(4deg + var(--rx))) rotateY(calc(-30deg + var(--ry))) rotateZ(-3deg); }
-.guide-stage[data-phase="2"] .gs-rig { transform: translate3d(-8%, 2%, 90px) rotateX(calc(6deg + var(--rx))) rotateY(calc(-16deg + var(--ry))) rotateZ(2deg); }
-.guide-stage[data-phase="3"] .gs-rig { transform: translate3d(-4%, 0%, 80px) rotateX(calc(6deg + var(--rx))) rotateY(calc(-14deg + var(--ry))) rotateZ(3deg); }
+.guide-stage[data-phase="1"] .gs-rig { transform: translate3d(-22%, -2%, 110px) rotateX(calc(4deg + var(--rx))) rotateY(calc(-22deg + var(--ry))) rotateZ(-3deg); }
+.guide-stage[data-phase="2"] .gs-rig { transform: translate3d(-6%, 2%, 90px) rotateX(calc(5deg + var(--rx))) rotateY(calc(-12deg + var(--ry))) rotateZ(2deg); }
+.guide-stage[data-phase="3"] .gs-rig { transform: translate3d(-3%, 0%, 80px) rotateX(calc(5deg + var(--rx))) rotateY(calc(-10deg + var(--ry))) rotateZ(2deg); }
 .gs-hold { position: relative; transform-style: preserve-3d; animation: gs-float 5s ease-in-out infinite; }
-@keyframes gs-float { 0%, 100% { transform: translateY(0) rotateZ(0deg); } 50% { transform: translateY(-2.5%) rotateZ(-0.8deg); } }
+@keyframes gs-float { 0%, 100% { transform: translateY(0) rotateZ(0deg); } 50% { transform: translateY(-2%) rotateZ(-0.6deg); } }
 
-.gs-hand { position: absolute; pointer-events: none; }
-.gs-hand-back { left: -34%; top: 22%; width: 150%; transform: translateZ(-16px); filter: drop-shadow(0 30px 30px rgba(120, 60, 20, 0.25)); }
-.gs-hand-front { left: -34%; top: 22%; width: 150%; transform: translateZ(18px); filter: drop-shadow(-4px 6px 8px rgba(80, 40, 10, 0.25)); }
-
-.gs-phone { position: relative; width: 78%; margin-left: 11%; aspect-ratio: 9 / 19; transform-style: preserve-3d; }
-.gs-phone::before {
-  content: ''; position: absolute; inset: 0; border-radius: 17% / 8%; background: linear-gradient(135deg, #3a3d44, #16181c 60%, #2b2e34);
-  transform: translateZ(-9px); box-shadow: 0 50px 60px -30px rgba(20, 22, 26, 0.55);
+.gs-photo { position: relative; filter: drop-shadow(0 34px 36px rgba(20, 22, 26, 0.22)); }
+.gs-photo-img, .gs-photo-finger { display: block; width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
+.gs-photo-finger { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.gs-display.gs-display-photo {
+  position: absolute; left: 37.17%; top: 7.885%; width: 29.81%; height: 60.75%;
+  border-radius: 9% / 4.2%; overflow: hidden; background: #fff; z-index: 1; container-type: inline-size;
 }
-.gs-phone-side { position: absolute; top: 3%; bottom: 3%; width: 18px; background: linear-gradient(90deg, #2a2d33, #5a5e66 50%, #2a2d33); }
-.gs-side-l { left: 0; transform-origin: left; transform: rotateY(90deg) translateX(-9px); border-radius: 6px; }
-.gs-side-r { right: 0; transform-origin: right; transform: rotateY(-90deg) translateX(9px); border-radius: 6px; }
-.gs-btn { position: absolute; left: 3px; right: 3px; height: 12%; top: 22%; border-radius: 4px; background: #6b6f78; }
-.gs-phone-face {
-  position: absolute; inset: 0; border-radius: 17% / 8%; padding: 3.4%; background: #0b0c0f; transform: translateZ(9px);
-  box-shadow: 0 0 0 1.5px #474a52, 0 0 0 3px #1c1e22;
+.gs-display-photo::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 5;
+  background: linear-gradient(115deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.04) 30%, transparent 44%);
 }
-.gs-island { position: absolute; z-index: 3; top: 3.6%; left: 50%; width: 30%; height: 3.4%; transform: translateX(-50%); border-radius: 99px; background: #000; }
-.gs-island i { position: absolute; right: 12%; top: 25%; width: 10px; height: 50%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #3b4a6b, #0a0d14 70%); }
-.gs-display { position: relative; height: 100%; border-radius: 14% / 6.8%; overflow: hidden; background: #fff; }
-.gs-glare {
-  position: absolute; inset: 0; border-radius: 17% / 8%; pointer-events: none;
-  background: linear-gradient(115deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.06) 32%, transparent 45%);
-}
+.gs-display-photo .gs-view { font-size: 5.6cqw; padding: 13% 7% 6%; gap: 0.55em; }
+.gs-display-photo .gs-cf-row { padding: 0.55em 0.8em; }
+.gs-display-photo .gs-cf-btn { padding: 0.75em; }
 
 /* Các màn hình trong điện thoại */
 .gs-view { position: absolute; inset: 0; display: grid; align-content: start; padding: 22% 9% 10%; opacity: 0; transform: translateY(8px); transition: opacity 0.45s var(--ease-out), transform 0.5s var(--ease-out); font-size: clamp(9px, 1.05vw, 13px); }
@@ -1415,4 +1406,11 @@ html[data-motion="off"] .reveal { opacity: 1 !important; transform: none !import
 @media (max-width: 900px) {
   .guide-body { grid-template-columns: 1fr; }
   .guide-stage-wrap { order: -1; max-width: 560px; margin-inline: auto; width: 100%; }
+}
+/* Ảnh thật bị cắt ở mép dưới/phải: mờ dần để cổ tay tan vào nền thay vì dừng bằng một đường thẳng. */
+.gs-photo-img, .gs-photo-finger {
+  -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 96%), linear-gradient(to left, transparent 0%, #000 10%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to bottom, #000 62%, transparent 96%), linear-gradient(to left, transparent 0%, #000 10%);
+  mask-composite: intersect;
 }
