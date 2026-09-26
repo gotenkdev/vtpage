@@ -11,7 +11,7 @@
 
   const PAGES = {
     profile: { group: 'Trang donate', title: 'Hồ sơ trang', desc: 'Tên hiển thị, ảnh đại diện và lời giới thiệu hiện trên trang donate của bạn.' },
-    bank: { group: 'Trang donate', title: 'Ngân hàng nhận tiền', desc: 'Tiền donate vào thẳng tài khoản này. Tài khoản mới cần được duyệt trước khi nhận tiền.' },
+    bank: { group: 'Trang donate', title: 'Ngân hàng nhận tiền', desc: 'Tiền donate vào thẳng tài khoản này. Tài khoản đầu tiên dùng được ngay; đổi tài khoản khác thì cần được duyệt.' },
     donations: { group: 'Trang donate', title: 'Lịch sử donate', desc: 'Các khoản donate đã nhận. Duyệt hoặc ẩn khoản cần xem trước khi hiện lên stream.' },
     overlay: { group: 'Trang donate', title: 'Overlay OBS', desc: 'Địa chỉ dán vào OBS để hiện thông báo donate trên livestream.' },
     security: { group: 'Cá nhân', title: 'Tài khoản & bảo mật', desc: 'Xác thực 2 lớp, đổi mật khẩu và email đăng nhập.' },
@@ -30,6 +30,7 @@
     eye: '<path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/>',
     chev: '<path d="m7 10 5 5 5-5"/>',
     menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
+    store: '<path d="M4 9.5 5.5 4.5h13L20 9.5"/><path d="M4 9.5a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0"/><path d="M5.5 11.5v8h13v-8"/><path d="M10 19.5v-4h4v4"/>',
   };
   const svg = (name, cls = 'dash-ic') =>
     `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name] || ''}</svg>`;
@@ -61,10 +62,17 @@
     return a;
   }
 
-  // ---- Thanh bên ----
+  // ---- Thanh bên: hai thẻ Cá nhân / Trang (giống menu tài khoản ở đầu trang, kiểu Zypage) ----
   const side = el('aside', { class: 'dash-side', 'aria-label': 'Thiết lập' });
-  side.append(Object.assign(el('div', { class: 'dash-group-title' }), { textContent: 'Cá nhân' }));
-  PERSONAL_ITEMS.forEach((i) => side.append(link(i)));
+  const tabBar = el('div', { class: 'acct-tabs', role: 'tablist', 'aria-label': 'Nhóm thiết lập' });
+  const tabMe = el('button', { class: 'acct-tab', type: 'button', role: 'tab', 'aria-controls': 'dashPaneMe', id: 'dashTabMe' }, svg('user', 'acct-ic') + 'Cá nhân');
+  const tabPage = el('button', { class: 'acct-tab', type: 'button', role: 'tab', 'aria-controls': 'dashPanePage', id: 'dashTabPage' }, svg('store', 'acct-ic') + 'Trang');
+  tabBar.append(tabMe, tabPage);
+  side.append(tabBar);
+
+  const paneMe = el('div', { class: 'dash-pane', id: 'dashPaneMe', role: 'tabpanel', 'aria-labelledby': 'dashTabMe' });
+  paneMe.append(Object.assign(el('div', { class: 'dash-group-title' }), { textContent: 'Tài khoản cá nhân' }));
+  PERSONAL_ITEMS.forEach((i) => paneMe.append(link(i)));
   const logout = el('button', { class: 'dash-link', type: 'button' }, svg('logout') + '<span class="grow">Đăng xuất</span>');
   logout.addEventListener('click', async () => {
     try {
@@ -73,9 +81,9 @@
       window.location.href = 'index.html';
     }
   });
-  side.append(logout);
+  paneMe.append(logout);
 
-  side.append(Object.assign(el('div', { class: 'dash-group-title' }), { textContent: 'Quản lý trang' }));
+  const panePage = el('div', { class: 'dash-pane', id: 'dashPanePage', role: 'tabpanel', 'aria-labelledby': 'dashTabPage' });
   const card = el('div', { class: 'dash-page-card' });
   const cardLink = el('a', { class: 'dash-page-main', href: 'profile.html' });
   const avatar = el('span', { class: 'dash-avatar', 'aria-hidden': 'true' });
@@ -86,18 +94,21 @@
   meta.append(name, handle);
   cardLink.append(avatar, meta);
   card.append(cardLink);
-  side.append(card);
+  panePage.append(card);
+  panePage.append(Object.assign(el('div', { class: 'dash-group-title' }), { textContent: 'Thiết lập trang donate' }));
+  DONATE_ITEMS.forEach((i) => panePage.append(link(i)));
+  side.append(paneMe, panePage);
 
-  const toggle = el('button', { class: 'dash-link dash-toggle', type: 'button', 'aria-expanded': 'true' });
-  toggle.innerHTML = svg('heart') + '<span class="grow">Trang donate</span>' + svg('chev', 'dash-ic dash-chev');
-  const sub = el('div', { class: 'dash-sub' });
-  DONATE_ITEMS.forEach((i) => sub.append(link(i)));
-  toggle.addEventListener('click', () => {
-    const open = toggle.getAttribute('aria-expanded') !== 'true';
-    toggle.setAttribute('aria-expanded', String(open));
-    sub.hidden = !open;
-  });
-  side.append(toggle, sub);
+  const selectTab = (key) => {
+    const me = key === 'me';
+    tabMe.setAttribute('aria-selected', String(me));
+    tabPage.setAttribute('aria-selected', String(!me));
+    paneMe.hidden = !me;
+    panePage.hidden = me;
+  };
+  tabMe.addEventListener('click', () => selectTab('me'));
+  tabPage.addEventListener('click', () => selectTab('page'));
+  selectTab(PAGES[current] && PAGES[current].group === 'Cá nhân' ? 'me' : 'page');
 
   // ---- Đầu trang ----
   const info = PAGES[current] || { group: '', title: document.title, desc: '' };

@@ -1119,6 +1119,104 @@ if (rotateBtn && overlayGate) {
     });
 }
 
+// --- Menu tài khoản (bấm ảnh đại diện): hai thẻ Cá nhân / Trang, kiểu Zypage ---
+const ACCT_ICONS = {
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 20.5c1-4 4.2-6 8-6s7 2 8 6"/>',
+  store: '<path d="M4 9.5 5.5 4.5h13L20 9.5"/><path d="M4 9.5a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0"/><path d="M5.5 11.5v8h13v-8"/><path d="M10 19.5v-4h4v4"/>',
+  shield: '<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="m9 12 2 2 4-4"/>',
+  logout: '<path d="M14 4.5h4.5v15H14"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h9"/>',
+  profile: '<rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="11" r="2.4"/><path d="M5.8 17c.6-1.8 1.8-2.8 3.2-2.8s2.6 1 3.2 2.8M14 10h4M14 13.5h3"/>',
+  bank: '<path d="M3 9.5 12 4l9 5.5"/><path d="M4.5 9.5h15"/><path d="M6.5 10v7M10.5 10v7M13.5 10v7M17.5 10v7"/><path d="M3.5 19.5h17"/>',
+  list: '<path d="M8 6.5h12M8 12h12M8 17.5h12"/><circle cx="4" cy="6.5" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="17.5" r="1"/>',
+  screen: '<rect x="3" y="4.5" width="18" height="12" rx="2.5"/><path d="M8.5 20h7M12 16.5V20"/>',
+  eye: '<path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/>',
+};
+function acctIcon(name) {
+  return `<svg class="acct-ic" viewBox="0 0 24 24" aria-hidden="true">${ACCT_ICONS[name] || ''}</svg>`;
+}
+
+function setupAccountMenu() {
+  const panel = document.getElementById('userPanel');
+  if (!panel) return;
+  const tabs = { me: document.getElementById('acctTabMe'), page: document.getElementById('acctTabPage') };
+  const panes = { me: document.getElementById('acctMe'), page: document.getElementById('acctPage') };
+  let profileLoaded = false;
+
+  // Bấm bên trong menu (đổi thẻ) không được đóng menu.
+  panel.addEventListener('click', (event) => event.stopPropagation());
+
+  const loadProfile = () => {
+    if (profileLoaded) return;
+    profileLoaded = true;
+    window.VTApi.call('GET', '/me/profile')
+      .then(({ profile }) => {
+        const name = document.getElementById('acctName');
+        const handle = document.getElementById('acctHandle');
+        const avatar = document.getElementById('acctAvatar');
+        if (!profile) {
+          name.textContent = 'Chưa có trang';
+          handle.textContent = 'Tạo hồ sơ để nhận donate';
+          avatar.textContent = '+';
+          return;
+        }
+        name.textContent = profile.displayName || profile.username;
+        handle.textContent = '@' + profile.username;
+        if (profile.avatarUrl) {
+          const img = document.createElement('img');
+          img.className = 'acct-avatar';
+          img.src = profile.avatarUrl;
+          img.alt = '';
+          avatar.replaceWith(img);
+        } else {
+          avatar.textContent = (profile.displayName || profile.username).slice(0, 1).toUpperCase();
+        }
+        const view = document.getElementById('acctView');
+        view.href = '/' + encodeURIComponent(profile.username);
+        view.target = '_blank';
+        view.rel = 'noopener';
+        view.hidden = false;
+      })
+      .catch(() => {
+        document.getElementById('acctHandle').textContent = '';
+      });
+  };
+
+  const select = (key) => {
+    for (const k of Object.keys(tabs)) {
+      const on = k === key;
+      tabs[k].setAttribute('aria-selected', String(on));
+      tabs[k].tabIndex = on ? 0 : -1;
+      panes[k].hidden = !on;
+    }
+    if (key === 'page') loadProfile();
+    try {
+      localStorage.setItem('vtp-acct-tab', key);
+    } catch {
+      // Trình duyệt chặn lưu trữ: chỉ không nhớ thẻ.
+    }
+  };
+  tabs.me.addEventListener('click', () => select('me'));
+  tabs.page.addEventListener('click', () => select('page'));
+
+  // Mặc định: đang ở trang thiết lập donate thì mở thẻ Trang; còn lại theo lần chọn trước.
+  const donatePages = ['profile', 'bank', 'donations', 'overlay'];
+  let initial = donatePages.includes(document.body.dataset.dash) ? 'page' : 'me';
+  if (!document.body.dataset.dash) {
+    try {
+      if (localStorage.getItem('vtp-acct-tab') === 'page') initial = 'page';
+    } catch {
+      // bỏ qua
+    }
+  }
+  select(initial);
+
+  // Đánh dấu mục ứng với trang đang mở.
+  const here = window.location.pathname.split('/').pop() || 'index.html';
+  panel.querySelectorAll('a.acct-item').forEach((a) => {
+    if (a.getAttribute('href') === here) a.setAttribute('aria-current', 'page');
+  });
+}
+
 // --- Trang donations.html: donate của streamer + duyệt/ẩn khoản cần xem (cần đăng nhập, không cần 2FA) ---
 const donationList = document.getElementById('donationList');
 const reviewList = document.getElementById('reviewList');
@@ -1490,11 +1588,29 @@ if (authButtons) {
 
           <div class="user-menu">
             <button type="button" class="avatar-btn" id="avatarBtn" aria-label="Tài khoản" aria-expanded="false" style="background-color:${color.bg};color:${color.fg}">${escapeHtml(avatarInitial(email))}</button>
-            <div class="dropdown-panel" id="userPanel" hidden>
-              <div class="dropdown-email">${escapeHtml(email)}</div>
-              <a class="dropdown-item" href="profile.html">Thiết lập trang donate</a>
-              <a class="dropdown-item" href="security.html">Tài khoản &amp; bảo mật</a>
-              <button type="button" class="dropdown-item" id="logoutBtn">Đăng xuất</button>
+            <div class="dropdown-panel acct-panel" id="userPanel" hidden>
+              <div class="acct-tabs" role="tablist" aria-label="Menu tài khoản">
+                <button type="button" class="acct-tab" role="tab" id="acctTabMe" aria-controls="acctMe" aria-selected="true">${acctIcon('user')}Cá nhân</button>
+                <button type="button" class="acct-tab" role="tab" id="acctTabPage" aria-controls="acctPage" aria-selected="false">${acctIcon('store')}Trang</button>
+              </div>
+              <div class="acct-pane" id="acctMe" role="tabpanel" aria-labelledby="acctTabMe">
+                <div class="acct-email">${escapeHtml(email)}</div>
+                <div class="acct-group">Tài khoản cá nhân</div>
+                <a class="acct-item" href="security.html">${acctIcon('shield')}<span>Tài khoản &amp; bảo mật</span></a>
+                <button type="button" class="acct-item" id="logoutBtn">${acctIcon('logout')}<span>Đăng xuất</span></button>
+              </div>
+              <div class="acct-pane" id="acctPage" role="tabpanel" aria-labelledby="acctTabPage" hidden>
+                <a class="acct-card" id="acctCard" href="profile.html">
+                  <span class="acct-avatar" id="acctAvatar" aria-hidden="true">·</span>
+                  <span class="acct-card-meta"><strong id="acctName">Trang của bạn</strong><span id="acctHandle">Đang tải…</span></span>
+                </a>
+                <div class="acct-group">Thiết lập trang donate</div>
+                <a class="acct-item" href="profile.html">${acctIcon('profile')}<span>Hồ sơ trang</span></a>
+                <a class="acct-item" href="bank-account.html">${acctIcon('bank')}<span>Ngân hàng</span></a>
+                <a class="acct-item" href="donations.html">${acctIcon('list')}<span>Lịch sử donate</span></a>
+                <a class="acct-item" href="overlay-settings.html">${acctIcon('screen')}<span>Overlay OBS</span></a>
+                <a class="acct-item" id="acctView" href="profile.html" hidden>${acctIcon('eye')}<span>Xem trang donate</span></a>
+              </div>
             </div>
           </div>
         </div>
@@ -1527,6 +1643,8 @@ if (authButtons) {
       document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') closeAllPanels();
       });
+
+      setupAccountMenu();
 
       document.getElementById('logoutBtn').addEventListener('click', async () => {
         try {

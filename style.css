@@ -1418,3 +1418,45 @@ html[data-motion="off"] .reveal { opacity: 1 !important; transform: none !import
 /* Bước 2FA: mã dự phòng qua email */
 .mfa-hint { margin: 12px 0 0; color: var(--ink-3); font-size: 0.92rem; }
 .mfa-email-btn { margin-top: 10px; width: 100%; }
+
+/* Menu tài khoản kiểu Zypage: hai thẻ Cá nhân / Trang (auth.js → setupAccountMenu). Màu theo website. */
+.dropdown-panel.acct-panel { width: 320px; padding: 12px; }
+.acct-tabs {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 16px;
+  background: var(--plate-2); box-shadow: inset 0 0 0 1px var(--line);
+}
+.acct-tab {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; border: 0; border-radius: 12px;
+  background: transparent; color: var(--ink-2); font: 600 0.98rem/1 var(--font-text); cursor: pointer; transition: background 0.18s, color 0.18s;
+}
+.acct-tab:hover { color: var(--ink); }
+.acct-tab[aria-selected="true"] { background: var(--orange); color: #fff; box-shadow: 0 6px 14px -8px rgba(255, 90, 31, 0.9); }
+.acct-tab:focus-visible, .acct-item:focus-visible, .acct-card:focus-visible { outline: 2px solid var(--orange-deep); outline-offset: 2px; }
+.acct-pane { padding: 6px 4px 2px; }
+.acct-email { font-size: 0.88rem; color: var(--ink-3); padding: 10px 10px 2px; word-break: break-all; }
+.acct-group {
+  font: 700 0.74rem/1 var(--font-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3);
+  padding: 16px 10px 8px;
+}
+.acct-item {
+  display: flex; align-items: center; gap: 14px; width: 100%; min-height: 46px; padding: 0 10px; border: 0; border-radius: 12px;
+  background: transparent; color: var(--ink); font: 500 1rem/1.2 var(--font-text); text-align: left; text-decoration: none; cursor: pointer;
+}
+.acct-item:hover { background: var(--plate-2); }
+.acct-item[aria-current="page"] { background: #fff; font-weight: 700; box-shadow: 0 0 0 1px var(--line); }
+.acct-ic { width: 22px; height: 22px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; color: var(--ink-3); }
+.acct-item:hover .acct-ic, .acct-item[aria-current="page"] .acct-ic, .acct-tab .acct-ic { color: inherit; }
+.acct-tab .acct-ic { width: 20px; height: 20px; }
+.acct-card {
+  display: flex; align-items: center; gap: 12px; margin: 8px 0 0; padding: 10px; border-radius: 14px; background: #fff;
+  box-shadow: 0 0 0 1px var(--line); color: inherit; text-decoration: none;
+}
+.acct-card:hover { box-shadow: 0 0 0 1px var(--orange); }
+.acct-avatar {
+  width: 42px; height: 42px; border-radius: 50%; flex: none; display: grid; place-items: center; object-fit: cover;
+  background: var(--orange); color: #fff; font: 800 1.05rem/1 var(--font-display);
+}
+.acct-card-meta { display: grid; gap: 2px; min-width: 0; }
+.acct-card-meta strong { font: 700 0.98rem/1.2 var(--font-display); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.acct-card-meta span { font-size: 0.85rem; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 560px) { .dropdown-panel.acct-panel { width: min(320px, calc(100vw - 32px)); } }

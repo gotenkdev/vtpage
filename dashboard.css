@@ -100,3 +100,8 @@
 .dash-main .settings-card > h1.auth-title { display: none; }
 /* Tiêu đề phụ trong thẻ (vd "Đổi mật khẩu"): nhỏ lại cho hợp khung thiết lập. */
 .dash-main .settings-card h2.auth-title { font-size: clamp(1.25rem, 2vw, 1.5rem); letter-spacing: -0.01em; }
+/* Thanh bên dạng hai thẻ (Cá nhân / Trang). */
+.dash-side .acct-tabs { margin-bottom: 4px; }
+.dash-pane { display: grid; gap: 4px; }
+.dash-pane[hidden] { display: none; }
+.dash-pane .dash-page-card { margin-top: 8px; }
