@@ -1462,11 +1462,8 @@ if (authButtons) {
             <button type="button" class="avatar-btn" id="avatarBtn" aria-label="Tài khoản" aria-expanded="false" style="background-color:${color.bg};color:${color.fg}">${escapeHtml(avatarInitial(email))}</button>
             <div class="dropdown-panel" id="userPanel" hidden>
               <div class="dropdown-email">${escapeHtml(email)}</div>
-              <a class="dropdown-item" href="profile.html">Hồ sơ</a>
-              <a class="dropdown-item" href="security.html">Bảo mật</a>
-              <a class="dropdown-item" href="bank-account.html">Ngân hàng</a>
-              <a class="dropdown-item" href="donations.html">Donate</a>
-              <a class="dropdown-item" href="overlay-settings.html">Overlay</a>
+              <a class="dropdown-item" href="profile.html">Thiết lập trang donate</a>
+              <a class="dropdown-item" href="security.html">Tài khoản &amp; bảo mật</a>
               <button type="button" class="dropdown-item" id="logoutBtn">Đăng xuất</button>
             </div>
           </div>

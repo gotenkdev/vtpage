@@ -1,0 +1,102 @@
+/* Khung "Thiết lập trang" (bố cục kiểu Zypage, màu/phông của website). Dùng cho profile, bank-account, donations,
+   overlay-settings, security. dashboard.js dựng thanh bên và bọc <main class="settings"> sẵn có — không đổi nội dung trang. */
+.dash {
+  --dash-side: 272px;
+  display: grid; grid-template-columns: var(--dash-side) minmax(0, 1fr); gap: clamp(20px, 3vw, 36px);
+  width: 100%; max-width: 1240px; margin-inline: auto; padding: clamp(18px, 3vw, 32px) var(--gutter) clamp(48px, 6vw, 80px);
+  align-items: start;
+}
+
+/* ---- Thanh bên ---- */
+.dash-side {
+  position: sticky; top: 88px; display: grid; align-content: start; gap: 6px; padding: 14px; border-radius: 22px;
+  background: var(--slot); border: 1px solid rgba(20, 22, 26, 0.07);
+  box-shadow: 0 1px 2px rgba(20, 22, 26, 0.04), 0 16px 40px -24px rgba(20, 22, 26, 0.25);
+  max-height: calc(100vh - 110px); overflow-y: auto;
+}
+.dash-group-title {
+  font: 700 0.78rem/1 var(--font-label); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3);
+  padding: 14px 12px 6px;
+}
+.dash-group-title:first-child { padding-top: 6px; }
+.dash-link {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 12px; border-radius: 12px; border: 0;
+  background: none; color: var(--ink-2); font: 500 0.97rem/1.2 var(--font-text); text-align: left; text-decoration: none; cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+}
+.dash-link:hover { background: var(--plate); color: var(--ink); }
+.dash-link[aria-current="page"] { background: #fff; color: var(--ink); font-weight: 700; box-shadow: 0 0 0 1px rgba(20, 22, 26, 0.06), 0 6px 14px -8px rgba(20, 22, 26, 0.3); }
+.dash-link[aria-current="page"] .dash-ic { color: var(--orange-deep); }
+.dash-link.is-soon { color: var(--ink-3); cursor: default; }
+.dash-link.is-soon:hover { background: none; }
+.dash-ic { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.dash-link .grow { flex: 1; }
+.dash-pill { font: 600 0.72rem/1 var(--font-text); padding: 4px 8px; border-radius: 99px; background: var(--plate-2); color: var(--ink-3); }
+
+/* Thẻ trang của bạn */
+.dash-page-card {
+  display: flex; align-items: center; gap: 12px; padding: 12px; margin: 2px 0 6px; border-radius: 16px;
+  background: #fff; border: 1px solid rgba(20, 22, 26, 0.07); text-decoration: none; color: inherit;
+}
+.dash-avatar {
+  width: 44px; height: 44px; border-radius: 50%; flex: none; object-fit: cover; display: grid; place-items: center;
+  background: var(--orange); color: #fff; font: 800 1.1rem/1 var(--font-display); overflow: hidden;
+}
+.dash-page-meta { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.dash-page-meta strong { font: 700 0.98rem/1.2 var(--font-display); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dash-page-meta span { color: var(--ink-3); font-size: 0.85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dash-view {
+  width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; color: var(--ink-2); flex: none;
+  background: var(--plate); text-decoration: none;
+}
+.dash-view:hover { background: var(--orange); color: #fff; }
+
+/* Nhóm mở/đóng (Trang donate) */
+.dash-sub { display: grid; gap: 2px; margin: 2px 0 4px 20px; padding-left: 12px; border-left: 2px solid var(--plate-2); }
+.dash-sub .dash-link { padding: 9px 12px; font-size: 0.93rem; }
+.dash-toggle .dash-chev { transition: transform 0.25s var(--ease-out); }
+.dash-toggle[aria-expanded="false"] .dash-chev { transform: rotate(-90deg); }
+
+/* ---- Nội dung ---- */
+.dash-main { min-width: 0; display: grid; gap: 18px; }
+.dash-head {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px;
+  padding: 20px 24px; border-radius: 22px; background: #fff; border: 1px solid rgba(20, 22, 26, 0.07);
+}
+.dash-crumbs { color: var(--ink-3); font-size: 0.88rem; margin-bottom: 4px; }
+.dash-head h1 { margin: 0; font: 800 clamp(1.4rem, 2.4vw, 1.9rem)/1.1 var(--font-display); letter-spacing: -0.02em; }
+.dash-head p { margin: 6px 0 0; color: var(--ink-3); max-width: 60ch; }
+.dash-tabs { display: flex; gap: 4px; padding: 4px; border-radius: 14px; background: var(--plate); flex-wrap: wrap; }
+.dash-tabs a {
+  padding: 8px 14px; border-radius: 10px; font: 600 0.9rem/1 var(--font-text); color: var(--ink-2); text-decoration: none; white-space: nowrap;
+}
+.dash-tabs a:hover { background: rgba(255, 255, 255, 0.7); }
+.dash-tabs a[aria-current="page"] { background: var(--orange); color: #fff; }
+.dash-menu-btn { display: none; }
+.dash-scrim { display: none; }
+
+/* Trang cũ (<main class="settings">) nằm trong khung: bỏ khoảng đệm/độ rộng riêng của nó. */
+.dash-main main.settings { min-height: 0; padding: 0; }
+.dash-main main.settings .wrap { max-width: none; padding: 0; display: grid; gap: 18px; }
+.dash-main .settings-card { margin: 0; max-width: none; }
+
+@media (max-width: 960px) {
+  .dash { grid-template-columns: 1fr; }
+  .dash-side {
+    position: fixed; z-index: 60; top: 0; left: 0; bottom: 0; width: min(86vw, 320px); max-height: none; border-radius: 0 22px 22px 0;
+    transform: translateX(-104%); transition: transform 0.3s var(--ease-out);
+  }
+  .dash.is-open .dash-side { transform: none; }
+  .dash-scrim { display: block; position: fixed; inset: 0; z-index: 55; background: rgba(20, 22, 26, 0.35); opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+  .dash.is-open .dash-scrim { opacity: 1; pointer-events: auto; }
+  .dash-menu-btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 12px; border: 1px solid rgba(20, 22, 26, 0.12);
+    background: #fff; font: 600 0.92rem/1 var(--font-text); color: var(--ink); cursor: pointer;
+  }
+  .dash-head { padding: 16px 18px; }
+}
+.dash-page-main { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; color: inherit; text-decoration: none; }
+/* Đầu trang của khung đã có tiêu đề: ẩn tiêu đề h1 cũ trong thẻ đầu tiên của từng trang. */
+.dash-main .settings-card > h1.auth-title { display: none; }
+/* Tiêu đề phụ trong thẻ (vd "Đổi mật khẩu"): nhỏ lại cho hợp khung thiết lập. */
+.dash-main .settings-card h2.auth-title { font-size: clamp(1.25rem, 2vw, 1.5rem); letter-spacing: -0.01em; }
