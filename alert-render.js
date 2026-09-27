@@ -39,10 +39,10 @@
   // Giao diện "Cổ điển" dùng hiệu ứng/màu tùy chỉnh; các giao diện khác tự có hiệu ứng riêng.
   const isClassic = (theme) => theme.startsWith('classic_');
 
-  // ---- 19 âm thanh có sẵn: bộ của Zypage (dùng theo sự cho phép của Zypage), ở /assets/donate/zypage/sndNN.mp3 ----
+  // ---- 19 âm thanh có sẵn: bộ âm thanh có sẵn của VT Page, ở /assets/donate/vtpage/sndNN.mp3 ----
   const SOUNDS = Array.from({ length: 19 }, (_, i) => {
     const n = String(i + 1).padStart(2, '0');
-    return ['Âm thanh ' + (i + 1), '/assets/donate/zypage/snd' + n + '.mp3'];
+    return ['Âm thanh ' + (i + 1), '/assets/donate/vtpage/snd' + n + '.mp3'];
   });
 
 

@@ -1,9 +1,9 @@
-/* Trang Cài đặt Donate (overlay-settings.html) kiểu Zypage, màu website. Dùng lại .pe-card, .pe-bar, .switch, .pay-check. */
+/* Trang Cài đặt Donate (overlay-settings.html) kiểu VT Page, màu website. Dùng lại .pe-card, .pe-bar, .switch, .pay-check. */
 .ds { display: grid; gap: 14px; }
 .ds[hidden] { display: none; }
 .ds-tabs { display: flex; gap: 4px; padding: 4px; border-radius: 14px; background: #fff; border: 1px solid rgba(20, 22, 26, 0.07); overflow-x: auto; }
 .ds-tab { padding: 11px 18px; border: 0; border-radius: 10px; background: none; font: 600 0.95rem/1 var(--font-text); color: var(--ink-2); cursor: pointer; white-space: nowrap; }
-.ds-tab[aria-selected="true"] { background: var(--orange); color: #fff; }
+.ds-tab[aria-selected="true"] { background: var(--orange); color: var(--ink); }
 .ds-tab:disabled { cursor: default; color: var(--ink-3); }
 .ds-tab small { margin-left: 4px; font-size: 0.72rem; padding: 2px 6px; border-radius: 99px; background: var(--plate-2); }
 .ds-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 420px); gap: 14px; align-items: start; }
@@ -26,7 +26,7 @@
 .ds-switch-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; }
 .ds-switch-row .pe-sub { margin: 4px 0 0; }
 .ds-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.ds-media-box { display: grid; place-items: center; min-height: 160px; border-radius: 14px; background: repeating-conic-gradient(#eceef2 0 25%, #fff 0 50%) 0 0 / 20px 20px; border: 1px solid var(--line); }
+.ds-media-box { display: grid; place-items: center; min-height: 160px; padding: 14px; border-radius: 14px; background: repeating-conic-gradient(#eceef2 0 25%, #fff 0 50%) 0 0 / 20px 20px; border: 1px solid var(--line); }
 .ds-media-box img { max-width: 100%; max-height: 220px; }
 .ds-sounds { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; }
 .ds-sound { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border-radius: 12px; border: 1px solid rgba(20, 22, 26, 0.1); background: #fff; cursor: pointer; font-size: 0.88rem; }
@@ -35,7 +35,7 @@
 .ds-sound input { accent-color: var(--orange); }
 .ds-sound span { flex: 1; min-width: 0; }
 .ds-play { width: 28px; height: 28px; flex: none; border: 0; border-radius: 50%; background: var(--plate-2); color: var(--ink); cursor: pointer; font-size: 0.7rem; }
-.ds-play:hover { background: var(--orange); color: #fff; }
+.ds-play:hover { background: var(--orange); color: var(--ink); }
 .ds-tags { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px; border-radius: 12px; border: 1px solid rgba(20, 22, 26, 0.16); background: #fff; }
 .ds-tags input { flex: 1; min-width: 160px; border: 0 !important; box-shadow: none !important; padding: 6px; background: transparent; }
 .ds-tag { display: inline-flex; align-items: center; gap: 4px; padding: 5px 6px 5px 10px; border-radius: 99px; background: var(--plate-2); font-size: 0.86rem; }

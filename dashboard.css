@@ -1,4 +1,4 @@
-/* Khung "Thiết lập trang" (bố cục kiểu Zypage, màu/phông của website). Dùng cho profile, bank-account, donations,
+/* Khung "Thiết lập trang" (bố cục kiểu VT Page, màu/phông của website). Dùng cho profile, bank-account, donations,
    overlay-settings, security. dashboard.js dựng thanh bên và bọc <main class="settings"> sẵn có — không đổi nội dung trang. */
 .dash {
   --dash-side: 272px;
@@ -40,7 +40,7 @@
 }
 .dash-avatar {
   width: 44px; height: 44px; border-radius: 50%; flex: none; object-fit: cover; display: grid; place-items: center;
-  background: var(--orange); color: #fff; font: 800 1.1rem/1 var(--font-display); overflow: hidden;
+  background: var(--orange); color: var(--ink); font: 800 1.1rem/1 var(--font-display); overflow: hidden;
 }
 .dash-page-meta { flex: 1; min-width: 0; display: grid; gap: 2px; }
 .dash-page-meta strong { font: 700 0.98rem/1.2 var(--font-display); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -49,7 +49,7 @@
   width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; color: var(--ink-2); flex: none;
   background: var(--plate); text-decoration: none;
 }
-.dash-view:hover { background: var(--orange); color: #fff; }
+.dash-view:hover { background: var(--orange); color: var(--ink); }
 
 /* Nhóm mở/đóng (Trang donate) */
 .dash-sub { display: grid; gap: 2px; margin: 2px 0 4px 20px; padding-left: 12px; border-left: 2px solid var(--plate-2); }
@@ -71,7 +71,7 @@
   padding: 8px 14px; border-radius: 10px; font: 600 0.9rem/1 var(--font-text); color: var(--ink-2); text-decoration: none; white-space: nowrap;
 }
 .dash-tabs a:hover { background: rgba(255, 255, 255, 0.7); }
-.dash-tabs a[aria-current="page"] { background: var(--orange); color: #fff; }
+.dash-tabs a[aria-current="page"] { background: var(--orange); color: var(--ink); }
 .dash-menu-btn { display: none; }
 .dash-scrim { display: none; }
 
@@ -106,7 +106,7 @@
 .dash-pane[hidden] { display: none; }
 .dash-pane .dash-page-card { margin-top: 8px; }
 
-/* ---- Thiết lập hồ sơ trang (profile.html + profile-editor.js), kiểu Zypage, màu website ---- */
+/* ---- Thiết lập hồ sơ trang (profile.html + profile-editor.js), kiểu VT Page, màu website ---- */
 .pe { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 18px; align-items: start; }
 .pe[hidden] { display: none; }
 .pe-main { display: grid; gap: 14px; min-width: 0; }
@@ -116,7 +116,7 @@
   font: 600 0.93rem/1 var(--font-text); color: var(--ink-2);
 }
 .pe-tab:hover { background: var(--plate); }
-.pe-tab[aria-selected="true"] { background: var(--orange); color: #fff; }
+.pe-tab[aria-selected="true"] { background: var(--orange); color: var(--ink); }
 .pe-tab:focus-visible { outline: 2px solid var(--orange-deep); outline-offset: 2px; }
 .pe-card { display: grid; gap: 16px; padding: 22px 24px; border-radius: 22px; background: #fff; border: 1px solid rgba(20, 22, 26, 0.07); }
 .pe-card[hidden] { display: none; }
@@ -133,7 +133,7 @@
 .pe-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .pe-avatar-wrap { position: absolute; left: 20px; bottom: 0; }
 .pe-avatar { width: 88px; height: 88px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 6px 16px -8px rgba(20, 22, 26, 0.5); }
-.pe-avatar-fallback { display: grid; place-items: center; background: var(--orange); color: #fff; font: 800 2rem/1 var(--font-display); }
+.pe-avatar-fallback { display: grid; place-items: center; background: var(--orange); color: var(--ink); font: 800 2rem/1 var(--font-display); }
 .pe-avatar-fallback[hidden], .pe-avatar[hidden] { display: none; }
 .pe-media-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .pe-media-actions > div { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
@@ -156,7 +156,7 @@
   font: 500 0.9rem/1 var(--font-text); color: var(--ink-2); transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 .pe-tag:hover span { border-color: var(--orange); }
-.pe-tag input:checked + span { background: var(--orange); border-color: var(--orange); color: #fff; }
+.pe-tag input:checked + span { background: var(--orange); border-color: var(--orange); color: var(--ink); }
 .pe-tag input:disabled + span { opacity: 0.45; }
 .pe-tag input:focus-visible + span { outline: 2px solid var(--orange-deep); outline-offset: 2px; }
 .pe-socials { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; }
@@ -170,7 +170,7 @@
 .pv-cover { aspect-ratio: 4 / 1; background-size: cover; background-position: center; }
 .pv-cover.is-empty { background: linear-gradient(120deg, #ffb48f, var(--orange)); }
 .pv-body { display: grid; justify-items: center; gap: 6px; padding: 0 16px 18px; text-align: center; }
-.pv-avatar { width: 72px; height: 72px; margin-top: -36px; border-radius: 50%; border: 4px solid var(--plate); overflow: hidden; display: grid; place-items: center; background: var(--orange); color: #fff; font: 800 1.6rem/1 var(--font-display); }
+.pv-avatar { width: 72px; height: 72px; margin-top: -36px; border-radius: 50%; border: 4px solid var(--plate); overflow: hidden; display: grid; place-items: center; background: var(--orange); color: var(--ink); font: 800 1.6rem/1 var(--font-display); }
 .pv-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .pv-name { font: 800 1.15rem/1.2 var(--font-display); overflow-wrap: anywhere; }
 .pv-handle { color: var(--ink-3); font-size: 0.88rem; }
@@ -212,7 +212,7 @@
 }
 @media (max-width: 560px) { .pe-bar { margin-left: 52px; } }
 
-/* ---- Trang Thanh toán (bank-account.html) kiểu Zypage, màu website ---- */
+/* ---- Trang Thanh toán (bank-account.html) kiểu VT Page, màu website ---- */
 .pay-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
 .pay-card { display: grid; gap: 14px; padding: 18px 20px; border-radius: 18px; background: #fff; border: 1px solid rgba(20, 22, 26, 0.08); }
 .pay-card-top { display: flex; align-items: flex-start; gap: 14px; }
@@ -276,7 +276,7 @@
   .pay-actions-col { grid-row: 1; grid-column: 2; }
 }
 
-/* Khung thiết lập Ngân hàng · SePay (kiểu Zypage) */
+/* Khung thiết lập Ngân hàng · SePay (kiểu VT Page) */
 .pay-panel-head { align-items: flex-start; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
 .pay-box { display: grid; gap: 14px; margin-top: 14px; padding: 18px 20px; border-radius: 16px; background: var(--plate); border: 1px solid var(--line); }
 .pay-box .form-field { margin: 0; }

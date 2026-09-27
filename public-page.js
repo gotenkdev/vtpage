@@ -1,5 +1,5 @@
 /*
- * Trang người xem (u.html, vtpage.com/<username>) kiểu Zypage: nút Nhắn tin (sắp có) / Theo dõi / Thông tin, ba tab Donate /
+ * Trang người xem (u.html, vtpage.com/<username>) kiểu VT Page: nút Nhắn tin (sắp có) / Theo dõi / Thông tin, ba tab Donate /
  * Phát nhạc / Mục tiêu, Bảng xếp hạng Ngày/Tháng/Tổng, danh sách Gần đây. Luồng tạo đơn, QR, ghi âm vẫn ở auth.js.
  * Mọi dữ liệu người dùng (tên, lời nhắn) vào trang bằng textContent.
  */
@@ -86,7 +86,7 @@
       $('vpGoalNote').textContent = goal.note;
       $('vpGoalNote').hidden = !goal.note;
       $('vpGoalPct').textContent = Math.floor(pct) + '%';
-      $('vpGoalFill').style.width = pct.toFixed(2) + '%';
+      $('vpGoalFill').style.setProperty('--p', (pct / 100).toFixed(4));
       $('vpGoalRaised').textContent = vnd(goal.raised);
       $('vpGoalTarget').textContent = vnd(goal.targetAmount);
       $('vpGoalCount').textContent = goal.count + ' lượt ủng hộ';

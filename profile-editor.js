@@ -1,5 +1,5 @@
 /*
- * Thiết lập hồ sơ trang (/profile) theo kiểu Zypage: ba thẻ (Diện mạo & giới thiệu / Phân loại & tags / Mạng xã hội),
+ * Thiết lập hồ sơ trang (/profile) theo kiểu VT Page: ba thẻ (Diện mạo & giới thiệu / Phân loại & tags / Mạng xã hội),
  * bản xem trước cập nhật ngay khi gõ, thanh Hoàn tác / Cập nhật. auth.js tải hồ sơ rồi phát sự kiện 'vtp:profile'.
  * Mọi nội dung người dùng được đưa vào trang bằng textContent (không innerHTML) — xem đúng như chữ đã nhập.
  * Trên u.html file này chỉ cung cấp window.VTProfileMeta. DANH SÁCH phân loại/tags/mạng xã hội phải khớp backend (src/profiles/profile.schemas.ts).

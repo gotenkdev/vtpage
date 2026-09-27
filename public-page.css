@@ -1,4 +1,4 @@
-/* Trang người xem (u.html) bố cục kiểu Zypage, style VT Page: nền sáng, cam, bo tròn lớn. Nạp SAU style.css để ghi đè. */
+/* Trang người xem (u.html) bố cục kiểu VT Page, style VT Page: nền sáng, cam, bo tròn lớn. Nạp SAU style.css để ghi đè. */
 .donate-page .wrap { max-width: 1180px; }
 .vp { display: grid; gap: 18px; }
 .vp[hidden] { display: none; }
@@ -39,7 +39,7 @@
 .vp-goal-head { display: flex; justify-content: space-between; gap: 10px; font-size: 1.05rem; }
 .vp-goal-head span { font-weight: 800; color: var(--orange-deep); }
 .vp-goal-bar { height: 12px; border-radius: 99px; background: rgba(20, 22, 26, 0.08); overflow: hidden; }
-.vp-goal-bar i { display: block; height: 100%; width: 0; border-radius: 99px; background: linear-gradient(90deg, var(--orange), #ff2e7e); transition: width 0.8s var(--ease-out); }
+.vp-goal-bar i { display: block; height: 100%; width: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--orange), #ff2e7e); transform: scaleX(var(--p, 0)); transform-origin: left; transition: transform 0.8s var(--ease-out); }
 .vp-goal-figures { display: flex; justify-content: space-between; gap: 10px; font-size: 0.9rem; color: var(--ink-2); }
 
 /* Bảng xếp hạng */
@@ -90,3 +90,5 @@
 .vp .amount-presets { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .vp .amount-preset { min-width: 0; padding-inline: 6px; }
 @media (max-width: 420px) { .vp-tab { padding-inline: 6px; font-size: 0.9rem; } }
+
+#recStop:hover { color: #fff; background: #c81e1e; border-color: #c81e1e; }

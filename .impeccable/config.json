@@ -43,13 +43,22 @@
         "rule": "bounce-easing",
         "value": "bouncein",
         "createdAt": "2026-09-27T10:07:35.380Z",
-        "reason": "Người dùng yêu cầu chép đủ tính năng Cài đặt Donate của Zypage; bounceIn/bounceOut là mặc định và lựa chọn hiệu ứng chuẩn của Zypage cho thông báo trên OBS, không phải giao diện website"
+        "reason": "Người dùng yêu cầu bộ hiệu ứng thông báo OBS đầy đủ; bounceIn/bounceOut là mặc định và lựa chọn hiệu ứng chuẩn cho thông báo trên OBS, không phải giao diện website"
       },
       {
         "rule": "bounce-easing",
         "value": "bounceout",
         "createdAt": "2026-09-27T10:07:35.403Z",
-        "reason": "Người dùng yêu cầu chép đủ tính năng Cài đặt Donate của Zypage; bounceIn/bounceOut là mặc định và lựa chọn hiệu ứng chuẩn của Zypage cho thông báo trên OBS, không phải giao diện website"
+        "reason": "Người dùng yêu cầu bộ hiệu ứng thông báo OBS đầy đủ; bounceIn/bounceOut là mặc định và lựa chọn hiệu ứng chuẩn cho thông báo trên OBS, không phải giao diện website"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "profile.html"
+        ],
+        "createdAt": "2026-09-27T11:05:59.626Z",
+        "reason": "Claude đã kiểm tra: ô nhập bên trong .pe-prefixed có đệm riêng; khung chỉ là viền nhóm tiền tố + ô nhập"
       }
     ]
   }

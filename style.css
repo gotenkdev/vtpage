@@ -15,7 +15,7 @@
   --ink-2: #383D48;
   --ink-3: #586070;
   --orange: #FF5A1F;
-  --orange-deep: #E04310;
+  --orange-deep: #B8370C;
   --orange-face: #E24812;
   --cobalt: #2450F5;
   --led-amber: #FF9548;
@@ -1267,7 +1267,7 @@ html[data-motion="off"] .reveal { opacity: 1 !important; transform: none !import
 .guide-text strong { font: 700 1.08rem/1.3 var(--font-display); letter-spacing: -0.01em; color: var(--ink); }
 .guide-text span { color: var(--ink-3); font-size: 0.95rem; line-height: 1.5; max-height: 0; opacity: 0; overflow: hidden; transition: opacity 0.4s; }
 .guide-step.is-active .guide-step-btn { background: #fff; border-color: rgba(20, 22, 26, 0.06); box-shadow: 0 1px 2px rgba(20, 22, 26, 0.04), 0 18px 40px -18px rgba(20, 22, 26, 0.22); }
-.guide-step.is-active .guide-num { background: var(--orange); color: #fff; transform: scale(1.06); }
+.guide-step.is-active .guide-num { background: var(--orange); color: var(--ink); transform: scale(1.06); }
 .guide-step.is-active .guide-text span { max-height: 6em; opacity: 1; }
 /* Thanh tiến độ của bước đang chạy */
 .guide-step-btn::after {
@@ -1371,7 +1371,7 @@ html[data-motion="off"] .reveal { opacity: 1 !important; transform: none !import
 .gs-app-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .gs-app-tile { display: grid; justify-items: center; gap: 6px; padding: 12px 6px; border-radius: 12px; background: var(--plate); font-size: 0.85em; font-weight: 600; color: var(--ink-2); }
 .gs-app-tile i, .gs-app-tile svg { width: 2.2em; height: 2.2em; border-radius: 10px; background: var(--plate-2); }
-.gs-app-tile.is-qr { background: var(--orange); color: #fff; box-shadow: 0 8px 18px -8px rgba(255, 90, 31, 0.8); animation: gs-pulse 1.4s ease-in-out infinite; }
+.gs-app-tile.is-qr { background: var(--orange); color: var(--ink); box-shadow: 0 8px 18px -8px rgba(255, 90, 31, 0.8); animation: gs-pulse 1.4s ease-in-out infinite; }
 .gs-app-tile.is-qr svg { background: #fff; padding: 4px; color: var(--ink); }
 @keyframes gs-pulse { 50% { transform: scale(1.05); } }
 
@@ -1393,7 +1393,7 @@ html[data-motion="off"] .reveal { opacity: 1 !important; transform: none !import
 .gs-cf-row span { font-size: 0.8em; color: var(--ink-3); }
 .gs-cf-row strong { font-size: 0.95em; word-break: break-all; }
 .gs-cf-row strong.is-money { font: 800 1.35em/1.1 var(--font-display); color: var(--orange-deep); }
-.gs-cf-btn { margin-top: 8px; padding: 12px; border-radius: 99px; text-align: center; font-weight: 700; color: #fff; background: var(--orange); }
+.gs-cf-btn { margin-top: 8px; padding: 12px; border-radius: 99px; text-align: center; font-weight: 700; color: var(--ink); background: var(--orange); }
 
 .gs-view-done { place-items: center; align-content: center; gap: 8px; text-align: center; background: linear-gradient(180deg, #effaf3, #fff 60%); }
 .gs-done-check { display: grid; place-items: center; width: 4.2em; height: 4.2em; border-radius: 50%; background: #16803c; color: #fff; box-shadow: 0 10px 24px -10px rgba(22,128,60,.8); }
@@ -1419,7 +1419,7 @@ html[data-motion="off"] .reveal { opacity: 1 !important; transform: none !import
 .mfa-hint { margin: 12px 0 0; color: var(--ink-3); font-size: 0.92rem; }
 .mfa-email-btn { margin-top: 10px; width: 100%; }
 
-/* Menu tài khoản kiểu Zypage: hai thẻ Cá nhân / Trang (auth.js → setupAccountMenu). Màu theo website. */
+/* Menu tài khoản kiểu VT Page: hai thẻ Cá nhân / Trang (auth.js → setupAccountMenu). Màu theo website. */
 .dropdown-panel.acct-panel { width: 320px; padding: 12px; }
 .acct-tabs {
   display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 16px;
@@ -1430,7 +1430,7 @@ html[data-motion="off"] .reveal { opacity: 1 !important; transform: none !import
   background: transparent; color: var(--ink-2); font: 600 0.98rem/1 var(--font-text); cursor: pointer; transition: background 0.18s, color 0.18s;
 }
 .acct-tab:hover { color: var(--ink); }
-.acct-tab[aria-selected="true"] { background: var(--orange); color: #fff; box-shadow: 0 6px 14px -8px rgba(255, 90, 31, 0.9); }
+.acct-tab[aria-selected="true"] { background: var(--orange); color: var(--ink); box-shadow: 0 6px 14px -8px rgba(255, 90, 31, 0.9); }
 .acct-tab:focus-visible, .acct-item:focus-visible, .acct-card:focus-visible { outline: 2px solid var(--orange-deep); outline-offset: 2px; }
 .acct-pane { padding: 6px 4px 2px; }
 .acct-email { font-size: 0.88rem; color: var(--ink-3); padding: 10px 10px 2px; word-break: break-all; }
@@ -1454,7 +1454,7 @@ html[data-motion="off"] .reveal { opacity: 1 !important; transform: none !import
 .acct-card:hover { box-shadow: 0 0 0 1px var(--orange); }
 .acct-avatar {
   width: 42px; height: 42px; border-radius: 50%; flex: none; display: grid; place-items: center; object-fit: cover;
-  background: var(--orange); color: #fff; font: 800 1.05rem/1 var(--font-display);
+  background: var(--orange); color: var(--ink); font: 800 1.05rem/1 var(--font-display);
 }
 .acct-card-meta { display: grid; gap: 2px; min-width: 0; }
 .acct-card-meta strong { font: 700 0.98rem/1.2 var(--font-display); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

@@ -447,7 +447,7 @@ if (createForm && document.getElementById('profileEditor')) {
   const DEFAULT_USERNAME_HINT =
     'vtpage.com/username — chữ, số, gạch dưới, 3-20 ký tự. Không đổi được sau khi tạo.';
 
-  // Đã có hồ sơ: ẩn thẻ tạo hồ sơ, giao cho trình sửa kiểu Zypage (profile-editor.js).
+  // Đã có hồ sơ: ẩn thẻ tạo hồ sơ, giao cho trình sửa kiểu VT Page (profile-editor.js).
   function showEdit(profile) {
     skeleton.hidden = true;
     createForm.closest('.settings-card').hidden = true;
@@ -876,7 +876,7 @@ if (bankForm && bankGate) {
     }
   }
 
-  // ---- Trang Thanh toán kiểu Zypage: công tắc Nhận donate, bảng phương thức, cửa sổ Thêm phương thức ----
+  // ---- Trang Thanh toán kiểu VT Page: công tắc Nhận donate, bảng phương thức, cửa sổ Thêm phương thức ----
   const acceptSwitch = document.getElementById('acceptSwitch');
   const bankPanel = document.getElementById('bankPanel');
   const methodRows = document.getElementById('methodRows');
@@ -1001,7 +1001,7 @@ if (bankForm && bankGate) {
     if (event.target === methodDialog) methodDialog.close();
   });
 
-  // ---- Kết nối SePay: API Key tự nhập + tài khoản ngân hàng + danh sách kiểm tra (kiểu Zypage) ----
+  // ---- Kết nối SePay: API Key tự nhập + tài khoản ngân hàng + danh sách kiểm tra (kiểu VT Page) ----
   const sepayUrl = document.getElementById('sepayUrl');
   const sepayKey = document.getElementById('sepayKey');
   const sepayState = document.getElementById('sepayState');
@@ -1261,7 +1261,7 @@ if (rotateBtn && overlayGate) {
     });
 }
 
-// --- Menu tài khoản (bấm ảnh đại diện): hai thẻ Cá nhân / Trang, kiểu Zypage ---
+// --- Menu tài khoản (bấm ảnh đại diện): hai thẻ Cá nhân / Trang, kiểu VT Page ---
 const ACCT_ICONS = {
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 20.5c1-4 4.2-6 8-6s7 2 8 6"/>',
   store: '<path d="M4 9.5 5.5 4.5h13L20 9.5"/><path d="M4 9.5a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0"/><path d="M5.5 11.5v8h13v-8"/><path d="M10 19.5v-4h4v4"/>',

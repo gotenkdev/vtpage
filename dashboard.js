@@ -1,5 +1,5 @@
 /*
- * Khung "Thiết lập trang" kiểu Zypage cho các trang cài đặt (body[data-dash]). Chỉ dựng thanh bên + đầu trang và bọc <main class="settings">
+ * Khung "Thiết lập trang" kiểu VT Page cho các trang cài đặt (body[data-dash]). Chỉ dựng thanh bên + đầu trang và bọc <main class="settings">
  * sẵn có; mọi chức năng của từng trang vẫn do auth.js xử lý như cũ.
  * THÊM MỤC: thêm vào PAGES (tiêu đề/mô tả) và vào DONATE_ITEMS hoặc PERSONAL_ITEMS.
  */
@@ -61,7 +61,7 @@
     return a;
   }
 
-  // ---- Thanh bên: hai thẻ Cá nhân / Trang (giống menu tài khoản ở đầu trang, kiểu Zypage) ----
+  // ---- Thanh bên: hai thẻ Cá nhân / Trang (giống menu tài khoản ở đầu trang, kiểu VT Page) ----
   const side = el('aside', { class: 'dash-side', 'aria-label': 'Thiết lập' });
   const tabBar = el('div', { class: 'acct-tabs', role: 'tablist', 'aria-label': 'Nhóm thiết lập' });
   const tabMe = el('button', { class: 'acct-tab', type: 'button', role: 'tab', 'aria-controls': 'dashPaneMe', id: 'dashTabMe' }, svg('user', 'acct-ic') + 'Cá nhân');

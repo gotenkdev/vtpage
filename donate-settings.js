@@ -1,5 +1,5 @@
 /*
- * Trang Cài đặt Donate (/overlay-settings), kiểu Zypage. Form gắn với tài liệu cài đặt qua data-k="nhóm.trường";
+ * Trang Cài đặt Donate (/overlay-settings), kiểu VT Page. Form gắn với tài liệu cài đặt qua data-k="nhóm.trường";
  * bản xem trước dùng CHÍNH bộ vẽ của overlay (alert-render.js) nên thấy đúng như trên OBS.
  */
 (function () {
@@ -199,7 +199,7 @@
   });
 
   // ---- Tệp media ----
-  // Lưới ảnh có sẵn: bộ Zypage (z01–z19, dùng theo sự cho phép của Zypage) và Noto Animated Emoji (CC BY 4.0).
+  // Lưới ảnh có sẵn: bộ có sẵn của VT Page (z01–z19) và Noto Animated Emoji (CC BY 4.0).
   const IMAGE_PRESETS = [
     'z01', 'z02', 'z03', 'z04', 'z05', 'z06', 'z07', 'z08', 'z09', 'z10',
     'z11', 'z12', 'z13', 'z14', 'z15', 'z16', 'z17', 'z18', 'z19',
@@ -207,7 +207,7 @@
     '1f680', '1f525', '2764_fe0f', '1f496', '1f929', '1f973', '1f60d', '1f970', '1f44f', '1f4af',
   ];
   const presetSrc = (code) =>
-    code.startsWith('z') ? '/assets/donate/zypage/img' + code.slice(1) + '.png?v=2' : '/assets/donate/img/' + code + '.webp';
+    code.startsWith('z') ? '/assets/donate/vtpage/img' + code.slice(1) + '.png?v=2' : '/assets/donate/img/' + code + '.webp';
   const presetBox = $('dsImagePresets');
   IMAGE_PRESETS.forEach((code) => {
     const b = document.createElement('button');
