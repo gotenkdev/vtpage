@@ -918,6 +918,18 @@ if (bankForm && bankGate) {
 
   function openBankPanel() {
     if (methodDialog.open) methodDialog.close();
+    // Điền sẵn thông tin tài khoản đang chờ duyệt (nếu có) hoặc đang dùng.
+    const current =
+      lastAccounts.find((a) => a.status === 'pending_review') ||
+      lastAccounts.find((a) => a.status === 'active');
+    if (current) {
+      bankCodeSelect.value = current.bankCode;
+      accountNumberInput.value = current.accountNumber || '';
+      holderNameInput.value = current.holderName;
+      prefill = { bankCode: current.bankCode, accountNumber: current.accountNumber || '', holderName: current.holderName };
+    } else {
+      prefill = null;
+    }
     bankPanel.hidden = false;
     bankPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
@@ -925,7 +937,10 @@ if (bankForm && bankGate) {
     bankPanel.hidden = true;
   });
 
+  let lastAccounts = [];
+  let prefill = null; // tài khoản đã điền sẵn khi bấm Chỉnh sửa (để không gửi lại y nguyên)
   function renderMethods(accounts) {
+    lastAccounts = accounts;
     const active = accounts.find((a) => a.status === 'active');
     const pending = accounts.find((a) => a.status === 'pending_review');
     bankInstalled = Boolean(active || pending);
@@ -1057,7 +1072,19 @@ if (bankForm && bankGate) {
     const bankCode = bankCodeSelect.value;
     const accountNumber = accountNumberInput.value.trim();
     const holderName = holderNameInput.value.trim();
-    if (!apiKey && !accountNumber) {
+    // Thông tin ngân hàng giữ nguyên như lúc điền sẵn: không gửi lại (gửi lại sẽ bị coi là tài khoản mới).
+    const bankUnchanged =
+      prefill !== null &&
+      prefill.bankCode === bankCode &&
+      prefill.accountNumber === accountNumber &&
+      prefill.holderName.toUpperCase() === holderName.toUpperCase();
+    const sendBank = Boolean(accountNumber) && !bankUnchanged;
+    if (!apiKey && !sendBank) {
+      if (bankUnchanged) {
+        bankSaved.textContent = 'Không có thay đổi nào để lưu.';
+        bankSaved.hidden = false;
+        return;
+      }
       showError(bankErrorBox, bankErrorText, 'Nhập API Key hoặc tài khoản ngân hàng cần lưu.');
       return;
     }
@@ -1079,15 +1106,14 @@ if (bankForm && bankGate) {
           done.push('API Key');
           await loadEndpoint();
         }
-        if (accountNumber) {
+        if (sendBank) {
           await withStepUp(stepUpPanel, () =>
             window.VTApi.call('POST', '/me/bank-accounts', { bankCode, accountNumber, holderName }),
           );
-          accountNumberInput.value = '';
-          holderNameInput.value = '';
           done.push('tài khoản ngân hàng');
         }
         await loadBankList();
+        if (sendBank) openBankPanel();
         bankSaved.textContent = 'Đã lưu ' + done.join(' và ') + '.';
         bankSaved.hidden = false;
       } catch (err) {
