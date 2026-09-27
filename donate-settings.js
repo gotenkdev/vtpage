@@ -61,7 +61,7 @@
     item.querySelector('span').textContent = i + 1 + '. ' + label;
     item.querySelector('button').addEventListener('click', (e) => {
       e.preventDefault();
-      A.playSound('builtin:' + (i + 1), null, form ? form.sound.volume : 60);
+      A.playSound('builtin:' + (i + 1), null, form ? Math.max(form.sound.volume, 30) : 60);
     });
     soundsBox.append(item);
   });
@@ -199,9 +199,39 @@
   });
 
   // ---- Tệp media ----
+  // Lưới ảnh có sẵn (Noto Animated Emoji, CC BY 4.0).
+  const IMAGE_PRESETS = ['1f389', '1f38a', '1f386', '2728', '1fa99', '1f4b8', '1f381', '1f3c6', '1f451', '1f48e',
+    '1f680', '1f525', '2764_fe0f', '1f496', '1f929', '1f973', '1f60d', '1f970', '1f44f', '1f4af'];
+  const presetBox = $('dsImagePresets');
+  IMAGE_PRESETS.forEach((code) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'ds-preset';
+    b.dataset.preset = code;
+    b.setAttribute('aria-label', 'Chọn ảnh có sẵn ' + code);
+    const img = document.createElement('img');
+    img.src = '/assets/donate/img/' + code + '.webp';
+    img.alt = '';
+    img.loading = 'lazy';
+    b.append(img);
+    b.addEventListener('click', () => {
+      form.image.preset = code;
+      form.image.mediaKey = null;
+      fill();
+      previewSoon();
+    });
+    presetBox.append(b);
+  });
   function renderImage() {
     const img = $('dsImagePreview');
-    const url = form.image.mediaKey ? '/api/v1/media/' + form.image.mediaKey : null;
+    const url = form.image.mediaKey
+      ? '/api/v1/media/' + form.image.mediaKey
+      : form.image.preset
+        ? '/assets/donate/img/' + form.image.preset + '.webp'
+        : null;
+    presetBox.querySelectorAll('.ds-preset').forEach((b) =>
+      b.setAttribute('aria-pressed', String(!form.image.mediaKey && b.dataset.preset === form.image.preset)),
+    );
     media.imageUrl = url;
     img.hidden = !url;
     if (url) img.src = url;
@@ -214,7 +244,10 @@
     $('dsStatus').textContent = 'Đang tải lên…';
     try {
       const res = await window.VTApi.uploadImage('/me/donate-media/' + kind, file);
-      if (kind === 'image') form.image.mediaKey = res.mediaKey;
+      if (kind === 'image') {
+        form.image.mediaKey = res.mediaKey;
+        form.image.preset = null;
+      }
       else {
         form.sound.mediaKey = res.mediaKey;
         form.sound.source = 'custom';
@@ -238,6 +271,7 @@
   });
   $('dsImageRemove').addEventListener('click', () => {
     form.image.mediaKey = null;
+    form.image.preset = null;
     fill();
   });
 

@@ -70,3 +70,12 @@
 .ds-queue span { display: grid; gap: 2px; min-width: 0; }
 .ds-queue strong { font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ds-queue small { color: var(--ink-3); font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Ảnh có sẵn */
+.ds-presets { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 8px; margin-top: 8px; }
+.ds-preset { aspect-ratio: 1; padding: 6px; border-radius: 12px; border: 2px solid transparent; background: #fff; box-shadow: 0 0 0 1px var(--line); cursor: pointer; }
+.ds-preset img { width: 100%; height: 100%; object-fit: contain; }
+.ds-preset:hover { box-shadow: 0 0 0 1px var(--orange); }
+.ds-preset[aria-pressed="true"] { border-color: var(--orange); box-shadow: none; background: rgba(255, 90, 31, 0.06); }
+.ds-preset:focus-visible { outline: 2px solid var(--orange-deep); outline-offset: 2px; }
+.ds-credit a { color: inherit; }

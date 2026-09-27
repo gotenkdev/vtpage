@@ -2,7 +2,7 @@
  * Bộ vẽ thông báo donate DÙNG CHUNG cho overlay OBS (overlay.html) và bản xem trước ở trang Cài đặt Donate.
  * - Nội dung người dùng (tên, lời nhắn) luôn vào trang bằng textContent: không có HTML nào từ người donate được diễn giải.
  * - Giao diện/vị trí/hiệu ứng chỉ là tên lớp CSS lấy từ DANH SÁCH CỐ ĐỊNH (khớp backend donate-settings.schema.ts).
- * - Âm thanh có sẵn được TỔNG HỢP bằng Web Audio (không có tệp nào, không vướng bản quyền).
+ * - Âm thanh có sẵn là tệp của Kenney.nl (CC0); ảnh có sẵn là Noto Animated Emoji của Google (CC BY 4.0).
  * API: window.VTAlerts = { THEMES, POSITIONS, TEXT_EFFECTS, IN_ANIMATIONS, OUT_ANIMATIONS, SOUNDS, createPlayer, playSound, speak }
  */
 (function () {
@@ -39,73 +39,27 @@
   // Giao diện "Cổ điển" dùng hiệu ứng/màu tùy chỉnh; các giao diện khác tự có hiệu ứng riêng.
   const isClassic = (theme) => theme.startsWith('classic_');
 
-  // ---- 19 âm thanh tổng hợp: mỗi nốt [tần số Hz, bắt đầu (s), độ dài (s), dạng sóng] ----
-  const n = (f, t, d, w) => [f, t, d, w || 'sine'];
+  // ---- 19 âm thanh có sẵn: tệp OGG của Kenney.nl (giấy phép CC0), phục vụ tĩnh ở /assets/donate/sound/NN.ogg ----
   const SOUNDS = [
-    ['Chuông ngân', [n(1047, 0, 0.5), n(1319, 0.08, 0.5), n(1568, 0.16, 0.8)]],
-    ['Đồng xu', [n(988, 0, 0.08, 'square'), n(1319, 0.08, 0.45, 'square')]],
-    ['Kèn chiến thắng', [n(523, 0, 0.14, 'sawtooth'), n(523, 0.15, 0.14, 'sawtooth'), n(523, 0.3, 0.14, 'sawtooth'), n(784, 0.45, 0.6, 'sawtooth')]],
-    ['Lên cấp', [n(523, 0, 0.1, 'square'), n(659, 0.1, 0.1, 'square'), n(784, 0.2, 0.1, 'square'), n(1047, 0.3, 0.35, 'square')]],
-    ['Pha lê', [n(2093, 0, 0.6), n(2637, 0.05, 0.6), n(3136, 0.1, 0.9)]],
-    ['Hộp nhạc', [n(1319, 0, 0.3, 'triangle'), n(1175, 0.2, 0.3, 'triangle'), n(1047, 0.4, 0.3, 'triangle'), n(1568, 0.6, 0.7, 'triangle')]],
-    ['Bong bóng', [n(600, 0, 0.08), n(900, 0.07, 0.08), n(1300, 0.14, 0.12)]],
-    ['Tia laser', [n(1800, 0, 0.12, 'sawtooth'), n(1200, 0.1, 0.12, 'sawtooth'), n(700, 0.2, 0.2, 'sawtooth')]],
-    ['Chuông cửa', [n(659, 0, 0.6, 'triangle'), n(523, 0.35, 0.9, 'triangle')]],
-    ['Tin nhắn', [n(880, 0, 0.1), n(1320, 0.12, 0.25)]],
-    ['Phép thuật', [n(784, 0, 0.2), n(988, 0.1, 0.2), n(1175, 0.2, 0.2), n(1568, 0.3, 0.2), n(1976, 0.4, 0.6)]],
-    ['Trống nhỏ', [n(180, 0, 0.12, 'square'), n(180, 0.16, 0.12, 'square'), n(260, 0.32, 0.3, 'square')]],
-    ['Retro 8-bit', [n(392, 0, 0.08, 'square'), n(523, 0.08, 0.08, 'square'), n(659, 0.16, 0.08, 'square'), n(784, 0.24, 0.08, 'square'), n(1047, 0.32, 0.3, 'square')]],
-    ['Êm dịu', [n(440, 0, 1.2), n(554, 0.15, 1.2), n(659, 0.3, 1.4)]],
-    ['Tiếng vỗ', [n(1500, 0, 0.04, 'square'), n(1400, 0.1, 0.04, 'square'), n(1600, 0.2, 0.04, 'square'), n(1450, 0.3, 0.04, 'square')]],
-    ['Thăng hoa', [n(262, 0, 0.9, 'triangle'), n(330, 0, 0.9, 'triangle'), n(392, 0, 0.9, 'triangle'), n(523, 0.4, 1.2, 'triangle')]],
-    ['Radar', [n(1200, 0, 0.15), n(1200, 0.4, 0.15), n(1600, 0.8, 0.3)]],
-    ['Sao băng', [n(2400, 0, 0.4, 'triangle'), n(1800, 0.1, 0.4, 'triangle'), n(1200, 0.2, 0.6, 'triangle')]],
-    ['Đại tiệc', [n(523, 0, 0.12, 'square'), n(659, 0.12, 0.12, 'square'), n(784, 0.24, 0.12, 'square'), n(1047, 0.36, 0.12, 'square'), n(784, 0.48, 0.12, 'square'), n(1047, 0.6, 0.5, 'square')]],
-  ];
+    '8-bit 1', '8-bit 2', '8-bit 3', '8-bit 4', 'Pizzicato 1', 'Pizzicato 2', 'Pizzicato 3', 'Pizzicato 4',
+    'Saxophone 1', 'Saxophone 2', 'Saxophone 3', 'Saxophone 4', 'Steel drum 1', 'Steel drum 2', 'Steel drum 3',
+    'Steel drum 4', 'Xác nhận 1', 'Xác nhận 2', 'Xác nhận 3',
+  ].map((label, i) => [label, '/assets/donate/sound/' + String(i + 1).padStart(2, '0') + '.ogg']);
 
-  let audioCtx = null;
-  function context() {
-    const Ctx = window.AudioContext || window.webkitAudioContext;
-    if (!Ctx) return null;
-    audioCtx = audioCtx || new Ctx();
-    if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => undefined);
-    return audioCtx;
-  }
-
-  // Phát âm thanh: 'builtin:N' tổng hợp, hoặc URL tệp đã tải lên. Trả thời lượng ước tính (giây).
+  // Phát âm thanh: 'builtin:N' (tệp có sẵn) hoặc 'custom' (tệp streamer tải lên). Trả thời lượng ước tính (giây).
   function playSound(source, customUrl, volume) {
     const vol = Math.max(0, Math.min(100, volume)) / 100;
     if (vol === 0) return 0;
-    if (source === 'custom') {
-      if (!customUrl) return 0;
-      const audio = new Audio(customUrl);
-      audio.volume = vol;
-      audio.play().catch(() => undefined);
-      return 3;
+    let url = customUrl;
+    if (source !== 'custom') {
+      const preset = SOUNDS[Number(String(source).split(':')[1]) - 1] || SOUNDS[0];
+      url = preset[1];
     }
-    const index = Number(String(source).split(':')[1]) - 1;
-    const preset = SOUNDS[index] || SOUNDS[0];
-    const ctx = context();
-    if (!ctx) return 0;
-    const master = ctx.createGain();
-    master.gain.value = vol * 0.35;
-    master.connect(ctx.destination);
-    let end = 0;
-    for (const [freq, start, dur, wave] of preset[1]) {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = wave;
-      osc.frequency.value = freq;
-      const t0 = ctx.currentTime + start;
-      gain.gain.setValueAtTime(0.0001, t0);
-      gain.gain.exponentialRampToValueAtTime(1, t0 + 0.012);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-      osc.connect(gain).connect(master);
-      osc.start(t0);
-      osc.stop(t0 + dur + 0.05);
-      end = Math.max(end, start + dur);
-    }
-    return end;
+    if (!url) return 0;
+    const audio = new Audio(url);
+    audio.volume = vol;
+    audio.play().catch(() => undefined);
+    return 3;
   }
 
   // ---- Giọng đọc của trình duyệt (miễn phí). Chọn giọng tiếng Việt nếu máy có. ----
@@ -244,9 +198,12 @@
   function createPlayer(stage, getSettings) {
     const queue = [];
     let busy = false;
+    // Mỗi lần clear() tăng thế hệ: vòng phát cũ (đang chờ hết thời gian hiển thị) tự dừng thay vì chặn thông báo mới.
+    let gen = 0;
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-    async function show(event) {
+    async function show(event, myGen) {
+      const stale = () => myGen !== gen;
       const { settings, media } = getSettings();
       const d = settings.display;
       const { root, inner, message, wow } = buildAlert(stage, settings, media, event);
@@ -254,6 +211,7 @@
       const waits = [];
       if (settings.sound.enabled) playSound(settings.sound.source, media.soundUrl, settings.sound.volume);
       await sleep(900);
+      if (stale()) return root.remove();
       if (event.recordingUrl && settings.recording.enabled && settings.recording.showOnLive) {
         waits.push(
           new Promise((resolve) => {
@@ -282,7 +240,8 @@
       }
       const minMs = (d.minSeconds + (wow ? 3 : 0)) * 1000;
       const left = minMs - (Date.now() - started);
-      if (left > 0) await sleep(left);
+      if (left > 0 && !stale()) await sleep(left);
+      if (stale()) return root.remove();
       const out = d.theme.startsWith('classic_') ? d.classic.outAnimation : 'themeOut';
       inner.style.animation = `va-${out} 0.8s both`;
       await sleep(820);
@@ -292,14 +251,15 @@
     async function pump() {
       if (busy) return;
       busy = true;
-      while (queue.length) {
+      const myGen = gen;
+      while (queue.length && myGen === gen) {
         try {
-          await show(queue.shift());
+          await show(queue.shift(), myGen);
         } catch (err) {
           console.error(err);
         }
       }
-      busy = false;
+      if (myGen === gen) busy = false;
     }
 
     return {
@@ -310,6 +270,8 @@
         void pump();
       },
       clear() {
+        gen += 1;
+        busy = false;
         queue.length = 0;
         stage.textContent = '';
         if (window.speechSynthesis) window.speechSynthesis.cancel();

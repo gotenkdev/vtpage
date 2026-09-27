@@ -1,0 +1,10 @@
+Ảnh động có sẵn (assets/donate/img/*.webp)
+  Noto Animated Emoji — Google (https://googlefonts.github.io/noto-emoji-animation/)
+  Giấy phép: Creative Commons Attribution 4.0 (CC BY 4.0) — https://creativecommons.org/licenses/by/4.0/
+  Đã thu nhỏ về 256 px (một số tệp); tên tệp là mã Unicode của emoji.
+
+Âm thanh có sẵn (assets/donate/sound/*.ogg)
+  Kenney — "Music Jingles" và "Interface Sounds" (https://kenney.nl)
+  Giấy phép: Creative Commons Zero (CC0 1.0) — public domain.
+  01-04: 8-Bit (NES00, 13, 05, 12); 05-08: Pizzicato (07, 03, 01, 02); 09-12: Sax (07, 03, 01, 02);
+  13-16: Steel (07, 02, 01, 14); 17-19: confirmation_001, 002, 004.

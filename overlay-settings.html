@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="style.css?v=9">
   <link rel="stylesheet" href="dashboard.css?v=9">
   <link rel="stylesheet" href="alert-themes.css?v=2">
-  <link rel="stylesheet" href="donate-settings.css?v=3">
+  <link rel="stylesheet" href="donate-settings.css?v=4">
   <link rel="stylesheet" href="goal-themes.css?v=2">
   <link rel="stylesheet" href="music-themes.css?v=1">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
@@ -117,12 +117,14 @@
             <div class="ds-panel" data-panel="image" hidden>
               <div class="ds-switch-row"><div><h2 class="pe-h">Hình ảnh</h2><p class="pe-sub">Ảnh hoặc GIF hiện cùng thông báo.</p></div><button type="button" class="switch" role="switch" data-k="image.enabled" aria-label="Bật hình ảnh"><span></span></button></div>
               <div class="ds-media-box" id="dsImageBox"><img id="dsImagePreview" alt="" hidden><p class="pe-sub" id="dsImageEmpty">Chưa có ảnh.</p></div>
+              <div><span class="pe-label">Ảnh có sẵn</span><div class="ds-presets" id="dsImagePresets" role="group" aria-label="Ảnh có sẵn"></div></div>
               <div class="ds-actions">
                 <label class="btn btn-outline btn-sm" for="dsImageInput">Tải lên ảnh/GIF</label>
                 <input type="file" id="dsImageInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
                 <button type="button" class="btn btn-ghost btn-sm" id="dsImageRemove">Bỏ ảnh</button>
               </div>
-              <p class="form-hint">PNG, JPEG, WebP hoặc GIF động, tối đa 2 MB. Ảnh được thu vào khung 600×600.</p>
+              <p class="form-hint">Hoặc tải ảnh riêng: PNG, JPEG, WebP hoặc GIF động, tối đa 2 MB (thu vào khung 600×600).</p>
+              <p class="form-hint ds-credit">Ảnh động có sẵn: <a href="https://googlefonts.github.io/noto-emoji-animation/" target="_blank" rel="noopener">Noto Animated Emoji</a> của Google, giấy phép <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.</p>
             </div>
 
             <div class="ds-panel" data-panel="sound" hidden>
@@ -133,6 +135,7 @@
                 <input type="file" id="dsSoundInput" accept="audio/mpeg,audio/ogg,audio/wav,audio/webm,audio/mp4" hidden>
                 <span class="form-hint" id="dsSoundCustomHint"></span>
               </div>
+              <p class="form-hint ds-credit">Âm thanh có sẵn: <a href="https://kenney.nl" target="_blank" rel="noopener">Kenney.nl</a> (CC0).</p>
               <div class="form-field"><div class="pe-label-row"><label for="dsVolume">Âm lượng</label><output data-for="dsVolume"></output></div><input id="dsVolume" type="range" min="0" max="100" data-k="sound.volume"></div>
             </div>
 
@@ -307,10 +310,10 @@
   <script src="fx.js"></script>
   <script src="api.js?v=6"></script>
   <script src="auth.js?v=12"></script>
-  <script src="alert-render.js?v=2"></script>
+  <script src="alert-render.js?v=4"></script>
   <script src="goal-render.js?v=2"></script>
   <script src="music-render.js?v=1"></script>
-  <script src="donate-settings.js?v=3"></script>
+  <script src="donate-settings.js?v=4"></script>
   <script src="dashboard.js?v=5"></script>
 </body>
 </html>
