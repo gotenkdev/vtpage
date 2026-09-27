@@ -33,6 +33,22 @@ function afterLoginTarget() {
   return '/';
 }
 
+// --- Nút "Bắt đầu ngay" ở trang chủ: đã đăng nhập thì vào /profile; chưa thì sang đăng nhập, xong quay lại /profile ---
+(function initStartButton() {
+  const start = document.getElementById('startBtn');
+  if (!start) return;
+  start.addEventListener('click', async (event) => {
+    event.preventDefault();
+    const me = await window.VTApi.me().catch(() => null);
+    if (me && !(me.mfa.enabled && !me.mfa.verified)) {
+      window.location.href = '/profile';
+      return;
+    }
+    rememberReturn('/profile');
+    window.location.href = '/sign-in';
+  });
+})();
+
 // --- Đăng nhập bằng Google (/sign-in, sign-up.html) ---
 // Chỉ hiện nút khi máy chủ đã cấu hình Google; chưa cấu hình thì gỡ hẳn khối nút khỏi trang (các đoạn code bên dưới có bật lại
 // khối này cũng không hiện ra). Bấm nút là chuyển thẳng sang Google (máy chủ lo state, PKCE, cookie chống giả mạo).
