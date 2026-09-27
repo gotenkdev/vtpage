@@ -108,3 +108,17 @@
   .vp-id { padding-bottom: 0; }
   .vp-actions { align-self: center; }
 }
+/* Máy tính: trải gần hết màn hình như Zypage (tối đa 1464px, lề 24px), ảnh bìa cao, ảnh đại diện lớn hơn. */
+@media (min-width: 901px) {
+  .donate-page .wrap { max-width: 1464px; padding-inline: 24px; }
+  .vp-cover { aspect-ratio: 3 / 1; min-height: 260px; max-height: 460px; }
+  .vp-avatar { width: 150px; margin-top: -96px; }
+  .vp-avatar .avatar-preview, .vp-avatar .avatar-fallback { width: 150px; height: 150px; border-radius: 32px; font-size: 3rem; }
+  .vp-hero-row { padding: 18px 32px 24px; gap: 24px; }
+  .vp-name { font-size: clamp(1.8rem, 2.4vw, 2.4rem); }
+  .vp-grid { gap: 24px; }
+}
+@media (min-width: 901px) {
+  .vp-cover { aspect-ratio: auto; width: 100%; height: clamp(260px, 32vw, 460px); max-height: none; }
+  body:has(.donate-page) .bar-inner { max-width: 1464px; padding-inline: 24px; }
+}
