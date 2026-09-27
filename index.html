@@ -10,7 +10,7 @@
   <link rel="preload" href="fonts/bricolage-grotesque-latin-600-800.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/doto-latin-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css">
-  <link rel="stylesheet" href="style.css?v=9">
+  <link rel="stylesheet" href="style.css?v=10">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
 </head>
 <body>
@@ -18,7 +18,7 @@
 
   <header class="bar">
     <div class="wrap bar-inner">
-      <a href="index.html" class="logo">
+      <a href="/" class="logo">
         <svg class="mark" viewBox="0 0 64 64" aria-hidden="true">
           <rect width="64" height="64" rx="15" fill="#FF5A1F"/>
           <g fill="#14161A">
@@ -39,8 +39,8 @@
           <svg class="ic ic-play"><use href="#i-play"/></svg>
         </button>
         <div class="bar-actions" id="authButtons">
-          <a href="sign-in.html" class="btn btn-ghost">Đăng nhập</a>
-          <a href="sign-up.html" class="btn btn-outline">Đăng ký</a>
+          <a href="/sign-in" class="btn btn-ghost">Đăng nhập</a>
+          <a href="/sign-up" class="btn btn-outline">Đăng ký</a>
         </div>
       </div>
     </div>
@@ -58,7 +58,7 @@
           </p>
 
           <div class="hero-actions">
-            <a href="sign-up.html" class="btn btn-primary btn-lg">Bắt đầu ngay</a>
+            <a href="/sign-up" class="btn btn-primary btn-lg">Bắt đầu ngay</a>
             <button type="button" class="btn btn-outline btn-lg" id="demoBtn">Xem Demo</button>
           </div>
 
@@ -385,7 +385,7 @@
           <p class="cta-desc">Tham gia cùng cộng đồng nhà sáng tạo ngay hôm nay. Chỉ mất 30 giây để bắt đầu.</p>
         </div>
 
-        <form class="cta-action" action="sign-up.html" method="get">
+        <form class="cta-action" action="/sign-up" method="get">
           <div class="username-field">
             <label class="username-prefix" for="username">vtpage.com/</label>
             <input type="text" id="username" name="u" class="username-input" placeholder="username" autocomplete="off" autocapitalize="none" spellcheck="false">
@@ -449,8 +449,8 @@
   </footer>
 
   <script src="fx.js"></script>
-  <script src="api.js?v=6"></script>
-  <script src="auth.js?v=12"></script>
-  <script src="donate-guide.js?v=3"></script>
+  <script src="api.js?v=7"></script>
+  <script src="auth.js?v=13"></script>
+  <script src="donate-guide.js?v=4"></script>
 </body>
 </html>

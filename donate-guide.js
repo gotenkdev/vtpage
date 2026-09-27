@@ -1,5 +1,5 @@
 /*
- * Hướng dẫn donate (index.html #huong-dan): tự chạy 4 pha của cảnh "tay cầm điện thoại quét QR", làm sáng bước tương ứng,
+ * Hướng dẫn donate (/ #huong-dan): tự chạy 4 pha của cảnh "tay cầm điện thoại quét QR", làm sáng bước tương ứng,
  * bấm bước để nhảy tới pha đó, rê chuột thì cảnh nghiêng theo. Chỉ chạy khi khu vực đang hiện trên màn hình; tôn trọng nút
  * tạm dừng chuyển động của trang (html[data-motion="off"]) và prefers-reduced-motion.
  */

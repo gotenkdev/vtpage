@@ -1,5 +1,5 @@
 /*
- * Trang Cài đặt Donate (overlay-settings.html), kiểu Zypage. Form gắn với tài liệu cài đặt qua data-k="nhóm.trường";
+ * Trang Cài đặt Donate (/overlay-settings), kiểu Zypage. Form gắn với tài liệu cài đặt qua data-k="nhóm.trường";
  * bản xem trước dùng CHÍNH bộ vẽ của overlay (alert-render.js) nên thấy đúng như trên OBS.
  */
 (function () {
@@ -370,7 +370,7 @@
   async function loadToken() {
     const { token } = await window.VTApi.call('GET', '/me/overlay-token');
     hasToken = token !== null;
-    obsUrl.value = token && token.token ? location.origin + '/overlay.html#token=' + token.token : '';
+    obsUrl.value = token && token.token ? location.origin + '/overlay#token=' + token.token : '';
     obsUrl.placeholder = hasToken
       ? 'Link cũ không xem lại được — bấm Đổi link để lấy link mới'
       : 'Chưa có link — bấm Tạo link';
@@ -382,7 +382,7 @@
     obsMsg('', '');
     try {
       const res = await withStepUp($('stepUpPanel'), () => window.VTApi.call('POST', '/me/overlay-token/rotate'));
-      obsUrl.value = location.origin + '/overlay.html#token=' + res.token;
+      obsUrl.value = location.origin + '/overlay#token=' + res.token;
       syncGoalUrl();
       hasToken = true;
       rotateBtn.textContent = 'Đổi link';
@@ -496,8 +496,8 @@
     setTimeout(() => goalView.update(form.goal, before.raised, before.count), 3500);
   });
   function syncGoalUrl() {
-    $('dsGoalUrl').value = obsUrl.value ? obsUrl.value.replace('/overlay.html#', '/goal.html#') : '';
-    $('dsMusicUrl').value = obsUrl.value ? obsUrl.value.replace('/overlay.html#', '/music.html#') : '';
+    $('dsGoalUrl').value = obsUrl.value ? obsUrl.value.replace('/overlay#', '/goal#') : '';
+    $('dsMusicUrl').value = obsUrl.value ? obsUrl.value.replace('/overlay#', '/music#') : '';
   }
   $('dsGoalCopy').addEventListener('click', async () => {
     const v = $('dsGoalUrl').value;
@@ -586,7 +586,7 @@
   window.VTApi.me()
     .then(async (me) => {
       if (!me || (me.mfa.enabled && !me.mfa.verified)) {
-        window.location.href = 'sign-in.html';
+        window.location.href = '/sign-in';
         return;
       }
       const data = await window.VTApi.call('GET', '/me/donate-settings');

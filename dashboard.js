@@ -36,12 +36,12 @@
     `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name] || ''}</svg>`;
 
   const DONATE_ITEMS = [
-    { id: 'profile', label: 'Hồ sơ trang', href: 'profile.html', icon: 'profile' },
-    { id: 'bank', label: 'Thanh toán', href: 'bank-account.html', icon: 'bank' },
-    { id: 'donations', label: 'Lịch sử donate', href: 'donations.html', icon: 'list' },
-    { id: 'overlay', label: 'Cài đặt Donate', href: 'overlay-settings.html', icon: 'screen' },
+    { id: 'profile', label: 'Hồ sơ trang', href: '/profile', icon: 'profile' },
+    { id: 'bank', label: 'Thanh toán', href: '/bank-account', icon: 'bank' },
+    { id: 'donations', label: 'Lịch sử donate', href: '/donations', icon: 'list' },
+    { id: 'overlay', label: 'Cài đặt Donate', href: '/overlay-settings', icon: 'screen' },
   ];
-  const PERSONAL_ITEMS = [{ id: 'security', label: 'Tài khoản & bảo mật', href: 'security.html', icon: 'shield' }];
+  const PERSONAL_ITEMS = [{ id: 'security', label: 'Tài khoản & bảo mật', href: '/security', icon: 'shield' }];
 
   function el(tag, attrs, html) {
     const node = document.createElement(tag);
@@ -77,14 +77,14 @@
     try {
       await window.VTApi.call('POST', '/auth/logout');
     } finally {
-      window.location.href = 'index.html';
+      window.location.href = '/';
     }
   });
   paneMe.append(logout);
 
   const panePage = el('div', { class: 'dash-pane', id: 'dashPanePage', role: 'tabpanel', 'aria-labelledby': 'dashTabPage' });
   const card = el('div', { class: 'dash-page-card' });
-  const cardLink = el('a', { class: 'dash-page-main', href: 'profile.html' });
+  const cardLink = el('a', { class: 'dash-page-main', href: '/profile' });
   const avatar = el('span', { class: 'dash-avatar', 'aria-hidden': 'true' });
   const meta = el('span', { class: 'dash-page-meta' });
   const name = el('strong');

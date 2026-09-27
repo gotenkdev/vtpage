@@ -1,5 +1,5 @@
 /*
- * Bộ vẽ thông báo donate DÙNG CHUNG cho overlay OBS (overlay.html) và bản xem trước ở trang Cài đặt Donate.
+ * Bộ vẽ thông báo donate DÙNG CHUNG cho overlay OBS (/overlay) và bản xem trước ở trang Cài đặt Donate.
  * - Nội dung người dùng (tên, lời nhắn) luôn vào trang bằng textContent: không có HTML nào từ người donate được diễn giải.
  * - Giao diện/vị trí/hiệu ứng chỉ là tên lớp CSS lấy từ DANH SÁCH CỐ ĐỊNH (khớp backend donate-settings.schema.ts).
  * - Âm thanh có sẵn là tệp của Kenney.nl (CC0); ảnh có sẵn là Noto Animated Emoji của Google (CC BY 4.0).

@@ -1,5 +1,5 @@
 /*
- * Mục tiêu ủng hộ: bộ vẽ DÙNG CHUNG cho overlay OBS (goal.html) và bản xem trước ở trang Cài đặt Donate.
+ * Mục tiêu ủng hộ: bộ vẽ DÙNG CHUNG cho overlay OBS (/goal) và bản xem trước ở trang Cài đặt Donate.
  * 5 mẫu động theo phong cách AWE (nền gần đen, chữ trắng ngà, điểm nhấn cyan, nhãn mono giãn chữ, đường kẻ mảnh).
  * Tiêu đề/ghi chú của streamer đi vào trang bằng textContent. Khung SVG là chuỗi cố định trong mã, không chứa dữ liệu người dùng.
  * API: window.VTGoal = { TEMPLATES, mount(container) -> { update(goal, raised, count) } }

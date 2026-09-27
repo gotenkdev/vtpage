@@ -1,7 +1,7 @@
 /*
  * Đăng ký / đăng nhập / phiên thật, gọi API backend qua window.VTApi (api.js).
  * Đăng ký là HAI BƯỚC: (1) gửi email, nhận liên kết xác nhận qua thư; (2) mở liên kết
- * (complete-signup.html), đặt mật khẩu, tài khoản được tạo và đăng nhập luôn. Đăng nhập có thể yêu cầu
+ * (/complete-signup), đặt mật khẩu, tài khoản được tạo và đăng nhập luôn. Đăng nhập có thể yêu cầu
  * bước hai (2FA) nếu tài khoản đã bật.
  */
 
@@ -11,7 +11,7 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-// --- Đăng nhập bằng Google (sign-in.html, sign-up.html) ---
+// --- Đăng nhập bằng Google (/sign-in, sign-up.html) ---
 // Chỉ hiện nút khi máy chủ đã cấu hình Google; chưa cấu hình thì gỡ hẳn khối nút khỏi trang (các đoạn code bên dưới có bật lại
 // khối này cũng không hiện ra). Bấm nút là chuyển thẳng sang Google (máy chủ lo state, PKCE, cookie chống giả mạo).
 (function initGoogleSignIn() {
@@ -163,7 +163,7 @@ if (signupForm) {
   // Đã đăng nhập sẵn (phiên còn hiệu lực) thì không cần đăng ký lại.
   window.VTApi.me()
     .then((me) => {
-      if (me && !(me.mfa.enabled && !me.mfa.verified)) window.location.href = 'index.html';
+      if (me && !(me.mfa.enabled && !me.mfa.verified)) window.location.href = '/';
     })
     .catch((err) => console.error(err));
 }
@@ -242,7 +242,7 @@ if (signinForm) {
         if (result.mfaRequired) {
           showMfaStep();
         } else {
-          window.location.href = 'index.html';
+          window.location.href = '/';
         }
       } catch (err) {
         showError(errorBox, errorText, err.message);
@@ -263,7 +263,7 @@ if (signinForm) {
           mfaMode === 'email' ? '/auth/mfa/email/verify' : '/auth/mfa/verify',
           { code },
         );
-        window.location.href = 'index.html';
+        window.location.href = '/';
       } catch (err) {
         showError(mfaErrorBox, mfaErrorText, err.message);
         mfaCodeInput.select();
@@ -279,7 +279,7 @@ if (signinForm) {
       if (me.mfa.enabled && !me.mfa.verified) {
         showMfaStep();
       } else {
-        window.location.href = 'index.html';
+        window.location.href = '/';
       }
     })
     .catch((err) => console.error(err));
@@ -298,7 +298,7 @@ if (completeForm) {
 
   if (!token) {
     authSubtitle.textContent = 'Liên kết không hợp lệ hoặc thiếu mã xác nhận.';
-    authSwitch.innerHTML = 'Hãy thử <a href="sign-up.html">đăng ký lại</a>.';
+    authSwitch.innerHTML = 'Hãy thử <a href="/sign-up">đăng ký lại</a>.';
   } else {
     completeForm.hidden = false;
     completeForm.addEventListener('submit', (event) => {
@@ -314,11 +314,11 @@ if (completeForm) {
         try {
           const result = await window.VTApi.call('POST', '/auth/register/complete', { token, password });
           window.VTApi.setCsrf(result.csrfToken);
-          window.location.href = 'index.html';
+          window.location.href = '/';
         } catch (err) {
           showError(errorBox, errorText, err.message);
           if (err.status === 400 && err.body && err.body.message === 'Liên kết không hợp lệ hoặc đã hết hạn') {
-            authSwitch.innerHTML = 'Liên kết đã dùng hoặc hết hạn. Hãy <a href="sign-up.html">đăng ký lại</a>.';
+            authSwitch.innerHTML = 'Liên kết đã dùng hoặc hết hạn. Hãy <a href="/sign-up">đăng ký lại</a>.';
           }
         }
       });
@@ -376,7 +376,7 @@ if (resetForm) {
 
   if (!token) {
     authSubtitle.textContent = 'Liên kết không hợp lệ hoặc thiếu mã xác nhận.';
-    authSwitch.innerHTML = 'Hãy thử <a href="forgot-password.html">gửi lại liên kết</a>.';
+    authSwitch.innerHTML = 'Hãy thử <a href="/forgot-password">gửi lại liên kết</a>.';
   } else {
     resetForm.hidden = false;
     resetForm.addEventListener('submit', (event) => {
@@ -397,7 +397,7 @@ if (resetForm) {
         } catch (err) {
           showError(errorBox, errorText, err.message);
           if (err.status === 400 && err.body && err.body.message === 'Liên kết không hợp lệ hoặc đã hết hạn') {
-            authSwitch.innerHTML = 'Liên kết đã dùng hoặc hết hạn. Hãy <a href="forgot-password.html">gửi lại liên kết</a>.';
+            authSwitch.innerHTML = 'Liên kết đã dùng hoặc hết hạn. Hãy <a href="/forgot-password">gửi lại liên kết</a>.';
           }
         }
       });
@@ -426,7 +426,7 @@ if (confirmDone) {
       .catch((err) => {
         authSubtitle.textContent = 'Không xác nhận được.';
         showError(errorBox, errorText, err.message);
-        authSwitch.innerHTML = 'Hãy thử đổi email lại từ <a href="security.html">trang bảo mật</a>.';
+        authSwitch.innerHTML = 'Hãy thử đổi email lại từ <a href="/security">trang bảo mật</a>.';
       });
   }
 }
@@ -518,11 +518,11 @@ if (createForm && document.getElementById('profileEditor')) {
   window.VTApi.me()
     .then(async (me) => {
       if (!me) {
-        window.location.href = 'sign-in.html';
+        window.location.href = '/sign-in';
         return;
       }
       if (me.mfa.enabled && !me.mfa.verified) {
-        window.location.href = 'sign-in.html';
+        window.location.href = '/sign-in';
         return;
       }
       const data = await window.VTApi.call('GET', '/me/profile');
@@ -717,11 +717,11 @@ if (mfaOff && mfaOn) {
   window.VTApi.me()
     .then((me) => {
       if (!me) {
-        window.location.href = 'sign-in.html';
+        window.location.href = '/sign-in';
         return;
       }
       if (me.mfa.enabled && !me.mfa.verified) {
-        window.location.href = 'sign-in.html';
+        window.location.href = '/sign-in';
         return;
       }
       skeleton.hidden = true;
@@ -1129,11 +1129,11 @@ if (bankForm && bankGate) {
   window.VTApi.me()
     .then(async (me) => {
       if (!me) {
-        window.location.href = 'sign-in.html';
+        window.location.href = '/sign-in';
         return;
       }
       if (me.mfa.enabled && !me.mfa.verified) {
-        window.location.href = 'sign-in.html';
+        window.location.href = '/sign-in';
         return;
       }
 
@@ -1143,7 +1143,7 @@ if (bankForm && bankGate) {
       ]);
 
       const missing = [];
-      if (profileData.profile === null) missing.push('<a href="profile.html">tạo hồ sơ</a>');
+      if (profileData.profile === null) missing.push('<a href="/profile">tạo hồ sơ</a>');
       skeleton.hidden = true;
       if (missing.length > 0) {
         subtitle.textContent = 'Cần thêm bước sau trước khi liên kết tài khoản ngân hàng:';
@@ -1215,8 +1215,8 @@ if (rotateBtn && overlayGate) {
         const result = await withStepUp(stepUpPanel, () =>
           window.VTApi.call('POST', '/me/overlay-token/rotate'),
         );
-        overlayUrlBox.textContent = window.location.origin + '/overlay.html#token=' + result.token;
-        overlayPreviewFrame.src = 'overlay.html#token=' + result.token;
+        overlayUrlBox.textContent = window.location.origin + '/overlay#token=' + result.token;
+        overlayPreviewFrame.src = '/overlay#token=' + result.token;
         tokenReveal.hidden = false;
         await refreshStatus();
       } catch (err) {
@@ -1241,11 +1241,11 @@ if (rotateBtn && overlayGate) {
   window.VTApi.me()
     .then(async (me) => {
       if (!me) {
-        window.location.href = 'sign-in.html';
+        window.location.href = '/sign-in';
         return;
       }
       if (me.mfa.enabled && !me.mfa.verified) {
-        window.location.href = 'sign-in.html';
+        window.location.href = '/sign-in';
         return;
       }
 
@@ -1353,7 +1353,7 @@ function setupAccountMenu() {
   select(initial);
 
   // Đánh dấu mục ứng với trang đang mở.
-  const here = window.location.pathname.split('/').pop() || 'index.html';
+  const here = window.location.pathname.replace(/\.html$/, '') || '/';
   panel.querySelectorAll('a.acct-item').forEach((a) => {
     if (a.getAttribute('href') === here) a.setAttribute('aria-current', 'page');
   });
@@ -1444,7 +1444,7 @@ if (donationList && reviewList) {
   window.VTApi.me()
     .then(async (me) => {
       if (!me || (me.mfa.enabled && !me.mfa.verified)) {
-        window.location.href = 'sign-in.html';
+        window.location.href = '/sign-in';
         return;
       }
       skeleton.hidden = true;
@@ -1852,7 +1852,7 @@ if (authButtons) {
       if (!me) return; // chưa đăng nhập: giữ nguyên nút Đăng nhập/Đăng ký mặc định trong HTML
 
       if (me.mfa.enabled && !me.mfa.verified) {
-        authButtons.innerHTML = `<a href="sign-in.html" class="btn btn-outline">Hoàn tất đăng nhập (2FA)</a>`;
+        authButtons.innerHTML = `<a href="/sign-in" class="btn btn-outline">Hoàn tất đăng nhập (2FA)</a>`;
         return;
       }
 
@@ -1890,20 +1890,20 @@ if (authButtons) {
               <div class="acct-pane" id="acctMe" role="tabpanel" aria-labelledby="acctTabMe">
                 <div class="acct-email">${escapeHtml(email)}</div>
                 <div class="acct-group">Tài khoản cá nhân</div>
-                <a class="acct-item" href="security.html">${acctIcon('shield')}<span>Tài khoản &amp; bảo mật</span></a>
+                <a class="acct-item" href="/security">${acctIcon('shield')}<span>Tài khoản &amp; bảo mật</span></a>
                 <button type="button" class="acct-item" id="logoutBtn">${acctIcon('logout')}<span>Đăng xuất</span></button>
               </div>
               <div class="acct-pane" id="acctPage" role="tabpanel" aria-labelledby="acctTabPage" hidden>
-                <a class="acct-card" id="acctCard" href="profile.html">
+                <a class="acct-card" id="acctCard" href="/profile">
                   <span class="acct-avatar" id="acctAvatar" aria-hidden="true">·</span>
                   <span class="acct-card-meta"><strong id="acctName">Trang của bạn</strong><span id="acctHandle">Đang tải…</span></span>
                 </a>
                 <div class="acct-group">Thiết lập trang donate</div>
-                <a class="acct-item" href="profile.html">${acctIcon('profile')}<span>Hồ sơ trang</span></a>
-                <a class="acct-item" href="bank-account.html">${acctIcon('bank')}<span>Thanh toán</span></a>
-                <a class="acct-item" href="donations.html">${acctIcon('list')}<span>Lịch sử donate</span></a>
-                <a class="acct-item" href="overlay-settings.html">${acctIcon('screen')}<span>Cài đặt Donate</span></a>
-                <a class="acct-item" id="acctView" href="profile.html" hidden>${acctIcon('eye')}<span>Xem trang donate</span></a>
+                <a class="acct-item" href="/profile">${acctIcon('profile')}<span>Hồ sơ trang</span></a>
+                <a class="acct-item" href="/bank-account">${acctIcon('bank')}<span>Thanh toán</span></a>
+                <a class="acct-item" href="/donations">${acctIcon('list')}<span>Lịch sử donate</span></a>
+                <a class="acct-item" href="/overlay-settings">${acctIcon('screen')}<span>Cài đặt Donate</span></a>
+                <a class="acct-item" id="acctView" href="/profile" hidden>${acctIcon('eye')}<span>Xem trang donate</span></a>
               </div>
             </div>
           </div>
