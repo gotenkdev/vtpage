@@ -47,3 +47,6 @@
   .gd-fields > div, .gd-banks > div { grid-template-columns: minmax(0, 1fr); gap: 4px; }
 }
 .gd-list li { display: list-item; padding-left: 2px; }
+.gd-shot { margin: 14px 0; padding: 12px; border-radius: 18px; background: var(--plate); border: 1px solid var(--line); }
+.gd-shot img { display: block; width: auto; max-width: 100%; height: auto; margin: 0 auto; border-radius: 12px; box-shadow: 0 12px 28px -18px rgba(20, 22, 26, 0.5); }
+.gd-shot figcaption { margin-top: 10px; color: var(--ink-2); font-size: 0.9rem; line-height: 1.5; text-align: center; }

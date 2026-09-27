@@ -12,7 +12,7 @@
   <link rel="preload" href="fonts/doto-latin-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css">
   <link rel="stylesheet" href="style.css?v=12">
-  <link rel="stylesheet" href="guide.css?v=3">
+  <link rel="stylesheet" href="guide.css?v=4">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
 </head>
 <body class="page-auth">
@@ -114,6 +114,7 @@
               <div><dt>Kiểu chứng thực</dt><dd>API Key</dd></div>
               <div><dt>API Key</dt><dd>Một chuỗi dài bất kỳ, ít nhất 32 ký tự (chữ, số, <code>_</code> hoặc <code>-</code>). Có thể bấm <b>Tạo khóa ngẫu nhiên</b> ở trang Thanh toán của VT Page rồi dán sang SePay.</dd></div>
             </dl>
+            <figure class="gd-shot"><img src="guide-sepay-vt2.webp" width="722" height="693" alt="Ô URL webhook và API Key trên trang Thanh toán của VT Page" loading="lazy"><figcaption><b>(2)</b> chép URL webhook dán vào ô <i>Gọi đến URL</i> của SePay. <b>(3)</b> API Key: bấm <i>Tạo khóa ngẫu nhiên</i> rồi dán cùng khóa đó sang SePay.</figcaption></figure>
             <p class="gd-warn">API Key giống như mật khẩu: không gửi cho ai, không đăng lên mạng. Ai có khóa này có thể giả thông báo tiền vào.</p>
           </div>
         </section>
@@ -123,11 +124,13 @@
           <div>
             <h2>Điền thông tin vào VT Page</h2>
             <p>Vào <a href="/bank-account">Thanh toán</a> → <b>+ Thêm phương thức</b> (hoặc <b>Chỉnh sửa</b>) → <b>Ngân hàng (QR Code) · SePay</b>:</p>
+            <figure class="gd-shot"><img src="guide-sepay-vt1.webp" width="852" height="480" alt="Nút Thêm phương thức và Chỉnh sửa trên trang Thanh toán" loading="lazy"><figcaption><b>(1)</b> Bấm <i>+ Thêm phương thức</i> (lần đầu) hoặc <i>Chỉnh sửa</i> (đã có) ở dòng Ngân hàng (QR Code) · SePay.</figcaption></figure>
             <ol class="gd-list">
               <li><b>API Key</b>: đúng khóa bạn đã điền ở SePay (bước 3).</li>
               <li><b>Ngân hàng</b>, <b>Số tài khoản</b>, <b>Chủ tài khoản</b>: đúng tài khoản đã kết nối với SePay ở bước 2.</li>
               <li>Tích ba mục trong <b>Kiểm tra trước khi kết nối</b>, rồi bấm <b>Lưu kết nối</b>.</li>
             </ol>
+            <figure class="gd-shot"><img src="guide-sepay-vt3.webp" width="722" height="523" alt="Ba mục Kiểm tra trước khi kết nối đã tích và nút Lưu kết nối" loading="lazy"><figcaption><b>(4)</b> Chọn ngân hàng, nhập số tài khoản và chủ tài khoản (ảnh trên). <b>(5)</b> Tích đủ ba mục kiểm tra. <b>(6)</b> Bấm <i>Lưu kết nối</i>.</figcaption></figure>
             <p>Tài khoản đầu tiên dùng được ngay. Đổi sang tài khoản ngân hàng khác thì cần quản trị viên duyệt.</p>
           </div>
         </section>
@@ -142,6 +145,7 @@
               <li>Quét mã QR bằng app ngân hàng và chuyển <b>đúng số tiền, giữ nguyên nội dung</b>.</li>
               <li>Sau vài giây, trang báo đã nhận tiền và donate xuất hiện ở <a href="/donations">Lịch sử donate</a>, <a href="/orders">Đơn hàng</a> và trên OBS.</li>
             </ol>
+            <figure class="gd-shot"><img src="guide-sepay-vt4.webp" width="541" height="803" alt="Màn hình chuyển khoản với mã QR và nội dung chuyển khoản" loading="lazy"><figcaption><b>(1)</b> Quét mã QR bằng app ngân hàng. <b>(2)</b> Giữ nguyên nội dung <code>VTPAGE …</code>; trang tự báo khi nhận được tiền.</figcaption></figure>
             <p>Theo dõi gói giao dịch bạn đang dùng trên SePay. Hết lượt của gói thì SePay ngừng báo giao dịch và donate sẽ không được xác nhận tự động.</p>
           </div>
         </section>
