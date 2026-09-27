@@ -120,3 +120,41 @@
   .dh-act { grid-column: 2; grid-row: 1; }
   .dh-amount { grid-column: 2; grid-row: 2; }
 }
+
+/* ---- Đơn hàng của trang (orders.html) ---- */
+.od-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.od-stat { display: grid; gap: 6px; padding: 18px 20px; border-radius: 18px; background: #fff; box-shadow: 0 0 0 1px var(--line); }
+.od-stat.is-main { box-shadow: 0 0 0 1.5px var(--orange); }
+.od-stat span { color: var(--ink-2); font-size: 0.92rem; }
+.od-stat strong { font: 800 1.9rem/1.1 var(--font-display); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.od-stat p { margin: 0; color: var(--ink-3); font-size: 0.85rem; }
+.od-filters { display: grid; grid-template-columns: minmax(0, 1fr) 220px auto auto; gap: 12px; align-items: end; }
+.od-filters .form-field { margin: 0; display: grid; gap: 6px; }
+.od-tr { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.3fr) 150px 96px; gap: 14px; align-items: center; padding: 14px 16px; border-top: 1px solid var(--line); }
+.od-tr.dh-th { border-top: 0; }
+.od-id, .od-who, .od-money { display: grid; gap: 3px; min-width: 0; }
+.od-id strong, .od-who strong, .od-money strong { overflow-wrap: anywhere; }
+.od-id strong { font-variant-numeric: tabular-nums; }
+.od-id span, .od-who span, .od-money span { color: var(--ink-3); font-size: 0.84rem; overflow-wrap: anywhere; }
+.dh-tag.is-good { background: #dff5e5; color: #11602c; }
+.dh-tag.is-warn { background: #ffe6d6; color: #8a2f06; }
+.od-dialog { width: min(560px, calc(100vw - 32px)); padding: 0; border: 0; border-radius: 22px; background: #fff; color: var(--ink); box-shadow: 0 30px 70px -20px rgba(20, 22, 26, 0.55); }
+.od-dialog::backdrop { background: rgba(20, 22, 26, 0.45); }
+.od-dialog .vp-dialog-head { display: flex; justify-content: space-between; align-items: center; padding: 16px 22px; border-bottom: 1px solid var(--line); }
+.od-dialog .pe-h { margin: 0; }
+.od-detail { padding: 6px 22px 22px; max-height: 70vh; overflow-y: auto; }
+.od-sub { margin: 16px 0 8px; font: 700 0.76rem/1 var(--font-label); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); }
+.od-detail dl { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 8px 14px; margin: 0; }
+.od-detail dt { color: var(--ink-3); }
+.od-detail dd { margin: 0; overflow-wrap: anywhere; white-space: pre-line; }
+@media (max-width: 900px) {
+  .od-stats { grid-template-columns: minmax(0, 1fr); }
+  .od-filters { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .od-filters .dh-search, .od-filters .form-field { grid-column: 1 / -1; }
+  .od-tr { grid-template-columns: minmax(0, 1fr) auto; row-gap: 8px; }
+  .od-tr.dh-th { display: none; }
+  .od-status { grid-column: 2; grid-row: 1; text-align: right; }
+  .od-tr .dh-act { grid-column: 2; grid-row: 2; }
+  .od-money { grid-column: 1 / -1; }
+  .od-detail dl { grid-template-columns: 110px minmax(0, 1fr); }
+}

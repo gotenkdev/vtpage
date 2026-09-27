@@ -13,6 +13,7 @@
     profile: { group: 'Trang donate', title: 'Hồ sơ trang', desc: 'Tên hiển thị, ảnh đại diện và lời giới thiệu hiện trên trang donate của bạn.' },
     bank: { group: 'Trang donate', title: 'Thanh toán', desc: 'Quản lý các kênh nhận donate. Tài khoản ngân hàng đầu tiên dùng được ngay; đổi tài khoản khác thì cần được duyệt.' },
     donations: { group: 'Trang donate', title: 'Lịch sử donate', desc: 'Các khoản donate đã nhận. Duyệt hoặc ẩn khoản cần xem trước khi hiện lên stream.' },
+    orders: { group: 'Trang donate', title: 'Đơn hàng của trang', desc: 'Mọi lệnh donate đã tạo và khoản đã nhận: tìm kiếm, xem chi tiết, xuất dữ liệu.' },
     overlay: { group: 'Trang donate', title: 'Cài đặt Donate', desc: 'Toàn bộ công cụ tương tác trên live: thông báo donate, âm thanh, giọng đọc, ghi âm, phát nhạc, mục tiêu.' },
     security: { group: 'Cá nhân', title: 'Tài khoản & bảo mật', desc: 'Xác thực 2 lớp, đổi mật khẩu và email đăng nhập.' },
   };
@@ -30,6 +31,7 @@
     eye: '<path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/>',
     chev: '<path d="m7 10 5 5 5-5"/>',
     menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
+    receipt: '<path d="M6 3.5h12v17l-2.5-1.6-2 1.6-1.5-1.2-1.5 1.2-2-1.6L6 20.5z"/><path d="M9 8.5h6M9 12h6M9 15.5h3.5"/>',
     store: '<path d="M4 9.5 5.5 4.5h13L20 9.5"/><path d="M4 9.5a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0"/><path d="M5.5 11.5v8h13v-8"/><path d="M10 19.5v-4h4v4"/>',
   };
   const svg = (name, cls = 'dash-ic') =>
@@ -39,6 +41,7 @@
     { id: 'profile', label: 'Hồ sơ trang', href: '/profile', icon: 'profile' },
     { id: 'bank', label: 'Thanh toán', href: '/bank-account', icon: 'bank' },
     { id: 'donations', label: 'Lịch sử donate', href: '/donations', icon: 'list' },
+    { id: 'orders', label: 'Đơn hàng', href: '/orders', icon: 'receipt' },
     { id: 'overlay', label: 'Cài đặt Donate', href: '/overlay-settings', icon: 'screen' },
   ];
   const PERSONAL_ITEMS = [{ id: 'security', label: 'Tài khoản & bảo mật', href: '/security', icon: 'shield' }];
