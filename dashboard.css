@@ -1,4 +1,4 @@
-/* Khung "Thiết lập trang" (bố cục kiểu VT Page, màu/phông của website). Dùng cho profile, bank-account, donations,
+/* Khung "Thiết lập trang" (bố cục kiểu VT Pay, màu/phông của website). Dùng cho profile, bank-account, donations,
    overlay-settings, security. dashboard.js dựng thanh bên và bọc <main class="settings"> sẵn có — không đổi nội dung trang. */
 .dash {
   --dash-side: 272px;
@@ -106,7 +106,7 @@
 .dash-pane[hidden] { display: none; }
 .dash-pane .dash-page-card { margin-top: 8px; }
 
-/* ---- Thiết lập hồ sơ trang (profile.html + profile-editor.js), kiểu VT Page, màu website ---- */
+/* ---- Thiết lập hồ sơ trang (profile.html + profile-editor.js), kiểu VT Pay, màu website ---- */
 .pe { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 18px; align-items: start; }
 .pe[hidden] { display: none; }
 .pe-main { display: grid; gap: 14px; min-width: 0; }
@@ -212,7 +212,7 @@
 }
 @media (max-width: 560px) { .pe-bar { margin-left: 52px; } }
 
-/* ---- Trang Thanh toán (bank-account.html) kiểu VT Page, màu website ---- */
+/* ---- Trang Thanh toán (bank-account.html) kiểu VT Pay, màu website ---- */
 .pay-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
 .pay-card { display: grid; gap: 14px; padding: 18px 20px; border-radius: 18px; background: #fff; border: 1px solid rgba(20, 22, 26, 0.08); }
 .pay-card-top { display: flex; align-items: flex-start; gap: 14px; }
@@ -276,7 +276,7 @@
   .pay-actions-col { grid-row: 1; grid-column: 2; }
 }
 
-/* Khung thiết lập Ngân hàng · SePay (kiểu VT Page) */
+/* Khung thiết lập Ngân hàng · SePay (kiểu VT Pay) */
 .pay-panel-head { align-items: flex-start; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
 .pay-box { display: grid; gap: 14px; margin-top: 14px; padding: 18px 20px; border-radius: 16px; background: var(--plate); border: 1px solid var(--line); }
 .pay-box .form-field { margin: 0; }

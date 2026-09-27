@@ -1,5 +1,5 @@
 /*
- * Trang Cài đặt Donate (/overlay-settings), kiểu VT Page. Form gắn với tài liệu cài đặt qua data-k="nhóm.trường";
+ * Trang Cài đặt Donate (/overlay-settings), kiểu VT Pay. Form gắn với tài liệu cài đặt qua data-k="nhóm.trường";
  * bản xem trước dùng CHÍNH bộ vẽ của overlay (alert-render.js) nên thấy đúng như trên OBS.
  */
 (function () {
@@ -199,7 +199,7 @@
   });
 
   // ---- Tệp media ----
-  // Lưới ảnh có sẵn: bộ có sẵn của VT Page (z01–z19) và Noto Animated Emoji (CC BY 4.0).
+  // Lưới ảnh có sẵn: bộ có sẵn của VT Pay (z01–z19) và Noto Animated Emoji (CC BY 4.0).
   const IMAGE_PRESETS = [
     'z01', 'z02', 'z03', 'z04', 'z05', 'z06', 'z07', 'z08', 'z09', 'z10',
     'z11', 'z12', 'z13', 'z14', 'z15', 'z16', 'z17', 'z18', 'z19',
@@ -299,7 +299,7 @@
     return { settings: s, media };
   });
   const sample = (vip) => ({
-    donorName: 'VT Page',
+    donorName: 'VT Pay',
     amount: form.other.wowEnabled ? Math.max(100000, form.other.wowMinAmount) : 100000,
     message: 'Hello streamer! Chúc buổi live vui vẻ nhé.',
     vipLevel: vip,
@@ -321,7 +321,7 @@
   });
   $('dsTtsTest').addEventListener('click', () => {
     const text = form.tts.template
-      .replace(/\{name\}/g, 'VT Page')
+      .replace(/\{name\}/g, 'VT Pay')
       .replace(/\{amount\}/g, '100.000 đồng')
       .replace(/\{text\}/g, 'Chúc buổi live vui vẻ nhé');
     void A.speak(text, form.tts.voice, form.tts.volume);
@@ -514,7 +514,7 @@
   let musicTabOpen = false;
   let queue = [];
   const musicView = window.VTMusic.mount($('dsMusicPreview'));
-  const SAMPLE_SONG = { videoId: 'dQw4w9WgXcQ', title: 'Bài hát ví dụ', author: 'Kênh nhạc', donorName: 'VT Page', amount: 50000 };
+  const SAMPLE_SONG = { videoId: 'dQw4w9WgXcQ', title: 'Bài hát ví dụ', author: 'Kênh nhạc', donorName: 'VT Pay', amount: 50000 };
   function renderMusic() {
     if (!form) return;
     const playing = queue.find((q) => q.status === 'playing');

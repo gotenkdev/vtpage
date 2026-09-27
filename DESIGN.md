@@ -1,5 +1,5 @@
 ---
-name: VT Page
+name: VT Pay
 description: "Loa Báo Tiền: a matte orange payment soundbox on a porcelain-grey counter; money goes to your own account, the box only rings."
 colors:
   ground: "#E9EAEE"
@@ -147,7 +147,7 @@ components:
     padding: "24px 26px 22px"
 ---
 
-# Design System: VT Page
+# Design System: VT Pay
 
 ## Overview
 
@@ -241,7 +241,7 @@ Hybrid of soft offset shadows and soft inner bevels, like moulded plastic under 
 
 ## Shapes
 
-Generous, moulded corners that scale with the object: keys 14px (12 small, 16 large), fields 14px, slots 22px, lanes 24px, panels 30px, the label sticker a deliberately tight 8px, chips and avatars fully round (50% or 99px). The speaker uses 8cqw shell and 5.5cqw face radii. The dot lattice is a hex-offset grid (rows at 0.866 pitch). Icon nodes are circles; keys and speaker keys are rounded squares and circles. The lane for VT Page is outlined in a 2px ink ring, not a shadow.
+Generous, moulded corners that scale with the object: keys 14px (12 small, 16 large), fields 14px, slots 22px, lanes 24px, panels 30px, the label sticker a deliberately tight 8px, chips and avatars fully round (50% or 99px). The speaker uses 8cqw shell and 5.5cqw face radii. The dot lattice is a hex-offset grid (rows at 0.866 pitch). Icon nodes are circles; keys and speaker keys are rounded squares and circles. The lane for VT Pay is outlined in a 2px ink ring, not a shadow.
 
 ## Components
 
@@ -265,7 +265,7 @@ Inline ink pill (radius 0.18em) inside a heading, Doto 900, amber for the 5-seco
 The signature component. Orange shell, darker recessed face with a dot-grille canvas (dark dots, warm lit dots), and a right-hand panel: LED, ink display (LED blue digits), two keys, a QR plate with an orange scan line, and two ink feet. An alert chip (plate pill, orange icon disc, cobalt amount) pops out of its corner on the beat. All dimensions are in cqw. Buzz shakes it on demand.
 
 ### Mechanism diagram and spec rows
-The diagram sits on dotted plate paper (18px dot grid, 30px radius). Nodes are white rounded rects with 2px ink strokes; money runs on cobalt lines with a coin, signal and alert on orange with dots and pulses; the dashed ghost box shows the part VT Page does not hold. Four spec rows on the right (56px plate key, title, text) take turns: the active key turns orange and rises, an orange underline fills over 3.2 s, the diagram dims the other parts to 50%.
+The diagram sits on dotted plate paper (18px dot grid, 30px radius). Nodes are white rounded rects with 2px ink strokes; money runs on cobalt lines with a coin, signal and alert on orange with dots and pulses; the dashed ghost box shows the part VT Pay does not hold. Four spec rows on the right (56px plate key, title, text) take turns: the active key turns orange and rises, an orange underline fills over 3.2 s, the diagram dims the other parts to 50%.
 
 ### Comparison lanes
 Two lanes for the same 100.000 VND: the wallet lane on plate-2 with an inset line, the VT lane white with a 2px ink ring. Step nodes are 38px circles: done is cobalt, warn is ink, pending is a ring in ink-3. A connector runs down each lane (line grey; cobalt at 35% on the VT lane). Each lane ends in an ink LED result panel (blue Doto amount; unknown state greyed and blinking).

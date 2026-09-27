@@ -12,11 +12,11 @@ Người sáng tạo nội dung tại Việt Nam muốn nhận donate từ ngư�
 
 ## Product Purpose
 
-VT Page là nền tảng kỹ thuật số giúp tạo trang cá nhân, mở cửa hàng online, nhận donate và booking. Điểm bán chính hiện tại là tạo trang nhận donate trong 5 giây, miễn phí cho người mới. Thành công là nhà sáng tạo đăng ký và tạo được username `vtpay.vn/<username>` ngay.
+VT Pay là nền tảng kỹ thuật số giúp tạo trang cá nhân, mở cửa hàng online, nhận donate và booking. Điểm bán chính hiện tại là tạo trang nhận donate trong 5 giây, miễn phí cho người mới. Thành công là nhà sáng tạo đăng ký và tạo được username `vtpay.vn/<username>` ngay.
 
 ## Positioning
 
-Cổng thanh toán gắn trên trang donate là tài khoản của chính nhà sáng tạo. VT Page đứng ngoài dòng tiền, chỉ nhận tín hiệu "đã thanh toán" để bắn thông báo lên màn hình. Tiền chưa từng đi qua tài khoản VT Page nên nền tảng không thể giữ tiền. Đối thủ mô hình ví trung gian không thể nói đúng điều này: không số dư chờ, không mốc rút tối thiểu, không phí rút, không lịch đối soát.
+Cổng thanh toán gắn trên trang donate là tài khoản của chính nhà sáng tạo. VT Pay đứng ngoài dòng tiền, chỉ nhận tín hiệu "đã thanh toán" để bắn thông báo lên màn hình. Tiền chưa từng đi qua tài khoản VT Pay nên nền tảng không thể giữ tiền. Đối thủ mô hình ví trung gian không thể nói đúng điều này: không số dư chờ, không mốc rút tối thiểu, không phí rút, không lịch đối soát.
 
 ## Operating Context
 
@@ -33,7 +33,7 @@ Ngôn ngữ giao diện: tiếng Việt (một số nhãn đăng nhập giữ ti
 
 ## Brand Commitments
 
-Tên "VT Page". Pháp nhân: CÔNG TY TNHH VT ESPORTS. Không có màu, logo hay typeface nào bị người dùng ràng buộc; nhận diện thị giác hiện tại chỉ là bằng chứng, không phải cam kết.
+Tên "VT Pay". Pháp nhân: CÔNG TY TNHH VT ESPORTS. Không có màu, logo hay typeface nào bị người dùng ràng buộc; nhận diện thị giác hiện tại chỉ là bằng chứng, không phải cam kết.
 
 ## Evidence on Hand
 

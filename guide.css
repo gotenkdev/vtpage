@@ -1,4 +1,4 @@
-/* Trang hướng dẫn (guide-sepay.html): mục lục dính bên trái, các bước đánh số, style VT Page (nền sáng, cam, bo tròn lớn). */
+/* Trang hướng dẫn (guide-sepay.html): mục lục dính bên trái, các bước đánh số, style VT Pay (nền sáng, cam, bo tròn lớn). */
 .gd { padding: 28px 0 72px; }
 .gd-wrap { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 32px; align-items: start; max-width: 1080px; }
 .gd-toc { position: sticky; top: 20px; display: grid; gap: 2px; padding: 18px; border-radius: 22px; background: #fff; box-shadow: 0 0 0 1px var(--line); }

@@ -1,5 +1,5 @@
 /* =====================================================================
-   VT Page — "Loa Báo Tiền"
+   VT Pay — "Loa Báo Tiền"
    Chiếc loa báo tiền ở quầy hàng: nhựa cam mờ, lưới lỗ loa, LED chấm.
    Quy ước màu: cam = tín hiệu / hành động chính, cobalt = tiền và tài khoản,
    mực đen = chữ, lưới loa, trạng thái bị giữ.
@@ -1419,7 +1419,7 @@ html[data-motion="off"] .reveal { opacity: 1 !important; transform: none !import
 .mfa-hint { margin: 12px 0 0; color: var(--ink-3); font-size: 0.92rem; }
 .mfa-email-btn { margin-top: 10px; width: 100%; }
 
-/* Menu tài khoản kiểu VT Page: hai thẻ Cá nhân / Trang (auth.js → setupAccountMenu). Màu theo website. */
+/* Menu tài khoản kiểu VT Pay: hai thẻ Cá nhân / Trang (auth.js → setupAccountMenu). Màu theo website. */
 .dropdown-panel.acct-panel { width: 320px; padding: 12px; }
 .acct-tabs {
   display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 16px;

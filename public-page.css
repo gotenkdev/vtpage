@@ -1,4 +1,4 @@
-/* Trang người xem (u.html) bố cục kiểu VT Page, style VT Page: nền sáng, cam, bo tròn lớn. Nạp SAU style.css để ghi đè. */
+/* Trang người xem (u.html) bố cục kiểu VT Pay, style VT Pay: nền sáng, cam, bo tròn lớn. Nạp SAU style.css để ghi đè. */
 .donate-page .wrap { max-width: 1180px; }
 .vp { display: grid; gap: 18px; }
 .vp[hidden] { display: none; }

@@ -1,5 +1,5 @@
 /*
- * VT Page — chuyển động.
+ * VT Pay — chuyển động.
  * Cả trang chạy theo MỘT nhịp 5 giây ("ting"): lưới loa gợn sóng, đèn LED,
  * chip thông báo, sơ đồ cơ chế đều bám cùng đồng hồ document.timeline.
  * Tôn trọng prefers-reduced-motion; nút góc trái dưới cho phép tạm dừng.
@@ -385,7 +385,7 @@
       const live = (el) => el.classList.add('is-live');
 
       at(120, () => { lit(wSteps[0]); lit(vSteps[0]); });
-      // VT Page: hai bước là xong
+      // VT Pay: hai bước là xong
       at(600, () => live(vSteps[1]));
       at(1100, () => lit(vSteps[1]));
       at(1400, () => lit(vFinal));

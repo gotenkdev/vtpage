@@ -469,7 +469,7 @@ if (createForm && document.getElementById('profileEditor')) {
   const DEFAULT_USERNAME_HINT =
     'vtpay.vn/username — chữ, số, gạch dưới, 3-20 ký tự. Không đổi được sau khi tạo.';
 
-  // Đã có hồ sơ: ẩn thẻ tạo hồ sơ, giao cho trình sửa kiểu VT Page (profile-editor.js).
+  // Đã có hồ sơ: ẩn thẻ tạo hồ sơ, giao cho trình sửa kiểu VT Pay (profile-editor.js).
   function showEdit(profile) {
     skeleton.hidden = true;
     createForm.closest('.settings-card').hidden = true;
@@ -898,7 +898,7 @@ if (bankForm && bankGate) {
     }
   }
 
-  // ---- Trang Thanh toán kiểu VT Page: công tắc Nhận donate, bảng phương thức, cửa sổ Thêm phương thức ----
+  // ---- Trang Thanh toán kiểu VT Pay: công tắc Nhận donate, bảng phương thức, cửa sổ Thêm phương thức ----
   const acceptSwitch = document.getElementById('acceptSwitch');
   const bankPanel = document.getElementById('bankPanel');
   const methodRows = document.getElementById('methodRows');
@@ -911,7 +911,7 @@ if (bankForm && bankGate) {
   const METHODS = [
     { id: 'bank', name: 'Ngân hàng (QR Code) · SePay', currency: 'VND', icon: 'bank', ready: true },
     { id: 'momo', name: 'Ví điện tử Momo · SePay', currency: 'VND', icon: 'momo', ready: false, note: 'Chưa kết nối · sắp có' },
-    { id: 'wallet', name: 'Ví VTPage', currency: 'VND', icon: 'wallet', ready: false, note: 'Người xem nạp tiền vào ví để donate · sắp có' },
+    { id: 'wallet', name: 'Ví VTPay', currency: 'VND', icon: 'wallet', ready: false, note: 'Người xem nạp tiền vào ví để donate · sắp có' },
   ];
   const payIcon = (name) =>
     `<span class="pay-ic" aria-hidden="true"><svg viewBox="0 0 24 24">${PAY_ICONS[name]}</svg></span>`;
@@ -1023,7 +1023,7 @@ if (bankForm && bankGate) {
     if (event.target === methodDialog) methodDialog.close();
   });
 
-  // ---- Kết nối SePay: API Key tự nhập + tài khoản ngân hàng + danh sách kiểm tra (kiểu VT Page) ----
+  // ---- Kết nối SePay: API Key tự nhập + tài khoản ngân hàng + danh sách kiểm tra (kiểu VT Pay) ----
   const sepayUrl = document.getElementById('sepayUrl');
   const sepayKey = document.getElementById('sepayKey');
   const sepayState = document.getElementById('sepayState');
@@ -1283,7 +1283,7 @@ if (rotateBtn && overlayGate) {
     });
 }
 
-// --- Menu tài khoản (bấm ảnh đại diện): hai thẻ Cá nhân / Trang, kiểu VT Page ---
+// --- Menu tài khoản (bấm ảnh đại diện): hai thẻ Cá nhân / Trang, kiểu VT Pay ---
 const ACCT_ICONS = {
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 20.5c1-4 4.2-6 8-6s7 2 8 6"/>',
   store: '<path d="M4 9.5 5.5 4.5h13L20 9.5"/><path d="M4 9.5a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0"/><path d="M5.5 11.5v8h13v-8"/><path d="M10 19.5v-4h4v4"/>',
@@ -1716,7 +1716,7 @@ if (donateProfile && notFoundBox) {
     try {
       const profile = await window.VTApi.call('GET', `/profiles/${encodeURIComponent(username)}`);
       skeleton.hidden = true;
-      document.title = `${profile.displayName} - VT Page`;
+      document.title = `${profile.displayName} - VT Pay`;
       nameEl.textContent = profile.displayName;
       usernameEl.textContent = `@${profile.username}`;
       if (profile.bio) {

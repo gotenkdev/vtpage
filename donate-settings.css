@@ -1,4 +1,4 @@
-/* Trang Cài đặt Donate (overlay-settings.html) kiểu VT Page, màu website. Dùng lại .pe-card, .pe-bar, .switch, .pay-check. */
+/* Trang Cài đặt Donate (overlay-settings.html) kiểu VT Pay, màu website. Dùng lại .pe-card, .pe-bar, .switch, .pay-check. */
 .ds { display: grid; gap: 14px; }
 .ds[hidden] { display: none; }
 .ds-tabs { display: flex; gap: 4px; padding: 4px; border-radius: 14px; background: #fff; border: 1px solid rgba(20, 22, 26, 0.07); overflow-x: auto; }
