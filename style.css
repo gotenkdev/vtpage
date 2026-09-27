@@ -1486,3 +1486,6 @@ html[data-motion="off"] .reveal { opacity: 1 !important; transform: none !import
 .lb-list li:nth-child(3)::before { background: #f0b27a; }
 .lb-list li span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pay-guide { color: var(--orange-deep); font-weight: 700; white-space: nowrap; }
+.foot-links { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.foot-links a { color: #C9CDD8; text-decoration: none; font-size: 0.95rem; }
+.foot-links a:hover { color: var(--orange); }
