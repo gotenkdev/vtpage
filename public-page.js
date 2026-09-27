@@ -1,5 +1,5 @@
 /*
- * Trang người xem (u.html, vtpage.com/<username>) kiểu VT Page: nút Nhắn tin (sắp có) / Theo dõi / Thông tin, ba tab Donate /
+ * Trang người xem (u.html, vtpage.vn/<username>) kiểu VT Page: nút Nhắn tin (sắp có) / Theo dõi / Thông tin, ba tab Donate /
  * Phát nhạc / Mục tiêu, Bảng xếp hạng Ngày/Tháng/Tổng, danh sách Gần đây. Luồng tạo đơn, QR, ghi âm vẫn ở auth.js.
  * Mọi dữ liệu người dùng (tên, lời nhắn) vào trang bằng textContent.
  */
