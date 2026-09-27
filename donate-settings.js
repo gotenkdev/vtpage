@@ -199,9 +199,15 @@
   });
 
   // ---- Tệp media ----
-  // Lưới ảnh có sẵn (Noto Animated Emoji, CC BY 4.0).
-  const IMAGE_PRESETS = ['1f389', '1f38a', '1f386', '2728', '1fa99', '1f4b8', '1f381', '1f3c6', '1f451', '1f48e',
-    '1f680', '1f525', '2764_fe0f', '1f496', '1f929', '1f973', '1f60d', '1f970', '1f44f', '1f4af'];
+  // Lưới ảnh có sẵn: bộ Zypage (z01–z19, dùng theo sự cho phép của Zypage) và Noto Animated Emoji (CC BY 4.0).
+  const IMAGE_PRESETS = [
+    'z01', 'z02', 'z03', 'z04', 'z05', 'z06', 'z07', 'z08', 'z09', 'z10',
+    'z11', 'z12', 'z13', 'z14', 'z15', 'z16', 'z17', 'z18', 'z19',
+    '1f389', '1f38a', '1f386', '2728', '1fa99', '1f4b8', '1f381', '1f3c6', '1f451', '1f48e',
+    '1f680', '1f525', '2764_fe0f', '1f496', '1f929', '1f973', '1f60d', '1f970', '1f44f', '1f4af',
+  ];
+  const presetSrc = (code) =>
+    code.startsWith('z') ? '/assets/donate/zypage/img' + code.slice(1) + '.png' : '/assets/donate/img/' + code + '.webp';
   const presetBox = $('dsImagePresets');
   IMAGE_PRESETS.forEach((code) => {
     const b = document.createElement('button');
@@ -210,7 +216,7 @@
     b.dataset.preset = code;
     b.setAttribute('aria-label', 'Chọn ảnh có sẵn ' + code);
     const img = document.createElement('img');
-    img.src = '/assets/donate/img/' + code + '.webp';
+    img.src = presetSrc(code);
     img.alt = '';
     img.loading = 'lazy';
     b.append(img);
@@ -227,7 +233,7 @@
     const url = form.image.mediaKey
       ? '/api/v1/media/' + form.image.mediaKey
       : form.image.preset
-        ? '/assets/donate/img/' + form.image.preset + '.webp'
+        ? presetSrc(form.image.preset)
         : null;
     presetBox.querySelectorAll('.ds-preset').forEach((b) =>
       b.setAttribute('aria-pressed', String(!form.image.mediaKey && b.dataset.preset === form.image.preset)),

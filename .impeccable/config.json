@@ -38,6 +38,18 @@
         ],
         "createdAt": "2026-09-22T10:15:00.000Z",
         "reason": "false positive: .donate-toast-icon dùng ĐÚNG token inset-shadow rgba(140,30,0,0.42) đã có sẵn trong hệ thiết kế (.btn-primary, .loa-chip...) khắp các trang khác — tái dùng để đồng bộ giao diện, không phải hiệu ứng glow tự chế mới"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "bouncein",
+        "createdAt": "2026-09-27T10:07:35.380Z",
+        "reason": "Người dùng yêu cầu chép đủ tính năng Cài đặt Donate của Zypage; bounceIn/bounceOut là mặc định và lựa chọn hiệu ứng chuẩn của Zypage cho thông báo trên OBS, không phải giao diện website"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "bounceout",
+        "createdAt": "2026-09-27T10:07:35.403Z",
+        "reason": "Người dùng yêu cầu chép đủ tính năng Cài đặt Donate của Zypage; bounceIn/bounceOut là mặc định và lựa chọn hiệu ứng chuẩn của Zypage cho thông báo trên OBS, không phải giao diện website"
       }
     ]
   }

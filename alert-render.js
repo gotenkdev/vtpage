@@ -39,12 +39,12 @@
   // Giao diện "Cổ điển" dùng hiệu ứng/màu tùy chỉnh; các giao diện khác tự có hiệu ứng riêng.
   const isClassic = (theme) => theme.startsWith('classic_');
 
-  // ---- 19 âm thanh có sẵn: tệp OGG của Kenney.nl (giấy phép CC0), phục vụ tĩnh ở /assets/donate/sound/NN.ogg ----
-  const SOUNDS = [
-    '8-bit 1', '8-bit 2', '8-bit 3', '8-bit 4', 'Pizzicato 1', 'Pizzicato 2', 'Pizzicato 3', 'Pizzicato 4',
-    'Saxophone 1', 'Saxophone 2', 'Saxophone 3', 'Saxophone 4', 'Steel drum 1', 'Steel drum 2', 'Steel drum 3',
-    'Steel drum 4', 'Xác nhận 1', 'Xác nhận 2', 'Xác nhận 3',
-  ].map((label, i) => [label, '/assets/donate/sound/' + String(i + 1).padStart(2, '0') + '.ogg']);
+  // ---- 19 âm thanh có sẵn: bộ của Zypage (dùng theo sự cho phép của Zypage), ở /assets/donate/zypage/sndNN.mp3 ----
+  const SOUNDS = Array.from({ length: 19 }, (_, i) => {
+    const n = String(i + 1).padStart(2, '0');
+    return ['Âm thanh ' + (i + 1), '/assets/donate/zypage/snd' + n + '.mp3'];
+  });
+
 
   // Phát âm thanh: 'builtin:N' (tệp có sẵn) hoặc 'custom' (tệp streamer tải lên). Trả thời lượng ước tính (giây).
   function playSound(source, customUrl, volume) {
