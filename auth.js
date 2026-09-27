@@ -1558,6 +1558,17 @@ if (donateProfile && notFoundBox) {
         stopTimers();
         donateWaiting.hidden = true;
         donatePaid.hidden = false;
+        // Hiện lời cảm ơn vài giây rồi tự quay về form donate ban đầu.
+        let left = 5;
+        const note = document.getElementById('donateBackNote');
+        backTimer = setInterval(() => {
+          left -= 1;
+          if (left <= 0) {
+            resetDonate();
+            return;
+          }
+          if (note) note.textContent = `Tự quay lại trang donate sau ${left} giây…`;
+        }, 1000);
         return;
       }
       if (status.status === 'expired') {
@@ -1577,7 +1588,12 @@ if (donateProfile && notFoundBox) {
     void check();
   }
 
-  retryBtn.addEventListener('click', () => {
+  let backTimer = null;
+  function resetDonate() {
+    clearInterval(backTimer);
+    backTimer = null;
+    const note = document.getElementById('donateBackNote');
+    if (note) note.textContent = 'Tự quay lại trang donate sau 5 giây…';
     stopTimers();
     donateInstructions.hidden = true;
     donateWaiting.hidden = false;
@@ -1589,7 +1605,10 @@ if (donateProfile && notFoundBox) {
     donateForm.reset();
     for (const b of amountPresets.querySelectorAll('.amount-preset')) b.classList.remove('is-active');
     donateFormCard.hidden = false;
-  });
+    donateFormCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  retryBtn.addEventListener('click', resetDonate);
+  document.getElementById('donateBackBtn').addEventListener('click', resetDonate);
 
   // ---- Ghi âm lời nhắn (khi streamer bật) ----
   const recording = { info: null, blob: null, recorder: null, timer: null };

@@ -11,7 +11,7 @@
   <link rel="preload" href="fonts/doto-latin-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css">
   <link rel="stylesheet" href="style.css?v=15">
-  <link rel="stylesheet" href="public-page.css?v=5">
+  <link rel="stylesheet" href="public-page.css?v=6">
   <link rel="stylesheet" href="sticker.css?v=10">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
 </head>
@@ -208,7 +208,7 @@
           </div>
 
           <p class="donate-waiting" id="donateWaiting">Đang chờ chuyển khoản...</p>
-          <p class="donate-paid" id="donatePaid" hidden>Đã nhận donate! Cảm ơn bạn 🎉</p>
+          <div class="donate-paid-box" id="donatePaid" hidden><p class="donate-paid">Đã nhận donate! Cảm ơn bạn 🎉</p><p class="auth-subtitle" id="donateBackNote" aria-live="polite">Tự quay lại trang donate sau 5 giây…</p><button type="button" class="btn btn-outline" id="donateBackBtn">Quay lại ngay</button></div>
           <div id="donateExpired" hidden>
             <p class="donate-expired">Đơn đã hết hạn.</p>
             <p class="auth-subtitle">Nếu bạn đã chuyển khoản trước khi hết hạn, giao dịch vẫn được ghi nhận trong vòng 24 giờ sau đó — trang này sẽ không tự cập nhật thêm, không cần chờ ở đây.</p>
@@ -243,7 +243,7 @@
   <script src="fx.js"></script>
   <script src="api.js?v=9"></script>
   <script src="profile-editor.js?v=3"></script>
-  <script src="auth.js?v=24"></script>
+  <script src="auth.js?v=25"></script>
   <script src="public-page.js?v=6"></script>
 </body>
 </html>

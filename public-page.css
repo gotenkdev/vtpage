@@ -99,3 +99,5 @@
 .donor-name-row strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .donor-name-change { flex: none; color: var(--orange-deep); font-weight: 700; }
 .theme-sticker .donor-name-row { border: 1px solid #000; border-radius: 16px; background: #fff; }
+.donate-paid-box { display: grid; gap: 10px; justify-items: center; text-align: center; }
+.donate-paid-box[hidden] { display: none; }
