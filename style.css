@@ -1489,3 +1489,4 @@ html[data-motion="off"] .reveal { opacity: 1 !important; transform: none !import
 .foot-links { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
 .foot-links a { color: #C9CDD8; text-decoration: none; font-size: 0.95rem; }
 .foot-links a:hover { color: var(--orange); }
+img.acct-avatar { object-fit: cover; }

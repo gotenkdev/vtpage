@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đang theo dõi - VT Pay</title>
+  <title>Hồ sơ cá nhân - VT Pay</title>
   <meta name="theme-color" content="#E9EAEE">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="dashboard.css?v=13">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
 </head>
-<body class="page-auth" data-dash="following">
+<body class="page-auth" data-dash="account">
   <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden"><symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="4.5" width="4" height="15" rx="1.3" fill="currentColor"/><rect x="14" y="4.5" width="4" height="15" rx="1.3" fill="currentColor"/></symbol><symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></symbol>
     <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.6h.01"/></symbol>
     <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></symbol>
@@ -54,17 +54,47 @@
 
   <main class="settings">
     <div class="wrap">
-      <section class="auth-plate settings-card" id="fwLoading">
+      <section class="auth-plate settings-card" id="apLoading">
         <p class="auth-subtitle" id="settingsSubtitle">Đang tải...</p>
         <div class="settings-skeleton" id="settingsSkeleton"><div class="skeleton-block"></div><div class="skeleton-block"></div></div>
       </section>
 
-      <div class="dh" id="followContent" hidden>
-        <section class="pe-card dh-card" aria-labelledby="fwTitle">
-          <div class="dh-head"><h2 class="pe-h" id="fwTitle">Trang đang theo dõi</h2><span class="dh-caption" id="fwCount"></span></div>
-          <div class="fw-grid" id="fwList"></div>
-          <p class="pe-sub dh-empty" id="fwEmpty" hidden>Bạn chưa theo dõi trang nào. Bấm <b>Theo dõi</b> trên trang donate của streamer để thêm vào đây.</p>
+      <div class="ap" id="accountContent" hidden>
+        <section class="pe-card ap-form" aria-labelledby="apTitle">
+          <h2 class="pe-h" id="apTitle">Hồ sơ cá nhân</h2>
+          <p class="pe-sub">Thông tin hiển thị khi bạn tương tác với các trang, ví dụ tên điền sẵn khi donate.</p>
+          <div class="ap-avatar-row">
+            <span class="ap-avatar" id="apAvatarBox"><img id="apAvatarImg" alt="" hidden><span id="apAvatarFallback">?</span></span>
+            <div class="ap-avatar-actions">
+              <label class="btn btn-outline btn-sm" for="apAvatarInput">Ảnh đại diện</label>
+              <input id="apAvatarInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+              <button type="button" class="btn btn-ghost btn-sm" id="apAvatarRemove" hidden>Xóa ảnh</button>
+              <p class="form-hint">JPG, PNG, WebP. Ảnh lớn được thu nhỏ tự động.</p>
+            </div>
+          </div>
+          <form class="ap-fields" id="apForm" novalidate>
+            <div class="form-field ap-wide"><label for="apName">Tên hiển thị</label><input id="apName" maxlength="50" autocomplete="nickname" placeholder="Tên của bạn"></div>
+            <div class="form-field"><label for="apEmail">Email</label><input id="apEmail" type="email" readonly><p class="form-hint">Đổi email ở <a href="/security">Tài khoản &amp; bảo mật</a>.</p></div>
+            <div class="form-field"><label for="apCountry">Quốc gia</label><select id="apCountry"><option value="">Chưa chọn</option></select></div>
+            <p class="form-error ap-wide" id="apError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="apErrorText"></span></p>
+            <div class="ap-actions ap-wide"><span class="pe-status" id="apStatus" role="status"></span><button type="submit" class="btn btn-primary" id="apSave" disabled>Lưu thay đổi</button></div>
+          </form>
         </section>
+
+        <aside class="ap-side">
+          <section class="pe-card ap-preview" aria-label="Xem trước hồ sơ cá nhân">
+            <div class="ap-cover" aria-hidden="true"></div>
+            <span class="ap-avatar ap-avatar-lg" id="apPrevAvatar"><img id="apPrevImg" alt="" hidden><span id="apPrevFallback">?</span></span>
+            <strong class="ap-prev-name" id="apPrevName">Tên của bạn</strong>
+            <span class="ap-prev-mail" id="apPrevMail"></span>
+            <span class="ap-pill">Cá nhân</span>
+            <div class="ap-prev-row"><span>Quốc gia</span><b id="apPrevCountry">Chưa chọn</b></div>
+          </section>
+          <section class="pe-card ap-note">
+            <strong>Đây là cách mọi người thấy bạn</strong>
+            <p class="pe-sub">Cập nhật ngay khi bạn chỉnh sửa. Email không hiển thị công khai.</p>
+          </section>
+        </aside>
       </div>
     </div>
   </main>
@@ -72,7 +102,7 @@
   <script src="fx.js"></script>
   <script src="api.js?v=9"></script>
   <script src="auth.js?v=22"></script>
-  <script src="my-following-page.js?v=1"></script>
+  <script src="my-profile-page.js?v=1"></script>
   <script src="dashboard.js?v=12"></script>
 </body>
 </html>

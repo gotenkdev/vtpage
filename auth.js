@@ -1304,6 +1304,25 @@ function acctIcon(name) {
 function setupAccountMenu() {
   const panel = document.getElementById('userPanel');
   if (!panel) return;
+  // Thẻ Cá nhân dùng tên + ảnh của Hồ sơ cá nhân (nếu đã đặt).
+  window.VTApi.call('GET', '/me/account-profile')
+    .then(({ account }) => {
+      const card = document.getElementById('acctMeCard');
+      if (!card) return;
+      const strong = card.querySelector('strong');
+      if (account.displayName) strong.textContent = account.displayName;
+      const ava = card.querySelector('.acct-avatar');
+      if (account.avatarUrl && ava) {
+        const img = document.createElement('img');
+        img.className = 'acct-avatar';
+        img.src = account.avatarUrl;
+        img.alt = '';
+        ava.replaceWith(img);
+      } else if (account.displayName && ava) {
+        ava.textContent = account.displayName.slice(0, 1).toUpperCase();
+      }
+    })
+    .catch(() => undefined);
   const tabs = { me: document.getElementById('acctTabMe'), page: document.getElementById('acctTabPage') };
   const panes = { me: document.getElementById('acctMe'), page: document.getElementById('acctPage') };
   let profileLoaded = false;
@@ -1639,6 +1658,13 @@ if (donateProfile && notFoundBox) {
     // bỏ qua nháp hỏng
   }
 
+  // Đã đăng nhập mà chưa nhập tên: điền sẵn tên hiển thị trong Hồ sơ cá nhân (người xem vẫn sửa được, hoặc để "Ẩn danh").
+  window.VTApi.call('GET', '/me/account-profile')
+    .then(({ account }) => {
+      if (account.displayName && !donorNameInput.value) donorNameInput.value = account.displayName;
+    })
+    .catch(() => undefined);
+
   const loginLink = document.getElementById('vpLoginLink');
   if (loginLink) loginLink.addEventListener('click', () => rememberReturn('/' + username));
 
@@ -1827,7 +1853,7 @@ if (authButtons) {
                 <button type="button" class="acct-tab" role="tab" id="acctTabPage" aria-controls="acctPage" aria-selected="false">${acctIcon('store')}Trang</button>
               </div>
               <div class="acct-pane" id="acctMe" role="tabpanel" aria-labelledby="acctTabMe">
-                <a class="acct-card" href="/security">
+                <a class="acct-card" id="acctMeCard" href="/my-profile">
                   <span class="acct-avatar" aria-hidden="true">${escapeHtml(email.slice(0, 1).toUpperCase())}</span>
                   <span class="acct-card-meta"><strong>${escapeHtml(email.split('@')[0])}</strong><span>${escapeHtml(email)}</span></span>
                 </a>
@@ -1835,6 +1861,7 @@ if (authButtons) {
                 <a class="acct-item" href="/my-orders">${acctIcon('bag')}<span>Đơn hàng</span></a>
                 <a class="acct-item" href="/my-following">${acctIcon('heart')}<span>Đang theo dõi</span></a>
                 <div class="acct-group">Tài khoản</div>
+                <a class="acct-item" href="/my-profile">${acctIcon('user')}<span>Hồ sơ cá nhân</span></a>
                 <a class="acct-item" href="/security">${acctIcon('shield')}<span>Tài khoản &amp; bảo mật</span></a>
                 <button type="button" class="acct-item" id="logoutBtn">${acctIcon('logout')}<span>Đăng xuất</span></button>
               </div>

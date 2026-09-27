@@ -16,6 +16,7 @@
     top: { group: 'Trang donate', title: 'Bảng xếp hạng Donate', desc: 'Top người ủng hộ theo ngày, tháng, tất cả và widget hiển thị trên live.' },
     orders: { group: 'Trang donate', title: 'Đơn hàng của trang', desc: 'Mọi lệnh donate đã tạo và khoản đã nhận: tìm kiếm, xem chi tiết, xuất dữ liệu.' },
     overlay: { group: 'Trang donate', title: 'Cài đặt Donate', desc: 'Toàn bộ công cụ tương tác trên live: thông báo donate, âm thanh, giọng đọc, ghi âm, phát nhạc, mục tiêu.' },
+    account: { group: 'Cá nhân', title: 'Hồ sơ cá nhân', desc: 'Một hồ sơ nhất quán cho mọi hoạt động của bạn trên VT Pay.' },
     myorders: { group: 'Cá nhân', title: 'Đơn hàng cá nhân', desc: 'Các lệnh donate bạn đã tạo: tìm kiếm, xem trạng thái và chi tiết.' },
     following: { group: 'Cá nhân', title: 'Đang theo dõi', desc: 'Các trang bạn đang theo dõi.' },
     security: { group: 'Cá nhân', title: 'Tài khoản & bảo mật', desc: 'Xác thực 2 lớp, đổi mật khẩu và email đăng nhập.' },
@@ -54,7 +55,10 @@
     { id: 'myorders', label: 'Đơn hàng', href: '/my-orders', icon: 'bag' },
     { id: 'following', label: 'Đang theo dõi', href: '/my-following', icon: 'heart', count: true },
   ];
-  const PERSONAL_ITEMS = [{ id: 'security', label: 'Tài khoản & bảo mật', href: '/security', icon: 'shield' }];
+  const PERSONAL_ITEMS = [
+    { id: 'account', label: 'Hồ sơ cá nhân', href: '/my-profile', icon: 'user' },
+    { id: 'security', label: 'Tài khoản & bảo mật', href: '/security', icon: 'shield' },
+  ];
 
   function el(tag, attrs, html) {
     const node = document.createElement(tag);
@@ -85,7 +89,7 @@
   // Thẻ Cá nhân dựng giống thẻ Trang: thẻ tài khoản ở đầu, rồi các nhóm mục.
   const paneMe = el('div', { class: 'dash-pane', id: 'dashPaneMe', role: 'tabpanel', 'aria-labelledby': 'dashTabMe' });
   const meCard = el('div', { class: 'dash-page-card' });
-  const meLink = el('a', { class: 'dash-page-main', href: '/security' });
+  const meLink = el('a', { class: 'dash-page-main', href: '/my-profile' });
   const meAvatar = el('span', { class: 'dash-avatar', 'aria-hidden': 'true' });
   const meMeta = el('span', { class: 'dash-page-meta' });
   const meName = el('strong');
@@ -116,13 +120,12 @@
     }
   });
   paneMe.append(logout);
-  window.VTApi.me()
-    .then((me) => {
-      if (!me) return;
-      const email = me.user.email;
-      meName.textContent = email.split('@')[0];
-      meMail.textContent = email;
-      meAvatar.textContent = email.slice(0, 1).toUpperCase();
+  window.VTApi.call('GET', '/me/account-profile')
+    .then(({ account }) => {
+      meName.textContent = account.displayName || account.email.split('@')[0];
+      meMail.textContent = account.email;
+      if (account.avatarUrl) meAvatar.replaceWith(el('img', { class: 'dash-avatar', src: account.avatarUrl, alt: '' }));
+      else meAvatar.textContent = (account.displayName || account.email).slice(0, 1).toUpperCase();
     })
     .catch(() => (meName.textContent = 'Tài khoản của bạn'));
   window.VTApi.call('GET', '/me/following')
