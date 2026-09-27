@@ -1470,7 +1470,7 @@ function renderCreatorExtras(profile) {
   if (profile.coverUrl) {
     cover.style.backgroundImage = 'url("' + profile.coverUrl + '")';
     cover.hidden = false;
-    cover.closest('.creator-card').classList.add('has-cover');
+    cover.classList.add('has-image');
   }
   if (!meta) return;
   const chip = document.getElementById('creatorCategory');
@@ -1699,27 +1699,6 @@ if (donateProfile && notFoundBox) {
     return data.recordingKey;
   }
 
-  // ---- Bảng xếp hạng (khi streamer bật) ----
-  async function loadLeaderboard() {
-    try {
-      const { leaderboard } = await window.VTApi.call('GET', `/profiles/${encodeURIComponent(username)}/leaderboard`);
-      if (!leaderboard || leaderboard.length === 0) return;
-      const list = document.getElementById('lbList');
-      leaderboard.forEach((row) => {
-        const li = document.createElement('li');
-        const name = document.createElement('span');
-        name.textContent = row.name;
-        const total = document.createElement('strong');
-        total.textContent = vnd(row.total);
-        li.append(name, total);
-        list.append(li);
-      });
-      document.getElementById('leaderboard').hidden = false;
-    } catch {
-      // không có bảng xếp hạng cũng không sao
-    }
-  }
-
   donateForm.addEventListener('submit', (event) => {
     event.preventDefault();
     hideError(donateErrorBox);
@@ -1803,13 +1782,8 @@ if (donateProfile && notFoundBox) {
       donateProfile.hidden = false;
       if (profile.donate) {
         setupRecording(profile.donate.recording);
-        if (profile.donate.music && profile.donate.music.enabled) {
-          document.getElementById('musicField').hidden = false;
-          document.getElementById('musicHint').textContent =
-            `Donate từ ${vnd(profile.donate.music.minAmount)} để chọn bài; mỗi bài phát tối đa 3 phút 30 giây, ai donate trước phát trước.`;
-        }
+        // Ô link YouTube (tab Phát nhạc) do public-page.js điều khiển.
         if (profile.donate.minAmount > 2000) amountInput.min = String(profile.donate.minAmount);
-        if (profile.donate.showLeaderboard) void loadLeaderboard();
       }
       if (profile.acceptingDonations === false) {
         donateNotReady.querySelector('p').textContent = 'Streamer đang tạm ngưng nhận donate. Hãy quay lại sau.';

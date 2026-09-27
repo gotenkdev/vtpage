@@ -11,6 +11,7 @@
   <link rel="preload" href="fonts/doto-latin-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css">
   <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="public-page.css?v=2">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
 </head>
 <body class="page-auth">
@@ -64,28 +65,61 @@
         <p class="auth-switch"><a href="/">Về trang chủ VT Page</a></p>
       </section>
 
-      <div id="donateProfile" hidden>
-        <section class="auth-plate creator-card">
-          <div class="creator-cover" id="creatorCover" hidden></div>
-          <div class="avatar-wrap creator-avatar">
-            <img class="avatar-preview" id="creatorAvatarImg" alt="" hidden>
-            <div class="avatar-fallback" id="creatorAvatarFallback" aria-hidden="true"></div>
+      <div id="donateProfile" class="vp" hidden>
+        <section class="vp-hero" aria-labelledby="creatorName">
+          <div class="vp-cover creator-cover" id="creatorCover"></div>
+          <div class="vp-hero-row">
+            <div class="avatar-wrap vp-avatar">
+              <img class="avatar-preview" id="creatorAvatarImg" alt="" hidden>
+              <div class="avatar-fallback" id="creatorAvatarFallback" aria-hidden="true"></div>
+            </div>
+            <div class="vp-id">
+              <h1 class="vp-name" id="creatorName"></h1>
+              <p class="vp-handle"><span id="creatorUsername"></span><span class="vp-dot" aria-hidden="true">·</span><span id="vpFollowers">0 người theo dõi</span></p>
+            </div>
+            <div class="vp-actions">
+              <button type="button" class="btn btn-outline btn-sm" id="vpMessage" title="Sắp có">Nhắn tin</button>
+              <button type="button" class="btn btn-primary btn-sm" id="vpFollow" aria-pressed="false">Theo dõi</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="vpInfo">Thông tin</button>
+            </div>
           </div>
-          <h1 class="creator-name" id="creatorName"></h1>
-          <p class="creator-username" id="creatorUsername"></p>
-          <span class="creator-chip" id="creatorCategory" hidden></span>
-          <p class="creator-bio" id="creatorBio" hidden></p>
-          <div class="creator-tags" id="creatorTags" hidden></div>
-          <div class="creator-socials" id="creatorSocials" hidden></div>
-          <span class="verified-badge" id="verifiedBadge" hidden><svg class="ic"><use href="#i-check"/></svg> Đã xác minh</span>
+          <p class="vp-toast" id="vpToast" role="status" hidden></p>
         </section>
 
+        <dialog class="vp-dialog" id="vpInfoDialog" aria-labelledby="vpInfoTitle">
+          <div class="vp-dialog-head"><h2 class="pe-h" id="vpInfoTitle">Thông tin</h2><button type="button" class="btn btn-ghost btn-sm" id="vpInfoClose" aria-label="Đóng">✕</button></div>
+          <div class="vp-dialog-body">
+            <span class="verified-badge" id="verifiedBadge" hidden><svg class="ic"><use href="#i-check"/></svg> Đã xác minh</span>
+            <span class="creator-chip" id="creatorCategory" hidden></span>
+            <h3 class="vp-sub">Giới thiệu</h3>
+            <p class="creator-bio" id="creatorBio" hidden></p>
+            <p class="vp-muted" id="vpNoBio">Streamer chưa viết giới thiệu.</p>
+            <div class="creator-tags" id="creatorTags" hidden></div>
+            <h3 class="vp-sub">Mạng xã hội</h3>
+            <div class="creator-socials" id="creatorSocials" hidden></div>
+            <p class="vp-muted" id="vpNoSocials">Chưa có liên kết mạng xã hội.</p>
+          </div>
+        </dialog>
+
+        <div class="vp-grid">
+          <div class="vp-left">
         <section class="auth-plate" id="donateNotReady" hidden>
           <p class="auth-subtitle">Streamer này chưa sẵn sàng nhận donate lúc này. Hãy quay lại sau.</p>
         </section>
 
-        <section class="auth-plate" id="donateFormCard" hidden>
-          <h2 class="auth-title" style="font-size: 1.5rem;">Gửi donate</h2>
+        <section class="auth-plate vp-card" id="donateFormCard" hidden>
+          <div class="vp-tabs" role="tablist" aria-label="Loại ủng hộ">
+            <button type="button" class="vp-tab" role="tab" data-mode="donate" aria-selected="true">Donate</button>
+            <button type="button" class="vp-tab" role="tab" data-mode="music" aria-selected="false" hidden>Phát nhạc</button>
+            <button type="button" class="vp-tab" role="tab" data-mode="goal" aria-selected="false" hidden>Mục tiêu</button>
+          </div>
+          <div class="vp-goal" id="vpGoal" hidden>
+            <div class="vp-goal-head"><strong id="vpGoalTitle"></strong><span id="vpGoalPct"></span></div>
+            <p class="vp-muted" id="vpGoalNote" hidden></p>
+            <div class="vp-goal-bar"><i id="vpGoalFill"></i></div>
+            <div class="vp-goal-figures"><span><b id="vpGoalRaised"></b> / <span id="vpGoalTarget"></span></span><span id="vpGoalCount"></span></div>
+            <p class="form-hint">Mọi khoản donate (kể cả yêu cầu phát nhạc) đều được cộng vào mục tiêu.</p>
+          </div>
           <form class="sign-in-form" id="donateForm">
             <div class="amount-presets" id="amountPresets">
               <button type="button" class="btn amount-preset" data-amount="10000">10.000</button>
@@ -133,10 +167,6 @@
           </form>
         </section>
 
-        <section class="auth-plate leaderboard" id="leaderboard" hidden aria-labelledby="lbTitle">
-          <h2 class="auth-title" id="lbTitle" style="font-size: 1.3rem;">Bảng xếp hạng</h2>
-          <ol class="lb-list" id="lbList"></ol>
-        </section>
 
         <section class="auth-plate" id="donateInstructions" hidden>
           <h2 class="auth-title" style="font-size: 1.5rem;">Chuyển khoản để hoàn tất</h2>
@@ -178,6 +208,27 @@
             <button type="button" class="btn btn-outline btn-lg" id="retryBtn">Tạo đơn mới</button>
           </div>
         </section>
+            <section class="auth-plate vp-card" id="leaderboard" hidden aria-labelledby="lbTitle">
+              <div class="vp-card-head">
+                <h2 class="vp-card-title" id="lbTitle">Bảng xếp hạng</h2>
+                <div class="vp-seg" role="group" aria-label="Khoảng thời gian">
+                  <button type="button" data-period="day" aria-pressed="false">Ngày</button>
+                  <button type="button" data-period="month" aria-pressed="false">Tháng</button>
+                  <button type="button" data-period="all" aria-pressed="true">Tổng</button>
+                </div>
+              </div>
+              <ol class="vp-rank" id="lbList"></ol>
+              <p class="vp-muted" id="lbEmpty" hidden>Chưa có ai trong khoảng thời gian này.</p>
+            </section>
+          </div>
+          <aside class="vp-right">
+            <section class="auth-plate vp-card" id="recentCard" hidden aria-labelledby="recentTitle">
+              <div class="vp-card-head"><h2 class="vp-card-title" id="recentTitle">Gần đây</h2></div>
+              <ol class="vp-recent" id="recentList"></ol>
+              <p class="vp-muted" id="recentEmpty" hidden>Chưa có donate nào. Hãy là người đầu tiên!</p>
+            </section>
+          </aside>
+        </div>
       </div>
     </div>
   </main>
@@ -185,6 +236,7 @@
   <script src="fx.js"></script>
   <script src="api.js?v=7"></script>
   <script src="profile-editor.js?v=2"></script>
-  <script src="auth.js?v=13"></script>
+  <script src="auth.js?v=14"></script>
+  <script src="public-page.js?v=1"></script>
 </body>
 </html>

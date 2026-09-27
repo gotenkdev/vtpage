@@ -1,0 +1,92 @@
+/* Trang người xem (u.html) bố cục kiểu Zypage, style VT Page: nền sáng, cam, bo tròn lớn. Nạp SAU style.css để ghi đè. */
+.donate-page .wrap { max-width: 1180px; }
+.vp { display: grid; gap: 18px; }
+.vp[hidden] { display: none; }
+
+/* ---- Đầu trang: ảnh bìa, ảnh đại diện, tên, nút ---- */
+.vp-hero { position: relative; border-radius: 26px; background: #fff; box-shadow: 0 0 0 1px var(--line), 0 24px 48px -32px rgba(20, 22, 26, 0.45); overflow: hidden; }
+.vp-cover { aspect-ratio: 5 / 1; min-height: 140px; max-height: 260px; margin: 0; background: linear-gradient(120deg, #ffb48f, var(--orange) 55%, #ff2e7e) center / cover; }
+.vp-cover[hidden] { display: block; }
+.vp-cover.has-image { background-color: var(--plate); }
+.vp-hero-row { display: flex; align-items: flex-end; gap: 18px; padding: 0 24px 20px; margin-top: -56px; flex-wrap: wrap; }
+.vp-avatar { width: 116px; height: 116px; flex: none; margin: 0; }
+.vp-avatar .avatar-preview, .vp-avatar .avatar-fallback { width: 116px; height: 116px; border-radius: 28px; border: 5px solid #fff; box-shadow: 0 10px 24px -12px rgba(20, 22, 26, 0.5); font-size: 2.4rem; object-fit: cover; }
+.vp-id { flex: 1; min-width: 200px; padding-bottom: 6px; }
+.vp-name { margin: 0; font: 800 clamp(1.4rem, 2.6vw, 1.9rem)/1.15 var(--font-display); letter-spacing: -0.02em; overflow-wrap: anywhere; }
+.vp-handle { margin: 4px 0 0; color: var(--ink-3); display: flex; flex-wrap: wrap; gap: 6px; }
+.vp-actions { display: flex; gap: 8px; padding-bottom: 6px; flex-wrap: wrap; }
+.vp-toast { position: absolute; right: 24px; top: 16px; margin: 0; padding: 10px 14px; border-radius: 12px; background: var(--ink); color: #fff; font-size: 0.9rem; }
+
+/* ---- Hai cột ---- */
+.vp-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.vp-left, .vp-right { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; min-width: 0; }
+.vp-card { margin: 0; }
+.vp-card-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+.vp-card-title { margin: 0; font: 700 0.8rem/1 var(--font-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); }
+.vp-muted { margin: 0; color: var(--ink-3); font-size: 0.9rem; }
+.vp-muted[hidden] { display: none; }
+
+/* Tab Donate / Phát nhạc / Mục tiêu */
+.vp-tabs { display: flex; gap: 4px; padding: 4px; margin-bottom: 18px; border-radius: 14px; background: var(--plate); }
+.vp-tab { flex: 1; padding: 11px 12px; border: 0; border-radius: 10px; background: none; cursor: pointer; font: 700 0.95rem/1 var(--font-text); color: var(--ink-2); }
+.vp-tab[hidden] { display: none; }
+.vp-tab[aria-selected="true"] { background: #fff; color: var(--orange-deep); box-shadow: 0 1px 2px rgba(20, 22, 26, 0.08), 0 6px 14px -8px rgba(20, 22, 26, 0.35); }
+.vp-tab:focus-visible { outline: 2px solid var(--orange-deep); outline-offset: 2px; }
+
+/* Mục tiêu */
+.vp-goal { display: grid; gap: 8px; margin-bottom: 18px; padding: 16px; border-radius: 16px; background: linear-gradient(135deg, rgba(255, 90, 31, 0.08), rgba(255, 46, 126, 0.06)); box-shadow: 0 0 0 1px rgba(255, 90, 31, 0.2); }
+.vp-goal[hidden] { display: none; }
+.vp-goal-head { display: flex; justify-content: space-between; gap: 10px; font-size: 1.05rem; }
+.vp-goal-head span { font-weight: 800; color: var(--orange-deep); }
+.vp-goal-bar { height: 12px; border-radius: 99px; background: rgba(20, 22, 26, 0.08); overflow: hidden; }
+.vp-goal-bar i { display: block; height: 100%; width: 0; border-radius: 99px; background: linear-gradient(90deg, var(--orange), #ff2e7e); transition: width 0.8s var(--ease-out); }
+.vp-goal-figures { display: flex; justify-content: space-between; gap: 10px; font-size: 0.9rem; color: var(--ink-2); }
+
+/* Bảng xếp hạng */
+.vp-seg { display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: var(--plate); }
+.vp-seg button { padding: 6px 12px; border: 0; border-radius: 8px; background: none; font: 600 0.82rem/1 var(--font-text); color: var(--ink-2); cursor: pointer; }
+.vp-seg button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(20, 22, 26, 0.12); }
+.vp-rank { margin: 0; padding: 0; list-style: none; display: grid; }
+.vp-rank li { display: flex; align-items: center; gap: 12px; padding: 11px 4px; border-top: 1px solid var(--line); }
+.vp-rank li:first-child { border-top: 0; }
+.vp-rank-no { width: 28px; text-align: center; font: 700 0.85rem/1 var(--font-text); color: var(--ink-3); flex: none; }
+.vp-rank-no.is-top { font-size: 1.2rem; }
+.vp-rank-no.is-top-1 { color: #f5a300; }
+.vp-rank-no.is-top-2 { color: #9aa3ad; }
+.vp-rank-no.is-top-3 { color: #d9771f; }
+.vp-rank-name { flex: 1; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vp-ava { width: 34px; height: 34px; flex: none; border-radius: 50%; display: grid; place-items: center; font: 800 0.9rem/1 var(--font-display); color: #fff; background: hsl(var(--h, 20) 70% 52%); }
+
+/* Gần đây */
+.vp-recent { margin: 0; padding: 0; list-style: none; display: grid; gap: 14px; max-height: 1100px; overflow-y: auto; }
+.vp-recent li { display: grid; gap: 8px; }
+.vp-recent-head { display: flex; align-items: flex-start; gap: 10px; }
+.vp-recent-head > div { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.vp-recent-head strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vp-recent time { color: var(--ink-3); font-size: 0.78rem; white-space: nowrap; }
+.vp-amount { color: var(--orange-deep); }
+.vp-bubble { margin: 0 0 0 44px; padding: 10px 14px; border-radius: 4px 14px 14px 14px; background: var(--plate); color: var(--ink); font-size: 0.93rem; line-height: 1.45; overflow-wrap: anywhere; white-space: pre-line; }
+.vp-rec { margin-left: 44px; justify-self: start; padding: 4px 10px; border-radius: 99px; background: var(--plate-2); font-size: 0.78rem; color: var(--ink-2); }
+
+/* Hộp Thông tin */
+.vp-dialog { width: min(520px, calc(100vw - 32px)); padding: 0; border: 0; border-radius: 22px; background: #fff; color: var(--ink); box-shadow: 0 30px 70px -20px rgba(20, 22, 26, 0.55); }
+.vp-dialog::backdrop { background: rgba(20, 22, 26, 0.45); }
+.vp-dialog-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; border-bottom: 1px solid var(--line); }
+.vp-dialog-body { display: grid; gap: 10px; justify-items: start; padding: 18px 22px 22px; }
+.vp-sub { margin: 8px 0 0; font: 700 0.78rem/1 var(--font-label); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); }
+.vp-dialog .creator-bio { margin: 0; text-align: left; }
+.vp-dialog .creator-tags, .vp-dialog .creator-socials { justify-content: flex-start; margin: 0; }
+
+@media (max-width: 900px) {
+  .vp-grid { grid-template-columns: minmax(0, 1fr); }
+  .vp-hero-row { margin-top: -44px; padding: 0 16px 16px; gap: 10px; }
+  .vp-id { flex-basis: 100%; min-width: 0; padding-bottom: 0; }
+  .vp-avatar, .vp-avatar .avatar-preview, .vp-avatar .avatar-fallback { width: 92px; height: 92px; }
+  .vp-actions { width: 100%; }
+  .vp-actions .btn { flex: 1; }
+}
+/* Form donate co đúng theo thẻ trên màn hình hẹp (lưới mặc định giãn theo nội dung rộng nhất: hàng nút số tiền). */
+.vp #donateForm { grid-template-columns: minmax(0, 1fr); }
+.vp .amount-presets { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.vp .amount-preset { min-width: 0; padding-inline: 6px; }
+@media (max-width: 420px) { .vp-tab { padding-inline: 6px; font-size: 0.9rem; } }
