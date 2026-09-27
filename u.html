@@ -111,6 +111,12 @@
               <textarea id="donateMessage" maxlength="200"></textarea>
             </div>
 
+            <div class="form-field" id="musicField" hidden>
+              <label for="donateMusic">Yêu cầu phát nhạc (link YouTube)</label>
+              <input id="donateMusic" type="url" maxlength="300" placeholder="https://youtu.be/..." autocomplete="off" inputmode="url">
+              <p class="form-hint" id="musicHint"></p>
+            </div>
+
             <div class="rec-box" id="recBox" hidden>
               <div class="rec-head"><strong>Ghi âm lời nhắn</strong><span class="form-hint" id="recHint"></span></div>
               <div class="rec-controls">
@@ -177,8 +183,8 @@
   </main>
 
   <script src="fx.js"></script>
-  <script src="api.js?v=5"></script>
+  <script src="api.js?v=6"></script>
   <script src="profile-editor.js?v=1"></script>
-  <script src="auth.js?v=10"></script>
+  <script src="auth.js?v=11"></script>
 </body>
 </html>

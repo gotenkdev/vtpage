@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phát nhạc - VT Page</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="fonts.css">
+  <link rel="stylesheet" href="music-themes.css?v=1">
+  <style>html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; } #player { position: absolute; left: 24px; top: 24px; } #yt { position: absolute; left: -10000px; top: 0; width: 320px; height: 180px; } #musicNotice { position: fixed; top: 24px; left: 24px; right: 24px; margin: 0; padding: 14px 18px; border-radius: 12px; background: #fff3f0; color: #9a2a00; font: 600 16px/1.4 system-ui, sans-serif; }</style>
+</head>
+<body>
+  <p id="musicNotice" hidden></p>
+  <div id="player" aria-live="polite"></div>
+  <!-- Trình phát YouTube chạy ngoài khung nhìn: trên live chỉ thấy giao diện trình phát ở trên, âm thanh vẫn phát qua OBS. -->
+  <div id="yt"></div>
+  <script src="music-render.js?v=1"></script>
+  <script src="alert-render.js?v=1"></script>
+  <script src="music.js?v=2"></script>
+</body>
+</html>

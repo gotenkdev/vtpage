@@ -13,8 +13,9 @@
   <link rel="stylesheet" href="style.css?v=9">
   <link rel="stylesheet" href="dashboard.css?v=9">
   <link rel="stylesheet" href="alert-themes.css?v=2">
-  <link rel="stylesheet" href="donate-settings.css?v=2">
+  <link rel="stylesheet" href="donate-settings.css?v=3">
   <link rel="stylesheet" href="goal-themes.css?v=2">
+  <link rel="stylesheet" href="music-themes.css?v=1">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
 </head>
 <body class="page-auth" data-dash="overlay">
@@ -65,7 +66,7 @@
       <div class="ds" id="donateSettings" hidden>
         <nav class="ds-tabs" role="tablist" aria-label="Công cụ tương tác">
           <button type="button" class="ds-tab" role="tab" aria-selected="true" data-tool="donate">Donate</button>
-          <button type="button" class="ds-tab" role="tab" aria-selected="false" disabled title="Sắp có">Phát nhạc <small>sắp có</small></button>
+          <button type="button" class="ds-tab" role="tab" aria-selected="false" data-tool="music">Phát nhạc</button>
           <button type="button" class="ds-tab" role="tab" aria-selected="false" data-tool="goal">Mục tiêu</button>
         </nav>
 
@@ -251,6 +252,51 @@
           </aside>
         </div>
 
+        <div class="ds-grid" data-tool-panel="music" hidden>
+          <section class="pe-card ds-form" aria-labelledby="dsMusicTitle">
+            <div class="ds-switch-row"><div><h2 class="pe-h" id="dsMusicTitle">Phát nhạc theo yêu cầu</h2><p class="pe-sub">Người xem donate kèm link YouTube, bài được phát trên live. Mỗi bài tối đa 3 phút 30 giây; ai donate trước phát trước.</p></div><button type="button" class="switch" role="switch" data-k="music.enabled" aria-label="Mở yêu cầu nhạc"><span></span></button></div>
+            <label class="pay-check"><span><strong>Luôn hiển thị</strong><small>Hiện trình phát cả khi chưa có bài (tiêu đề chờ).</small></span><input type="checkbox" data-k="music.alwaysShow"></label>
+            <div class="ds-row">
+              <div class="form-field"><label for="dsMusicMin">Số tiền donate tối thiểu (VND)</label><input id="dsMusicMin" type="number" min="0" step="1000" data-k="music.minAmount"></div>
+              <div class="form-field"><label for="dsMusicTpl">Giao diện hiển thị</label><select id="dsMusicTpl" data-k="music.template"></select></div>
+            </div>
+            <div class="form-field">
+              <div class="pe-label-row"><label for="dsMusicText">Nội dung hiển thị</label><button type="button" class="link-btn" data-reset="music.displayText">Đặt lại</button></div>
+              <textarea id="dsMusicText" data-k="music.displayText" rows="2" maxlength="200"></textarea>
+              <p class="form-hint">{name}: người donate, {music}: tên bài, {amount}: số tiền.</p>
+            </div>
+            <div class="ds-switch-row"><div><strong>Đọc thông báo khi bắt đầu bài</strong><p class="pe-sub">Dùng giọng đọc của máy stream.</p></div><button type="button" class="switch" role="switch" data-k="music.voiceEnabled" aria-label="Đọc thông báo"><span></span></button></div>
+            <div class="form-field">
+              <div class="pe-label-row"><label for="dsMusicVoice">Nội dung đọc</label><button type="button" class="link-btn" data-reset="music.voiceText">Đặt lại</button></div>
+              <textarea id="dsMusicVoice" data-k="music.voiceText" rows="2" maxlength="200"></textarea>
+            </div>
+            <div class="ds-row">
+              <div class="form-field"><div class="pe-label-row"><label for="dsMusicVol">Âm lượng</label><output data-for="dsMusicVol"></output></div><input id="dsMusicVol" type="range" min="0" max="100" data-k="music.volume"></div>
+              <div class="form-field"><div class="pe-label-row"><label for="dsMusicOpacity">Độ trong suốt</label><output data-for="dsMusicOpacity"></output></div><input id="dsMusicOpacity" type="range" min="10" max="100" data-k="music.opacity" data-unit="%"></div>
+            </div>
+            <div class="ds-row">
+              <div class="form-field"><label for="dsIdleTitle">Tiêu đề chờ</label><input id="dsIdleTitle" maxlength="60" data-k="music.idleTitle"></div>
+              <div class="form-field"><label for="dsIdleText">Nội dung chờ</label><input id="dsIdleText" maxlength="120" data-k="music.idleText"></div>
+            </div>
+          </section>
+          <aside class="ds-side">
+            <section class="pe-card" aria-labelledby="dsQueueTitle">
+              <div class="pe-side-head"><h2 class="pe-h" id="dsQueueTitle">Hàng đợi nhạc</h2><button type="button" class="btn btn-primary btn-sm" id="dsSkip">Qua bài</button></div>
+              <div class="ds-music-preview" id="dsMusicPreview"></div>
+              <ol class="ds-queue" id="dsQueue"></ol>
+              <p class="pe-sub" id="dsQueueEmpty">Chưa có bài hát nào. Bài chỉ vào hàng đợi khi donate đã được trả đúng số tiền.</p>
+            </section>
+            <section class="pe-card" aria-labelledby="dsMusicObsTitle">
+              <h2 class="pe-h" id="dsMusicObsTitle">Kết nối với OBS</h2>
+              <p class="pe-sub">Dán vào OBS → Browser Source, bật "Control audio via OBS" để chỉnh âm lượng trong OBS.</p>
+              <div class="form-field">
+                <label for="dsMusicUrl">Link phát nhạc</label>
+                <div class="pe-prefixed"><input id="dsMusicUrl" readonly placeholder="Tạo link ở tab Donate trước"><button type="button" class="pe-copy" id="dsMusicCopy" aria-label="Sao chép link phát nhạc" title="Sao chép"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div>
+              </div>
+            </section>
+          </aside>
+        </div>
+
         <div class="pe-bar" role="region" aria-label="Lưu thay đổi">
             <p class="pe-status" id="dsStatus" role="status">Chưa có thay đổi.</p>
             <p class="form-error" id="dsSaveError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="dsSaveErrorText"></span></p>
@@ -262,11 +308,12 @@
   </main>
 
   <script src="fx.js"></script>
-  <script src="api.js?v=5"></script>
-  <script src="auth.js?v=10"></script>
+  <script src="api.js?v=6"></script>
+  <script src="auth.js?v=11"></script>
   <script src="alert-render.js?v=1"></script>
   <script src="goal-render.js?v=2"></script>
-  <script src="donate-settings.js?v=2"></script>
+  <script src="music-render.js?v=1"></script>
+  <script src="donate-settings.js?v=3"></script>
   <script src="dashboard.js?v=5"></script>
 </body>
 </html>

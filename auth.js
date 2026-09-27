@@ -1706,6 +1706,8 @@ if (donateProfile && notFoundBox) {
     const button = donateForm.querySelector('button[type="submit"]');
     void submitWithLock(button, async () => {
       try {
+        const musicUrl = document.getElementById('donateMusic').value.trim();
+        if (musicUrl) body.musicUrl = musicUrl;
         // Bản ghi âm (nếu có và đủ số tiền tối thiểu): tải lên trước, gắn khóa vào đơn.
         if (recording.blob && recording.info && amount >= recording.info.minAmount) {
           body.recordingKey = await uploadRecording();
@@ -1775,6 +1777,11 @@ if (donateProfile && notFoundBox) {
       donateProfile.hidden = false;
       if (profile.donate) {
         setupRecording(profile.donate.recording);
+        if (profile.donate.music && profile.donate.music.enabled) {
+          document.getElementById('musicField').hidden = false;
+          document.getElementById('musicHint').textContent =
+            `Donate từ ${vnd(profile.donate.music.minAmount)} để chọn bài; mỗi bài phát tối đa 3 phút 30 giây, ai donate trước phát trước.`;
+        }
         if (profile.donate.minAmount > 2000) amountInput.min = String(profile.donate.minAmount);
         if (profile.donate.showLeaderboard) void loadLeaderboard();
       }

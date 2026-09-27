@@ -1,0 +1,78 @@
+/* Trình phát nhạc trên live: 6 giao diện. --p = phần trăm đã phát, --cover = ảnh bìa bài hát. Đều có chuyển động khi đang phát. */
+.vm { --accent: #ff5a1f; position: relative; display: flex; align-items: center; gap: 14px; color: #fff; font-family: 'Be Vietnam Pro', system-ui, sans-serif; box-sizing: border-box; animation: vm-in 0.7s cubic-bezier(.2,.8,.2,1) both; }
+.vm * { box-sizing: border-box; }
+@keyframes vm-in { from { opacity: 0; transform: translateY(12px); } }
+.vm-art { position: relative; flex: none; overflow: hidden; background: #222 center / cover; }
+.vm-art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.vm-art img:not([src]) { visibility: hidden; }
+.vm-reel { display: none; }
+.vm-info { display: grid; gap: 3px; min-width: 0; flex: 1; }
+.vm-top { display: flex; justify-content: space-between; gap: 10px; }
+.vm-badge { font: 700 11px/1 system-ui, sans-serif; letter-spacing: 0.14em; color: var(--accent); }
+.vm-queue { font-size: 12px; opacity: 0.7; }
+.vm-title { display: block; overflow: hidden; white-space: nowrap; font-size: 17px; font-weight: 700; }
+.vm-title span { display: inline-block; }
+.vm-title.is-long span { padding-right: 40px; animation: vm-marquee 12s linear infinite; }
+@keyframes vm-marquee { 0%, 15% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+.vm-author, .vm-by { font-size: 13px; opacity: 0.75; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vm-by { color: #ffd6c7; opacity: 1; }
+.vm-bar { height: 4px; margin-top: 6px; border-radius: 99px; background: rgba(255, 255, 255, 0.18); overflow: hidden; }
+.vm-bar i { display: block; height: 100%; width: calc(var(--p) * 1%); background: var(--accent); transition: width 0.9s linear; }
+.vm-time { font: 500 11px/1 ui-monospace, Menlo, monospace; opacity: 0.7; }
+.vm-eq { display: none; }
+.vm.is-idle .vm-bar, .vm.is-idle .vm-time, .vm.is-idle .vm-by { display: none; }
+
+/* 1. Slim Pill: viên thuốc tối, ảnh bìa tròn xoay */
+.vm-slim_pill { width: 460px; padding: 8px 18px 8px 8px; border-radius: 999px; background: rgba(14, 15, 18, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); }
+.vm-slim_pill .vm-art { width: 64px; height: 64px; border-radius: 50%; }
+.vm-slim_pill.is-playing .vm-art { animation: vm-spin 8s linear infinite; }
+.vm-slim_pill .vm-author { display: none; }
+@keyframes vm-spin { to { transform: rotate(360deg); } }
+
+/* 2. Onyx Glass: thẻ kính, nền là ảnh bìa làm mờ, ảnh bìa lớn */
+.vm-onyx_glass { width: 520px; padding: 16px; border-radius: 22px; overflow: hidden; background: rgba(10, 10, 12, 0.6); border: 1px solid rgba(255, 255, 255, 0.16); }
+.vm-onyx_glass::before { content: ''; position: absolute; inset: -30px; z-index: -1; background: var(--cover) center / cover, #16161a; filter: blur(28px) saturate(1.4) brightness(0.55); animation: vm-breathe 6s ease-in-out infinite; }
+.vm-onyx_glass .vm-art { width: 104px; height: 104px; border-radius: 14px; box-shadow: 0 14px 30px -12px rgba(0, 0, 0, 0.7); }
+.vm-onyx_glass .vm-title { font-size: 20px; }
+.vm-onyx_glass .vm-bar i { background: #fff; }
+@keyframes vm-breathe { 50% { transform: scale(1.08); } }
+
+/* 3. Vinyl Spin: đĩa than xoay, nhãn đĩa là ảnh bìa */
+.vm-vinyl_spin { width: 520px; padding: 14px 20px 14px 14px; border-radius: 20px; background: linear-gradient(135deg, #1b1512, #0c0a09); border: 1px solid #3a2a20; --accent: #f4b860; }
+.vm-vinyl_spin .vm-art { width: 110px; height: 110px; border-radius: 50%; background: repeating-radial-gradient(circle, #111 0 2px, #1d1d1d 2px 4px); display: grid; place-items: center; box-shadow: 0 0 0 3px #000, 0 10px 24px rgba(0, 0, 0, 0.6); }
+.vm-vinyl_spin .vm-art img { width: 44%; height: 44%; border-radius: 50%; }
+.vm-vinyl_spin .vm-art::after { content: ''; position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #0c0a09; }
+.vm-vinyl_spin.is-playing .vm-art { animation: vm-spin 3.2s linear infinite; }
+
+/* 4. Spectrum: cột âm lượng nhảy theo nhịp */
+.vm-spectrum { width: 540px; padding: 14px 18px; border-radius: 16px; background: #0b0d14; border: 1px solid #22263a; --accent: #7b5cff; }
+.vm-spectrum .vm-art { width: 72px; height: 72px; border-radius: 12px; }
+.vm-spectrum .vm-eq { display: flex; align-items: flex-end; gap: 3px; height: 54px; flex: none; }
+.vm-spectrum .vm-eq i { width: 6px; height: 30%; border-radius: 3px; background: linear-gradient(0deg, #7b5cff, #00e0ff); }
+.vm-spectrum.is-playing .vm-eq i { animation: vm-eq 0.9s ease-in-out infinite alternate; }
+.vm-spectrum .vm-eq i:nth-child(2) { animation-delay: -0.3s; } .vm-spectrum .vm-eq i:nth-child(3) { animation-delay: -0.6s; }
+.vm-spectrum .vm-eq i:nth-child(4) { animation-delay: -0.15s; } .vm-spectrum .vm-eq i:nth-child(5) { animation-delay: -0.45s; }
+.vm-spectrum .vm-eq i:nth-child(6) { animation-delay: -0.75s; } .vm-spectrum .vm-eq i:nth-child(7) { animation-delay: -0.2s; }
+.vm-spectrum .vm-bar i { background: linear-gradient(90deg, #7b5cff, #00e0ff); }
+@keyframes vm-eq { from { height: 18%; } to { height: 100%; } }
+
+/* 5. Cassette: băng cát-xét, hai cuộn băng xoay */
+.vm-cassette { width: 520px; padding: 14px 18px; border-radius: 12px; background: #f1e3c6; color: #2b2217; border: 3px solid #2b2217; --accent: #d9480f; }
+.vm-cassette .vm-art { width: 150px; height: 84px; border-radius: 8px; background: #2b2217; display: flex; align-items: center; justify-content: space-around; }
+.vm-cassette .vm-art img { position: absolute; inset: 0; opacity: 0.35; }
+.vm-cassette .vm-reel { display: block; position: relative; width: 38px; height: 38px; border-radius: 50%; background: repeating-conic-gradient(#f1e3c6 0 20deg, #2b2217 20deg 60deg); border: 4px solid #f1e3c6; }
+.vm-cassette.is-playing .vm-reel { animation: vm-spin 2.4s linear infinite; }
+.vm-cassette .vm-by { color: #8a3a12; }
+.vm-cassette .vm-bar { background: rgba(43, 34, 23, 0.2); }
+
+/* 6. Stream Bar: dải ngang dưới màn hình, ảnh bìa vuông, chạy chữ */
+.vm-stream_bar { width: 760px; padding: 0 20px 0 0; border-radius: 0; background: linear-gradient(90deg, rgba(10, 12, 18, 0.95), rgba(10, 12, 18, 0.75)); border-left: 5px solid var(--accent); }
+.vm-stream_bar .vm-art { width: 72px; height: 72px; }
+.vm-stream_bar .vm-info { grid-template-columns: 1fr auto; column-gap: 16px; }
+.vm-stream_bar .vm-top, .vm-stream_bar .vm-bar { grid-column: 1 / -1; }
+.vm-stream_bar .vm-author { display: none; }
+.vm-stream_bar .vm-bar { margin: 4px 0 8px; }
+.vm-stream_bar.is-playing::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); background-size: 50% 100%; background-repeat: no-repeat; animation: vm-sweep 2.4s linear infinite; }
+@keyframes vm-sweep { from { background-position: -50% 0; } to { background-position: 150% 0; } }
+
+@media (prefers-reduced-motion: reduce) { .vm, .vm * { animation: none !important; } }

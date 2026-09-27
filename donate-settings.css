@@ -59,3 +59,14 @@
 .ds-goal-preview { aspect-ratio: 700 / 300; background: radial-gradient(ellipse at 50% 30%, #1a1d22, #030303); }
 .ds-goal-scale { width: 700px; height: 300px; display: grid; place-items: center; }
 .ds-goal-reset { justify-content: space-between; }
+
+/* ---- Tab Phát nhạc ---- */
+.ds-music-preview { display: grid; place-items: center; padding: 18px 10px; border-radius: 14px; background: radial-gradient(ellipse at 50% 30%, #2a2f3a, #0d0f14); overflow: hidden; }
+.ds-music-preview .vm { zoom: 0.62; }
+.ds-queue { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; max-height: 360px; overflow-y: auto; }
+.ds-queue li { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px var(--line); }
+.ds-queue li.is-playing { box-shadow: 0 0 0 2px var(--orange); }
+.ds-queue img { width: 64px; height: 36px; border-radius: 6px; object-fit: cover; flex: none; background: var(--plate-2); }
+.ds-queue span { display: grid; gap: 2px; min-width: 0; }
+.ds-queue strong { font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ds-queue small { color: var(--ink-3); font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

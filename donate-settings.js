@@ -15,6 +15,8 @@
   const DEFAULTS = {
     'display.template': 'Cảm ơn {name} đã ủng hộ {amount}!',
     'tts.template': '{name} đã ủng hộ {amount}. {text}',
+    'music.displayText': '{name} đã gửi yêu cầu phát {music} với số tiền {amount}',
+    'music.voiceText': '{name} đã gửi yêu cầu phát {music} với số tiền {amount}',
   };
 
   const get = (obj, path) => path.split('.').reduce((o, k) => (o == null ? o : o[k]), obj);
@@ -36,6 +38,13 @@
       select.append(option);
     }
   });
+  // Giao diện trình phát nhạc (danh sách trong music-render.js).
+  for (const [value, label] of window.VTMusic.TEMPLATES) {
+    const option = document.createElement('option');
+    option.value = value;
+    option.textContent = label;
+    $('dsMusicTpl').append(option);
+  }
   const vipSelect = $('dsVip');
   for (let i = 0; i <= 10; i += 1) {
     const option = document.createElement('option');
@@ -81,6 +90,7 @@
     renderImage();
     refresh();
     renderGoal();
+    renderMusic();
   }
 
   function readInto(el) {
@@ -98,6 +108,7 @@
       readInto(e.target);
       refresh();
       if (e.target.dataset.k.startsWith('goal.')) renderGoal();
+      if (e.target.dataset.k.startsWith('music.')) renderMusic();
     }
   });
   root.addEventListener('change', (e) => {
@@ -118,6 +129,7 @@
       readInto(sw);
       refresh();
       renderGoal();
+      renderMusic();
     }),
   );
   root.querySelectorAll('[data-reset]').forEach((btn) =>
@@ -370,6 +382,8 @@
         fitGoal();
         void loadGoalProgress();
       }
+      musicTabOpen = tab.dataset.tool === 'music';
+      if (musicTabOpen) void loadQueue();
     }),
   );
 
@@ -443,6 +457,7 @@
   });
   function syncGoalUrl() {
     $('dsGoalUrl').value = obsUrl.value ? obsUrl.value.replace('/overlay.html#', '/goal.html#') : '';
+    $('dsMusicUrl').value = obsUrl.value ? obsUrl.value.replace('/overlay.html#', '/music.html#') : '';
   }
   $('dsGoalCopy').addEventListener('click', async () => {
     const v = $('dsGoalUrl').value;
@@ -452,6 +467,78 @@
       $('dsStatus').textContent = 'Đã sao chép link mục tiêu.';
     } catch {
       $('dsGoalUrl').select();
+    }
+  });
+
+  // ---- Phát nhạc ----
+  let musicTabOpen = false;
+  let queue = [];
+  const musicView = window.VTMusic.mount($('dsMusicPreview'));
+  const SAMPLE_SONG = { videoId: 'dQw4w9WgXcQ', title: 'Bài hát ví dụ', author: 'Kênh nhạc', donorName: 'VT Page', amount: 50000 };
+  function renderMusic() {
+    if (!form) return;
+    const playing = queue.find((q) => q.status === 'playing');
+    const waiting = queue.filter((q) => q.status === 'queued');
+    musicView.render({
+      template: form.music.template,
+      opacity: form.music.opacity,
+      item: playing || (waiting.length ? null : SAMPLE_SONG),
+      elapsed: 89,
+      total: 210,
+      queueCount: waiting.length,
+      idleTitle: form.music.idleTitle,
+      idleText: form.music.idleText,
+      displayText: form.music.displayText,
+    });
+    const list = $('dsQueue');
+    list.textContent = '';
+    for (const item of queue.filter((q) => q.status === 'playing' || q.status === 'queued')) {
+      const li = document.createElement('li');
+      if (item.status === 'playing') li.className = 'is-playing';
+      const img = document.createElement('img');
+      img.src = window.VTMusic.thumb(item.videoId);
+      img.alt = '';
+      img.referrerPolicy = 'no-referrer';
+      const text = document.createElement('span');
+      const title = document.createElement('strong');
+      title.textContent = item.title;
+      const meta = document.createElement('small');
+      meta.textContent = (item.status === 'playing' ? 'Đang phát · ' : 'Chờ · ') + item.donorName + ' · ' + new Intl.NumberFormat('vi-VN').format(item.amount) + 'đ';
+      text.append(title, meta);
+      li.append(img, text);
+      list.append(li);
+    }
+    $('dsQueueEmpty').hidden = list.childElementCount > 0;
+    $('dsSkip').disabled = list.childElementCount === 0;
+  }
+  async function loadQueue() {
+    try {
+      queue = (await window.VTApi.call('GET', '/me/music-queue')).items;
+    } catch {
+      queue = [];
+    }
+    renderMusic();
+  }
+  setInterval(() => {
+    if (musicTabOpen && !document.hidden) void loadQueue();
+  }, 5000);
+  $('dsSkip').addEventListener('click', async () => {
+    try {
+      await window.VTApi.call('POST', '/me/music-queue/skip');
+      $('dsStatus').textContent = 'Đã qua bài — trình phát trên OBS chuyển bài trong vài giây.';
+    } catch (err) {
+      showSaveError(err.message);
+    }
+    void loadQueue();
+  });
+  $('dsMusicCopy').addEventListener('click', async () => {
+    const v = $('dsMusicUrl').value;
+    if (!v) return;
+    try {
+      await navigator.clipboard.writeText(v);
+      $('dsStatus').textContent = 'Đã sao chép link phát nhạc.';
+    } catch {
+      $('dsMusicUrl').select();
     }
   });
 
