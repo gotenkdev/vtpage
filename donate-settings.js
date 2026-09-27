@@ -58,7 +58,7 @@
     item.className = 'ds-sound';
     item.innerHTML = '<input type="radio" name="dsSound"><span></span><button type="button" class="ds-play" aria-label="Nghe thử">▶</button>';
     item.querySelector('input').value = 'builtin:' + (i + 1);
-    item.querySelector('span').textContent = i + 1 + '. ' + label;
+    item.querySelector('span').textContent = label;
     item.querySelector('button').addEventListener('click', (e) => {
       e.preventDefault();
       A.playSound('builtin:' + (i + 1), null, form ? Math.max(form.sound.volume, 30) : 60);
