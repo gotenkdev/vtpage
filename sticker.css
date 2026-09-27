@@ -1,0 +1,151 @@
+/* =====================================================================
+   Lớp giao diện "sticker" (lấy cảm hứng Slush): giấy pastel, viền đen 1px cắt tay, nút viên thuốc, không đổ bóng,
+   bảng màu sticker nhiều màu, tiêu đề khổng lồ dòng nén. Chỉ áp dụng khi <body class="theme-sticker"> (trang chủ, trang
+   donate công khai, đăng nhập/đăng ký). Nạp SAU style.css; gỡ tệp này là về giao diện cũ.
+   ===================================================================== */
+
+
+.theme-sticker {
+  --stk-ink: #000;
+  --stk-paper: #fff;
+  --stk-sky: #dceeff;
+  --stk-mist: #efefef;
+  --stk-blue: #4da2ff;
+  --stk-mint: #55db9c;
+  --stk-lav: #e9ccff;
+  --stk-sun: #ffd731;
+  --stk-violet: #5c4ade;
+  --stk-line: 1px solid var(--stk-ink);
+  background: var(--stk-paper);
+}
+
+/* ---------- Nút: viên thuốc, viền đen, không bóng. Nút chính nền đen; cam là màu thương hiệu, không phải màu nút ---------- */
+.theme-sticker .btn { border-radius: 999px; box-shadow: none; letter-spacing: 0.03em; }
+.theme-sticker .btn-primary,
+.theme-sticker .btn-ink { background: var(--stk-ink); color: #fff; border: var(--stk-line); box-shadow: none; }
+.theme-sticker .btn-primary:hover,
+.theme-sticker .btn-ink:hover { background: var(--orange); color: var(--stk-ink); box-shadow: none; transform: translateY(-2px) rotate(-1deg); }
+.theme-sticker .btn-primary:active,
+.theme-sticker .btn-ink:active { box-shadow: none; transform: translateY(1px); }
+.theme-sticker .btn-outline { background: #fff; border: var(--stk-line); box-shadow: none; }
+.theme-sticker .btn-outline:hover { background: var(--stk-sun); color: var(--stk-ink); transform: translateY(-2px) rotate(1deg); }
+.theme-sticker .btn-federated { border: var(--stk-line); box-shadow: none; background: #fff; }
+.theme-sticker .motion-toggle,
+.theme-sticker .icon-btn { box-shadow: none; border: var(--stk-line); background: #fff; }
+
+/* ---------- Thanh đầu trang: viên thuốc nổi, viền đen ---------- */
+.theme-sticker .bar { background: transparent; }
+.theme-sticker .bar.is-scrolled { box-shadow: none; }
+.theme-sticker .bar.is-scrolled .bar-inner { background: rgba(255, 255, 255, 0.92); border: var(--stk-line); border-radius: 999px; padding-inline: 18px; margin-top: 8px; min-height: 60px; }
+
+/* Tiêu đề giữ font và cỡ gốc của VT Pay (Anton in hoa làm dấu tiếng Việt đè nhau, người dùng không chọn). */
+.theme-sticker .h2 .under { color: var(--stk-violet); }
+.theme-sticker .hero-title .led-chip { border: var(--stk-line); box-shadow: none; }
+
+/* ---------- Nền section xen kẽ: xanh pastel / trắng / xám nhạt ---------- */
+.theme-sticker .hero { background: var(--stk-sky); border-bottom: var(--stk-line); }
+.theme-sticker .hero-lattice { opacity: 0.35; }
+.theme-sticker .mech { background: var(--stk-paper); }
+.theme-sticker .compare { background: var(--stk-mist); border-block: var(--stk-line); padding-top: clamp(56px, 8vw, 104px); }
+.theme-sticker .guide { background: var(--stk-sky); border-bottom: var(--stk-line); }
+.theme-sticker .cta { border-bottom: var(--stk-line); }
+
+/* ---------- Thẻ và khối: bo lớn, viền đen, không bóng, tô màu sticker ---------- */
+.theme-sticker .diagram { border: var(--stk-line); border-radius: 32px; box-shadow: none; background: var(--stk-lav); }
+.theme-sticker .lane { border-radius: 32px; }
+.theme-sticker .lane-wallet { background: #fff; box-shadow: none; border: var(--stk-line); }
+.theme-sticker .lane-vt { background: var(--stk-mint); box-shadow: none; border: var(--stk-line); }
+.theme-sticker .guide-step.is-active,
+.theme-sticker .guide-step-btn { box-shadow: none; }
+.theme-sticker .guide-step.is-active { background: #fff; border: var(--stk-line); border-radius: 24px; }
+.theme-sticker .guide-num { border: var(--stk-line); box-shadow: none; }
+.theme-sticker .guide-step.is-active .guide-num { background: var(--stk-sun); color: var(--stk-ink); }
+.theme-sticker .username-field { border: var(--stk-line); box-shadow: none; border-radius: 999px; background: #fff; }
+.theme-sticker .led-chip { box-shadow: none; }
+.theme-sticker .foot-label { border: var(--stk-line); border-radius: 28px; }
+
+/* ---------- Đăng nhập / đăng ký ---------- */
+.theme-sticker.page-auth { background: var(--stk-sky); }
+.theme-sticker .auth-plate { border: var(--stk-line); border-radius: 36px; box-shadow: none; background: #fff; }
+.theme-sticker .form-field input,
+.theme-sticker .form-field select,
+.theme-sticker .form-field textarea { border: var(--stk-line); box-shadow: none; border-radius: 16px; background: #fff; }
+.theme-sticker .form-field input:focus,
+.theme-sticker .form-field select:focus,
+.theme-sticker .form-field textarea:focus { outline: 3px solid var(--stk-blue); outline-offset: 1px; }
+
+/* ---------- Trang donate công khai (u.html) ---------- */
+.theme-sticker.donate-page { background: var(--stk-sky); }
+.theme-sticker .vp-hero { border: var(--stk-line); box-shadow: none; border-radius: 36px; }
+.theme-sticker .vp-cover { border-bottom: var(--stk-line); }
+.theme-sticker .vp-avatar .avatar-preview,
+.theme-sticker .vp-avatar .avatar-fallback { border: 3px solid var(--stk-ink); box-shadow: none; }
+.theme-sticker .vp .auth-plate,
+.theme-sticker .vp-card { border: var(--stk-line); box-shadow: none; border-radius: 32px; }
+.theme-sticker .vp-tabs { background: #fff; border: var(--stk-line); border-radius: 999px; }
+.theme-sticker .vp-tab { border-radius: 999px; }
+.theme-sticker .vp-tab[aria-selected="true"] { background: var(--stk-ink); color: #fff; box-shadow: none; }
+.theme-sticker .amount-preset { border: var(--stk-line); border-radius: 999px; box-shadow: none; background: #fff; }
+.theme-sticker .amount-preset:hover,
+.theme-sticker .amount-preset[aria-pressed="true"],
+.theme-sticker .amount-preset.is-active { background: var(--stk-sun); color: var(--stk-ink); }
+.theme-sticker .vp-goal { background: var(--stk-mint); border: var(--stk-line); box-shadow: none; }
+.theme-sticker .vp-goal-bar { background: #fff; border: var(--stk-line); }
+.theme-sticker .vp-goal-bar i { background: var(--stk-ink); }
+.theme-sticker .vp-seg { background: #fff; border: var(--stk-line); border-radius: 999px; }
+.theme-sticker .vp-seg button { border-radius: 999px; }
+.theme-sticker .vp-seg button[aria-pressed="true"] { background: var(--stk-ink); color: #fff; box-shadow: none; }
+.theme-sticker .vp-rank-no.is-top-1 { color: #c79a00; }
+.theme-sticker .vp-bubble { background: var(--stk-lav); border: var(--stk-line); }
+.theme-sticker .vp-dialog { border: var(--stk-line); box-shadow: none; border-radius: 32px; }
+.theme-sticker .vp-toast { border-radius: 999px; }
+
+/* ---------- Sticker trang trí (SVG tự vẽ, aria-hidden) ---------- */
+.stk-layer { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.stk { position: absolute; width: var(--s, 72px); height: auto; transform: rotate(var(--r, 0deg)); animation: stk-float 6s ease-in-out infinite; animation-delay: var(--d, 0s); }
+.stk svg { display: block; width: 100%; height: auto; }
+.stk-ribbon { position: absolute; left: -4%; right: -4%; bottom: 6%; height: auto; z-index: 0; pointer-events: none; }
+.stk-ribbon path.r-fill { fill: none; stroke: var(--stk-blue); stroke-width: 46; stroke-linecap: round; }
+.stk-ribbon path.r-line { fill: none; stroke: var(--stk-ink); stroke-width: 1.5; stroke-linecap: round; }
+.stk-ribbon path.r-shine { fill: none; stroke: #9fd0ff; stroke-width: 10; stroke-linecap: round; }
+.theme-sticker .hero .wrap,
+.theme-sticker .cta .wrap { position: relative; z-index: 1; }
+@keyframes stk-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
+/* Xoay nhẹ theo cuộn trang (trình duyệt hỗ trợ animation-timeline); trình duyệt khác chỉ lơ lửng. */
+@supports (animation-timeline: view()) {
+  .stk-spin { animation: stk-float 6s ease-in-out infinite, stk-spin linear both; animation-timeline: auto, view(); }
+  @keyframes stk-spin { from { rotate: -18deg; } to { rotate: 18deg; } }
+}
+[data-motion="off"] .stk,
+[data-motion="off"] .stk-spin { animation: none; }
+@media (prefers-reduced-motion: reduce) { .stk, .stk-spin { animation: none; } }
+@media (max-width: 760px) {
+  .stk { --s: 44px !important; }
+  .stk.stk-hide-sm { display: none; }
+  .stk-ribbon { bottom: 2%; }
+}
+.theme-sticker .cta { position: relative; }
+/* Ruy băng nằm ở dải dưới cùng của hero, không cắt qua chữ */
+.theme-sticker .hero { padding-bottom: clamp(70px, 9vw, 130px); }
+.stk-ribbon { left: -4%; right: auto; width: 108%; bottom: -3%; height: clamp(90px, 13vw, 190px); }
+/* Ô biểu tượng tính năng và nhãn dán: viền đen thay cho bóng */
+.theme-sticker .spec-key { box-shadow: none; border: var(--stk-line); background: #fff; }
+.theme-sticker .spec.is-active .spec-key { box-shadow: none; background: var(--stk-sun); }
+.theme-sticker .spec:nth-child(2).is-active .spec-key { background: var(--stk-mint); }
+.theme-sticker .spec:nth-child(3).is-active .spec-key { background: var(--stk-lav); }
+.theme-sticker .spec:nth-child(4).is-active .spec-key { background: var(--orange); }
+.theme-sticker .sticker { box-shadow: none; border: var(--stk-line); }
+.theme-sticker .node { box-shadow: none; }
+/* Điện thoại: không đủ khoảng trống quanh chữ, ẩn sticker hero (giữ ruy băng); CTA chỉ giữ sticker góc phải. */
+@media (max-width: 760px) {
+  .hero .stk-layer { display: none; }
+  .cta .stk-layer .stk:not(:first-child) { display: none; }
+}
+@media (max-width: 760px) {
+  .cta .stk-layer { display: none; }
+  .theme-sticker .username-field { border-radius: 28px; }
+}
+/* Tương phản: thẻ VT Pay nền bạc hà dùng xanh đậm thay cobalt (≥4.5:1); nút Google khi di chuột giữ chữ đen trên nền vàng. */
+.theme-sticker .lane-vt { --cobalt: #1b2a94; --ink-3: #25303c; --ink-2: #1c232d; }
+.theme-sticker .btn-federated:hover { background: var(--stk-sun); color: var(--stk-ink); }
+.theme-sticker .lane-vt .step > div > span { color: #25303c; }
