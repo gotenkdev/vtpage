@@ -11,7 +11,7 @@
   <link rel="preload" href="fonts/doto-latin-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css">
   <link rel="stylesheet" href="style.css?v=11">
-  <link rel="stylesheet" href="dashboard.css?v=11">
+  <link rel="stylesheet" href="dashboard.css?v=13">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
 </head>
 <body class="page-auth" data-dash="profile">
@@ -96,6 +96,7 @@
             <button type="button" class="pe-tab" role="tab" id="peTab1" aria-controls="pePanel1" aria-selected="true">Diện mạo &amp; giới thiệu</button>
             <button type="button" class="pe-tab" role="tab" id="peTab2" aria-controls="pePanel2" aria-selected="false" tabindex="-1">Phân loại &amp; tags</button>
             <button type="button" class="pe-tab" role="tab" id="peTab3" aria-controls="pePanel3" aria-selected="false" tabindex="-1">Mạng xã hội</button>
+            <button type="button" class="pe-tab" role="tab" id="peTab4" aria-controls="pePanel4" aria-selected="false" tabindex="-1">QR trang</button>
           </div>
 
           <section class="pe-card" id="pePanel1" role="tabpanel" aria-labelledby="peTab1">
@@ -169,6 +170,22 @@
             <div class="pe-socials" id="peSocials"></div>
             <p class="form-hint">Chỉ những kênh đã điền mới hiện trên trang.</p>
           </section>
+
+          <section class="pe-card" id="pePanel4" role="tabpanel" aria-labelledby="peTab4" hidden>
+            <h2 class="pe-h">QR trang</h2>
+            <p class="pe-sub">Người xem quét mã này để mở thẳng trang donate của bạn. In lên poster, đặt lên màn hình stream hoặc đăng lên mạng xã hội.</p>
+            <div class="pe-qr">
+              <img id="peQrImg" alt="Mã QR tới trang donate" width="280" height="280">
+            </div>
+            <button type="button" class="btn btn-primary" id="peQrSave">Lưu ảnh QR</button>
+            <div class="form-field">
+              <label for="peQrLink">Link trang</label>
+              <div class="pe-prefixed">
+                <input id="peQrLink" readonly>
+                <button type="button" class="pe-copy" id="peQrCopy" aria-label="Sao chép link trang" title="Sao chép"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
+              </div>
+            </div>
+          </section>
         </div>
 
         <aside class="pe-side" aria-labelledby="pePreviewTitle">
@@ -205,7 +222,7 @@
   <script src="fx.js"></script>
   <script src="api.js?v=7"></script>
   <script src="auth.js?v=13"></script>
-  <script src="profile-editor.js?v=2"></script>
+  <script src="profile-editor.js?v=3"></script>
   <script src="dashboard.js?v=6"></script>
 </body>
 </html>

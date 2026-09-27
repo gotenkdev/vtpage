@@ -294,3 +294,11 @@
 .pay-box .link-btn { padding: 0; border: 0; background: none; color: var(--orange-deep); font: inherit; font-weight: 600; text-decoration: underline; cursor: pointer; }
 .pe-copy.is-copied { color: #1f7a45; }
 @media (max-width: 560px) { .pay-box { padding: 14px; } }
+
+/* QR trang (hồ sơ) */
+.pe-qr { display: grid; place-items: center; padding: 20px; border-radius: 18px; background: #fff; box-shadow: 0 0 0 1px var(--line); justify-self: start; }
+.pe-qr img { width: min(280px, 70vw); height: auto; aspect-ratio: 1; display: block; image-rendering: pixelated; }
+#pePanel4 > .btn { justify-self: start; }
+/* Thanh thẻ hồ sơ (4 thẻ): xuống dòng khi không đủ chỗ thay vì cắt thẻ cuối. */
+.pe-tabs { flex-wrap: wrap; overflow: visible; }
+.pe-tab { flex: 1 1 auto; }

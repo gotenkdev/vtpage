@@ -94,7 +94,7 @@
   }
 
   // ---- Thẻ ----
-  const tabs = [1, 2, 3].map((n) => ({ tab: $('peTab' + n), panel: $('pePanel' + n) }));
+  const tabs = [1, 2, 3, 4].map((n) => ({ tab: $('peTab' + n), panel: $('pePanel' + n) }));
   const selectTab = (index) =>
     tabs.forEach(({ tab, panel }, i) => {
       const on = i === index;
@@ -339,6 +339,38 @@
   wireImage('cover', 'peCoverInput', 'peCoverRemove', [3000, 1000]);
   wireImage('avatar', 'peAvatarInput', 'peAvatarRemove', [1024, 1024]);
 
+  // ---- QR trang: ảnh do máy chủ tạo, lưu về máy bằng blob (tên tệp có username) ----
+  async function saveQr() {
+    const btn = $('peQrSave');
+    btn.disabled = true;
+    try {
+      const res = await fetch($('peQrImg').src, { credentials: 'same-origin' });
+      if (!res.ok) throw new Error('qr');
+      const url = URL.createObjectURL(await res.blob());
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'vtpage-' + saved.username + '-qr.png';
+      document.body.append(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      statusText.textContent = 'Đã lưu ảnh QR.';
+    } catch {
+      statusText.textContent = 'Không lưu được ảnh QR, hãy thử lại.';
+    } finally {
+      btn.disabled = false;
+    }
+  }
+  $('peQrSave').addEventListener('click', () => void saveQr());
+  $('peQrCopy').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText($('peQrLink').value);
+      statusText.textContent = 'Đã sao chép link trang.';
+    } catch {
+      $('peQrLink').select();
+    }
+  });
+
   // ---- Nhận hồ sơ từ auth.js ----
   window.addEventListener('vtp:profile', (event) => {
     saved = event.detail;
@@ -346,6 +378,8 @@
     $('peUrlPrefix').textContent = location.host + '/';
     $('peUrl').value = saved.username;
     $('peOpenPage').href = '/' + encodeURIComponent(saved.username);
+    $('peQrImg').src = '/api/v1/profiles/' + encodeURIComponent(saved.username) + '/qr.png';
+    $('peQrLink').value = location.origin + '/' + saved.username;
     root.hidden = false;
     fillForm(saved);
     renderImages();
