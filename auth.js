@@ -1341,7 +1341,7 @@ function setupAccountMenu() {
   tabs.page.addEventListener('click', () => select('page'));
 
   // Mặc định: đang ở trang thiết lập donate thì mở thẻ Trang; còn lại theo lần chọn trước.
-  const donatePages = ['profile', 'bank', 'donations', 'orders', 'overlay'];
+  const donatePages = ['profile', 'bank', 'top', 'donations', 'orders', 'overlay'];
   let initial = donatePages.includes(document.body.dataset.dash) ? 'page' : 'me';
   if (!document.body.dataset.dash) {
     try {
@@ -1777,6 +1777,7 @@ if (authButtons) {
                 <div class="acct-group">Thiết lập trang donate</div>
                 <a class="acct-item" href="/profile">${acctIcon('profile')}<span>Hồ sơ trang</span></a>
                 <a class="acct-item" href="/bank-account">${acctIcon('bank')}<span>Thanh toán</span></a>
+                <a class="acct-item" href="/leaderboard">${acctIcon('list')}<span>Bảng xếp hạng</span></a>
                 <a class="acct-item" href="/donations">${acctIcon('list')}<span>Lịch sử donate</span></a>
                 <a class="acct-item" href="/orders">${acctIcon('list')}<span>Đơn hàng</span></a>
                 <a class="acct-item" href="/overlay-settings">${acctIcon('screen')}<span>Cài đặt Donate</span></a>
