@@ -114,6 +114,7 @@
     'musicUrl:invalid': 'Link YouTube không hợp lệ.',
     'musicUrl:unavailable': 'Video này không phát được (riêng tư, đã bị gỡ hoặc chủ kênh chặn nhúng).',
     'musicUrl:too_big': 'Link quá dài.',
+    'donorName:required': 'Hãy đặt tên hiển thị trong Hồ sơ cá nhân trước khi donate.',
     donations_paused: 'Streamer đang tạm ngưng nhận donate. Hãy quay lại sau.',
     streamer_not_ready: 'Streamer chưa sẵn sàng nhận donate lúc này. Hãy quay lại sau.',
     not_reviewable: 'Khoản donate này không cần xem.',

@@ -137,8 +137,13 @@
             </div>
 
             <div class="form-field">
-              <label for="donorName">Tên hiển thị (không bắt buộc)</label>
-              <input id="donorName" maxlength="50" autocomplete="off">
+              <span class="donor-label" id="donorNameLabel">Tên hiển thị</span>
+              <div class="donor-name-row" aria-labelledby="donorNameLabel">
+                <strong id="donorNameText">Đăng nhập để hiện tên của bạn</strong>
+                <a href="/my-profile" class="donor-name-change" id="donorNameChange">Thay đổi</a>
+              </div>
+              <p class="form-hint" id="donorNameHint" hidden>Bạn chưa đặt tên hiển thị. Bấm <b>Thay đổi</b> để đặt trong Hồ sơ cá nhân, tên này sẽ hiện trên live khi bạn donate.</p>
+              <input type="hidden" id="donorName">
             </div>
 
             <div class="form-field">
@@ -238,7 +243,7 @@
   <script src="fx.js"></script>
   <script src="api.js?v=9"></script>
   <script src="profile-editor.js?v=3"></script>
-  <script src="auth.js?v=23"></script>
+  <script src="auth.js?v=24"></script>
   <script src="public-page.js?v=6"></script>
 </body>
 </html>

@@ -1665,7 +1665,6 @@ if (donateProfile && notFoundBox) {
     sessionStorage.removeItem(DRAFT_KEY);
     if (draft && draft.username === username) {
       if (draft.amount) amountInput.value = String(draft.amount);
-      donorNameInput.value = draft.donorName || '';
       messageInput.value = draft.message || '';
       amountInput.dispatchEvent(new Event('input', { bubbles: true }));
       messageInput.dispatchEvent(new Event('input', { bubbles: true }));
@@ -1674,10 +1673,16 @@ if (donateProfile && notFoundBox) {
     // bỏ qua nháp hỏng
   }
 
-  // Đã đăng nhập mà chưa nhập tên: điền sẵn tên hiển thị trong Hồ sơ cá nhân (người xem vẫn sửa được, hoặc để "Ẩn danh").
+  // Tên hiển thị BẮT BUỘC, lấy từ Hồ sơ cá nhân (máy chủ cũng tự lấy, không nhận tên tự gõ). "Thay đổi" mở /my-profile.
+  let accountName = null;
+  const nameText = document.getElementById('donorNameText');
+  const nameHint = document.getElementById('donorNameHint');
   window.VTApi.call('GET', '/me/account-profile')
     .then(({ account }) => {
-      if (account.displayName && !donorNameInput.value) donorNameInput.value = account.displayName;
+      accountName = account.displayName;
+      donorNameInput.value = accountName || '';
+      if (nameText) nameText.textContent = accountName || 'Chưa đặt tên hiển thị';
+      if (nameHint) nameHint.hidden = !!accountName;
     })
     .catch(() => undefined);
 
@@ -1700,6 +1705,11 @@ if (donateProfile && notFoundBox) {
       }
       rememberReturn('/' + username);
       window.location.href = '/sign-in';
+      return;
+    }
+    if (!accountName) {
+      if (nameHint) nameHint.hidden = false;
+      showError(donateErrorBox, donateErrorText, 'Hãy đặt tên hiển thị trong Hồ sơ cá nhân trước khi donate (bấm Thay đổi).');
       return;
     }
     const amount = Number(amountInput.value);
