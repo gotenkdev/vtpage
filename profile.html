@@ -10,8 +10,8 @@
   <link rel="preload" href="fonts/bricolage-grotesque-latin-600-800.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/doto-latin-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css">
-  <link rel="stylesheet" href="style.css?v=7">
-  <link rel="stylesheet" href="dashboard.css?v=4">
+  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="dashboard.css?v=7">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
 </head>
 <body class="page-auth" data-dash="profile">
@@ -80,7 +80,7 @@
 
           <div class="form-field">
             <label for="bio">Giới thiệu (không bắt buộc)</label>
-            <textarea id="bio" name="bio" maxlength="300"></textarea>
+            <textarea id="bio" name="bio" maxlength="1000"></textarea>
           </div>
 
           <p class="form-error" id="createError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="createErrorText"></span></p>
@@ -88,52 +88,124 @@
           <button type="submit" class="btn btn-primary btn-lg btn-submit">Tạo hồ sơ</button>
         </form>
 
-        <div id="editSection" hidden>
-          <div class="avatar-row">
-            <div class="avatar-wrap">
-              <img class="avatar-preview" id="avatarPreview" alt="Ảnh đại diện" hidden>
-              <div class="avatar-fallback" id="avatarFallback" aria-hidden="true"></div>
+      </section>
+
+      <div class="pe" id="profileEditor" hidden>
+        <div class="pe-main">
+          <div class="pe-tabs" role="tablist" aria-label="Thông tin trang">
+            <button type="button" class="pe-tab" role="tab" id="peTab1" aria-controls="pePanel1" aria-selected="true">Diện mạo &amp; giới thiệu</button>
+            <button type="button" class="pe-tab" role="tab" id="peTab2" aria-controls="pePanel2" aria-selected="false" tabindex="-1">Phân loại &amp; tags</button>
+            <button type="button" class="pe-tab" role="tab" id="peTab3" aria-controls="pePanel3" aria-selected="false" tabindex="-1">Mạng xã hội</button>
+          </div>
+
+          <section class="pe-card" id="pePanel1" role="tabpanel" aria-labelledby="peTab1">
+            <h2 class="pe-h">Diện mạo &amp; giới thiệu</h2>
+            <p class="pe-sub">Giúp mọi người nhận ra và hiểu hơn về trang của bạn.</p>
+
+            <div class="pe-media">
+              <div class="pe-cover" id="peCover"><img id="peCoverImg" alt="" hidden></div>
+              <div class="pe-avatar-wrap">
+                <img class="pe-avatar" id="peAvatarImg" alt="" hidden>
+                <div class="pe-avatar pe-avatar-fallback" id="peAvatarFallback" aria-hidden="true"></div>
+              </div>
             </div>
-            <div class="avatar-actions">
-              <label class="btn btn-outline btn-sm" for="avatarInput">
-                <svg class="ic"><use href="#i-camera"/></svg>
-                Đổi ảnh
-              </label>
-              <input type="file" id="avatarInput" accept="image/png,image/jpeg,image/webp" hidden>
-              <button type="button" class="btn btn-ghost btn-sm" id="avatarRemoveBtn">
-                <svg class="ic"><use href="#i-trash"/></svg>
-                Xoá ảnh
-              </button>
+            <div class="pe-media-actions">
+              <div>
+                <label class="btn btn-outline btn-sm" for="peCoverInput"><svg class="ic"><use href="#i-camera"/></svg>Đổi ảnh bìa</label>
+                <input type="file" id="peCoverInput" accept="image/png,image/jpeg,image/webp" hidden>
+                <button type="button" class="btn btn-ghost btn-sm" id="peCoverRemove" hidden><svg class="ic"><use href="#i-trash"/></svg>Xoá</button>
+                <p class="form-hint">Ảnh bìa 4:1 · PNG, JPEG, WebP</p>
+              </div>
+              <div>
+                <label class="btn btn-outline btn-sm" for="peAvatarInput"><svg class="ic"><use href="#i-camera"/></svg>Đổi ảnh đại diện</label>
+                <input type="file" id="peAvatarInput" accept="image/png,image/jpeg,image/webp" hidden>
+                <button type="button" class="btn btn-ghost btn-sm" id="peAvatarRemove" hidden><svg class="ic"><use href="#i-trash"/></svg>Xoá</button>
+                <p class="form-hint">Ảnh đại diện 1:1</p>
+              </div>
+            </div>
+            <p class="form-hint">Ảnh được lưu ngay khi chọn.</p>
+            <p class="form-error" id="peImageError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="peImageErrorText"></span></p>
+
+            <div class="form-field">
+              <div class="pe-label-row"><label for="peName">Tên trang</label><span class="pe-count" id="peNameCount">0/50</span></div>
+              <input id="peName" maxlength="50" required>
+              <p class="form-hint">Tên hiển thị với khách truy cập.</p>
+            </div>
+
+            <div class="form-field">
+              <label for="peUrl">Đường dẫn trang</label>
+              <div class="pe-prefixed">
+                <span class="pe-prefix" id="peUrlPrefix">vtpage.com/</span>
+                <input id="peUrl" readonly>
+                <button type="button" class="pe-copy" id="peCopy" aria-label="Sao chép đường dẫn trang" title="Sao chép"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
+              </div>
+              <p class="form-hint">Đường dẫn cố định của trang, không đổi được.</p>
+            </div>
+
+            <div class="form-field">
+              <div class="pe-label-row"><label for="peBio">Giới thiệu</label><span class="pe-count" id="peBioCount">0/1000</span></div>
+              <textarea id="peBio" maxlength="1000" rows="5" placeholder="Chia sẻ điều làm nên sự khác biệt của trang…"></textarea>
+              <p class="form-hint">Một lời giới thiệu ngắn, mang dấu ấn của bạn.</p>
+            </div>
+          </section>
+
+          <section class="pe-card" id="pePanel2" role="tabpanel" aria-labelledby="peTab2" hidden>
+            <h2 class="pe-h">Phân loại &amp; tags</h2>
+            <p class="pe-sub">Đặt trang vào đúng nhóm để người xem dễ tìm.</p>
+            <div class="form-field">
+              <label for="peCategory">Phân loại</label>
+              <select id="peCategory"></select>
+            </div>
+            <div class="form-field">
+              <div class="pe-label-row"><span class="pe-label">Tags của trang</span><span class="pe-count" id="peTagCount">0 đã chọn</span></div>
+              <div class="pe-tags" id="peTags" role="group" aria-label="Tags của trang"></div>
+              <p class="form-hint">Chọn tối đa 10 chủ đề phù hợp với trang.</p>
+            </div>
+          </section>
+
+          <section class="pe-card" id="pePanel3" role="tabpanel" aria-labelledby="peTab3" hidden>
+            <h2 class="pe-h">Kết nối với cộng đồng</h2>
+            <p class="pe-sub">Thêm các kênh để mọi người dễ dàng tìm thấy bạn. Dán cả liên kết cũng được.</p>
+            <div class="pe-socials" id="peSocials"></div>
+            <p class="form-hint">Chỉ những kênh đã điền mới hiện trên trang.</p>
+          </section>
+        </div>
+
+        <aside class="pe-side" aria-labelledby="pePreviewTitle">
+          <div class="pe-side-head">
+            <h2 class="pe-h" id="pePreviewTitle">Xem trước</h2>
+            <a class="btn btn-ghost btn-sm" id="peOpenPage" target="_blank" rel="noopener">Mở trang</a>
+          </div>
+          <p class="pe-sub">Cập nhật ngay khi bạn chỉnh sửa.</p>
+          <div class="pv">
+            <div class="pv-cover" id="pvCover"></div>
+            <div class="pv-body">
+              <div class="pv-avatar" id="pvAvatar"></div>
+              <strong class="pv-name" id="pvName"></strong>
+              <span class="pv-handle" id="pvHandle"></span>
+              <span class="pv-chip" id="pvCategory" hidden></span>
+              <p class="pv-bio" id="pvBio"></p>
+              <div class="pv-tags" id="pvTags"></div>
+              <div class="pv-socials" id="pvSocials"></div>
             </div>
           </div>
-          <p class="form-error" id="avatarError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="avatarErrorText"></span></p>
+          <p class="form-hint">Bản xem trước thông tin đang chỉnh sửa. Nhấn Cập nhật để lưu lên trang.</p>
+        </aside>
 
-          <p class="username-pill"><svg class="ic"><use href="#i-lock"/></svg><span id="usernameDisplay"></span></p>
-
-          <form class="sign-in-form" id="editForm">
-            <div class="form-field">
-              <label for="editDisplayName">Tên hiển thị</label>
-              <input id="editDisplayName" name="displayName" required maxlength="50">
-            </div>
-
-            <div class="form-field">
-              <label for="editBio">Giới thiệu</label>
-              <textarea id="editBio" name="bio" maxlength="300"></textarea>
-            </div>
-
-            <p class="form-error" id="editError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="editErrorText"></span></p>
-            <p class="form-hint is-good" id="editSaved" hidden>Đã lưu.</p>
-
-            <button type="submit" class="btn btn-primary btn-lg btn-submit">Lưu thay đổi</button>
-          </form>
+        <div class="pe-bar" role="region" aria-label="Lưu thay đổi">
+          <p class="pe-status" id="peStatus" role="status">Chưa có thay đổi.</p>
+          <p class="form-error" id="peSaveError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="peSaveErrorText"></span></p>
+          <button type="button" class="btn btn-ghost" id="peUndo" disabled>Hoàn tác</button>
+          <button type="button" class="btn btn-primary" id="peSave" disabled>Cập nhật</button>
         </div>
-      </section>
+      </div>
     </div>
   </main>
 
   <script src="fx.js"></script>
-  <script src="api.js"></script>
-  <script src="auth.js?v=6"></script>
+  <script src="api.js?v=2"></script>
+  <script src="auth.js?v=7"></script>
+  <script src="profile-editor.js?v=1"></script>
   <script src="dashboard.js?v=2"></script>
 </body>
 </html>

@@ -431,10 +431,9 @@ if (confirmDone) {
   }
 }
 
-// --- Trang profile.html: xem/tạo/sửa hồ sơ, đổi/xoá ảnh đại diện (cần đăng nhập) ---
+// --- Trang profile.html: tạo hồ sơ (cần đăng nhập); sửa hồ sơ nằm ở profile-editor.js ---
 const createForm = document.getElementById('createForm');
-const editSection = document.getElementById('editSection');
-if (createForm && editSection) {
+if (createForm && document.getElementById('profileEditor')) {
   const skeleton = document.getElementById('settingsSkeleton');
   const subtitle = document.getElementById('settingsSubtitle');
 
@@ -445,48 +444,14 @@ if (createForm && editSection) {
   const createErrorBox = document.getElementById('createError');
   const createErrorText = document.getElementById('createErrorText');
 
-  const avatarPreview = document.getElementById('avatarPreview');
-  const avatarFallback = document.getElementById('avatarFallback');
-  const avatarInput = document.getElementById('avatarInput');
-  const avatarRemoveBtn = document.getElementById('avatarRemoveBtn');
-  const avatarErrorBox = document.getElementById('avatarError');
-  const avatarErrorText = document.getElementById('avatarErrorText');
-  const usernameDisplay = document.getElementById('usernameDisplay');
-  const editForm = document.getElementById('editForm');
-  const editDisplayNameInput = document.getElementById('editDisplayName');
-  const editBioInput = document.getElementById('editBio');
-  const editErrorBox = document.getElementById('editError');
-  const editErrorText = document.getElementById('editErrorText');
-  const editSaved = document.getElementById('editSaved');
-
   const DEFAULT_USERNAME_HINT =
     'vtpage.com/username — chữ, số, gạch dưới, 3-20 ký tự. Không đổi được sau khi tạo.';
 
-  function renderAvatar(url, nameForFallback) {
-    if (url) {
-      avatarPreview.src = url;
-      avatarPreview.hidden = false;
-      avatarFallback.hidden = true;
-    } else {
-      avatarPreview.hidden = true;
-      avatarPreview.removeAttribute('src');
-      const color = avatarColorFor(nameForFallback);
-      avatarFallback.style.backgroundColor = color.bg;
-      avatarFallback.style.color = color.fg;
-      avatarFallback.textContent = avatarInitial(nameForFallback);
-      avatarFallback.hidden = false;
-    }
-  }
-
+  // Đã có hồ sơ: ẩn thẻ tạo hồ sơ, giao cho trình sửa kiểu Zypage (profile-editor.js).
   function showEdit(profile) {
     skeleton.hidden = true;
-    subtitle.textContent = 'Trang công khai của bạn: vtpage.com/' + profile.username;
-    createForm.hidden = true;
-    editSection.hidden = false;
-    usernameDisplay.textContent = profile.username;
-    editDisplayNameInput.value = profile.displayName;
-    editBioInput.value = profile.bio || '';
-    renderAvatar(profile.avatarUrl, profile.displayName || profile.username);
+    createForm.closest('.settings-card').hidden = true;
+    window.dispatchEvent(new CustomEvent('vtp:profile', { detail: profile }));
   }
 
   function showCreate() {
@@ -547,64 +512,6 @@ if (createForm && editSection) {
         showError(createErrorBox, createErrorText, err.message);
       }
     });
-  });
-
-  editForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    hideError(editErrorBox);
-    editSaved.hidden = true;
-    const displayName = editDisplayNameInput.value.trim();
-    const bio = editBioInput.value.trim();
-    const button = editForm.querySelector('button[type="submit"]');
-    void submitWithLock(button, async () => {
-      try {
-        const result = await window.VTApi.call('PATCH', '/me/profile', { displayName, bio });
-        editDisplayNameInput.value = result.profile.displayName;
-        editBioInput.value = result.profile.bio || '';
-        editSaved.hidden = false;
-      } catch (err) {
-        showError(editErrorBox, editErrorText, err.message);
-      }
-    });
-  });
-
-  const AVATAR_MAX_BYTES = 2 * 1024 * 1024;
-  const AVATAR_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
-
-  avatarInput.addEventListener('change', () => {
-    const file = avatarInput.files && avatarInput.files[0];
-    avatarInput.value = '';
-    if (!file) return;
-    hideError(avatarErrorBox);
-    if (!AVATAR_TYPES.includes(file.type)) {
-      showError(avatarErrorBox, avatarErrorText, 'Chỉ nhận ảnh PNG, JPEG hoặc WebP.');
-      return;
-    }
-    if (file.size > AVATAR_MAX_BYTES) {
-      showError(avatarErrorBox, avatarErrorText, 'Ảnh quá lớn (tối đa 2MB).');
-      return;
-    }
-    void (async () => {
-      try {
-        const result = await window.VTApi.uploadAvatar(file);
-        renderAvatar(result.avatarUrl, editDisplayNameInput.value || usernameDisplay.textContent);
-      } catch (err) {
-        showError(avatarErrorBox, avatarErrorText, err.message);
-      }
-    })();
-  });
-
-  avatarRemoveBtn.addEventListener('click', () => {
-    if (!window.confirm('Xoá ảnh đại diện hiện tại?')) return;
-    hideError(avatarErrorBox);
-    void (async () => {
-      try {
-        await window.VTApi.call('DELETE', '/me/avatar');
-        renderAvatar(null, editDisplayNameInput.value || usernameDisplay.textContent);
-      } catch (err) {
-        showError(avatarErrorBox, avatarErrorText, err.message);
-      }
-    })();
   });
 
   // Trang này bắt buộc đăng nhập: chưa đăng nhập hoặc đang chờ 2FA thì đưa về sign-in.html.
@@ -1320,6 +1227,48 @@ if (donationList && reviewList) {
 // --- Trang u.html: trang donate công khai của một streamer (vtpage.com/<username>), không cần đăng nhập ---
 const donateProfile = document.getElementById('donateProfile');
 const notFoundBox = document.getElementById('notFound');
+// Ảnh bìa, phân loại, tags và mạng xã hội trên trang donate công khai. Chữ đưa vào bằng textContent; liên kết mạng xã hội
+// luôn ghép với tên miền cố định (VTProfileMeta), giá trị đã được máy chủ kiểm chỉ gồm ký tự an toàn.
+function renderCreatorExtras(profile) {
+  const meta = window.VTProfileMeta;
+  const cover = document.getElementById('creatorCover');
+  if (profile.coverUrl) {
+    cover.style.backgroundImage = 'url("' + profile.coverUrl + '")';
+    cover.hidden = false;
+    cover.closest('.creator-card').classList.add('has-cover');
+  }
+  if (!meta) return;
+  const chip = document.getElementById('creatorCategory');
+  const category = meta.CATEGORIES.find(([v]) => v && v === profile.category);
+  if (category) {
+    chip.textContent = category[1];
+    chip.hidden = false;
+  }
+  const tagsBox = document.getElementById('creatorTags');
+  for (const tag of profile.tags || []) {
+    const label = meta.TAGS.find(([v]) => v === tag);
+    if (!label) continue;
+    const span = document.createElement('span');
+    span.textContent = '#' + label[1];
+    tagsBox.append(span);
+  }
+  tagsBox.hidden = !tagsBox.childElementCount;
+  const socialsBox = document.getElementById('creatorSocials');
+  for (const s of meta.SOCIALS) {
+    const value = (profile.socials || {})[s.key];
+    if (!value) continue;
+    const a = document.createElement('a');
+    a.href = s.url(encodeURI(value));
+    if (s.key !== 'phone') {
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer nofollow';
+    }
+    a.textContent = s.key === 'phone' ? '+84 ' + value : s.label;
+    socialsBox.append(a);
+  }
+  socialsBox.hidden = !socialsBox.childElementCount;
+}
+
 if (donateProfile && notFoundBox) {
   const skeleton = document.getElementById('donateSkeleton');
   const username = window.location.pathname.replace(/^\/+/, '').split('/')[0];
@@ -1509,6 +1458,7 @@ if (donateProfile && notFoundBox) {
         bioEl.hidden = false;
       }
       if (profile.verified) verifiedBadge.hidden = false;
+      renderCreatorExtras(profile);
       if (profile.avatarUrl) {
         avatarImg.src = profile.avatarUrl;
         avatarImg.hidden = false;

@@ -1460,3 +1460,14 @@ html[data-motion="off"] .reveal { opacity: 1 !important; transform: none !import
 .acct-card-meta strong { font: 700 0.98rem/1.2 var(--font-display); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .acct-card-meta span { font-size: 0.85rem; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 @media (max-width: 560px) { .dropdown-panel.acct-panel { width: min(320px, calc(100vw - 32px)); } }
+
+/* Trang donate công khai: ảnh bìa, phân loại, tags, mạng xã hội (auth.js → renderCreatorExtras). */
+.creator-card.has-cover { padding-top: 0; overflow: hidden; }
+.creator-cover { aspect-ratio: 4 / 1; margin: 0 -28px; background-size: cover; background-position: center; }
+.creator-card.has-cover .creator-avatar { margin-top: -48px; position: relative; }
+.creator-card.has-cover .creator-avatar .avatar-preview, .creator-card.has-cover .creator-avatar .avatar-fallback { border: 4px solid var(--plate); box-sizing: content-box; }
+.creator-chip { display: inline-block; margin-top: 10px; padding: 5px 12px; border-radius: 99px; background: rgba(255, 90, 31, 0.12); color: var(--orange-deep); font: 700 0.82rem/1 var(--font-text); }
+.creator-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 10px; margin-top: 12px; color: var(--ink-2); font-size: 0.88rem; }
+.creator-socials { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 14px; }
+.creator-socials a { padding: 8px 14px; border-radius: 99px; background: #fff; box-shadow: 0 0 0 1px var(--line); color: var(--ink); font: 600 0.88rem/1 var(--font-text); text-decoration: none; }
+.creator-socials a:hover { box-shadow: 0 0 0 1px var(--orange); color: var(--orange-deep); }

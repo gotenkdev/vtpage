@@ -43,7 +43,16 @@
     'username:custom': 'Username cần ít nhất 3 chữ hoặc số.',
     'displayName:invalid_type': 'Vui lòng nhập tên hiển thị.',
     'displayName:custom': 'Tên hiển thị không hợp lệ (1-50 ký tự, không chứa ký tự lạ).',
-    'bio:custom': 'Giới thiệu không hợp lệ (tối đa 300 ký tự, 6 dòng, không chứa ký tự lạ).',
+    'bio:custom': 'Giới thiệu không hợp lệ (tối đa 1000 ký tự, 20 dòng, không chứa ký tự lạ).',
+    'category:invalid_value': 'Phân loại không hợp lệ.',
+    'tags:too_big': 'Chọn tối đa 10 tag.',
+    'socials.phone:custom': 'Số điện thoại không hợp lệ (số Việt Nam, 9-10 chữ số).',
+    'socials.facebook:custom': 'Facebook không hợp lệ: chỉ nhập tên trang sau facebook.com/.',
+    'socials.youtube:custom': 'YouTube không hợp lệ: nhập @tênkênh hoặc channel/ID.',
+    'socials.tiktok:custom': 'TikTok không hợp lệ: nhập @tên.',
+    'socials.telegram:custom': 'Telegram không hợp lệ: 3-50 chữ, số, gạch dưới.',
+    'socials.zalo:custom': 'Zalo không hợp lệ.',
+    'socials.x:custom': 'X không hợp lệ: 1-30 chữ, số, gạch dưới.',
     'bankCode:invalid_value': 'Vui lòng chọn ngân hàng hợp lệ.',
     'bankCode:invalid_type': 'Vui lòng chọn ngân hàng.',
     'accountNumber:invalid_type': 'Vui lòng nhập số tài khoản.',
@@ -58,6 +67,11 @@
     'avatar:type_mismatch': 'Đuôi tệp không khớp nội dung ảnh thật.',
     'avatar:animated': 'Không nhận ảnh động (GIF/WebP động).',
     'avatar:corrupt': 'Tệp ảnh bị hỏng, không đọc được.',
+    'cover:empty': 'Chưa chọn ảnh.',
+    'cover:unsupported_type': 'Định dạng ảnh không được hỗ trợ (chỉ PNG, JPEG, WebP).',
+    'cover:type_mismatch': 'Đuôi tệp không khớp nội dung ảnh thật.',
+    'cover:animated': 'Không nhận ảnh động (GIF/WebP động).',
+    'cover:corrupt': 'Tệp ảnh bị hỏng, không đọc được.',
     'mfa:not_started': 'Chưa bắt đầu thiết lập 2FA, hãy thử lại.',
     'mfa:not_enabled': '2FA chưa được bật.',
     username_reserved: 'Username này đã được dành riêng, không dùng được.',
@@ -179,12 +193,17 @@
   }
 
   // Thân là chính byte của ảnh (không multipart, không JSON) nên đi đường riêng, không qua call().
-  async function uploadAvatar(file) {
+  function uploadAvatar(file) {
+    return uploadImage('/me/avatar', file);
+  }
+
+  // Tải ảnh (đại diện hoặc bìa): thân request là chính tệp ảnh, không multipart.
+  async function uploadImage(path, file) {
     const headers = { 'content-type': file.type };
     if (csrfToken) headers['x-csrf-token'] = csrfToken;
     let response;
     try {
-      response = await fetch(API_PREFIX + '/me/avatar', {
+      response = await fetch(API_PREFIX + path, {
         method: 'PUT',
         headers,
         credentials: 'same-origin',
@@ -204,5 +223,5 @@
     return data;
   }
 
-  window.VTApi = { call, me, setCsrf, uploadAvatar, ApiError, describe };
+  window.VTApi = { call, me, setCsrf, uploadAvatar, uploadImage, ApiError, describe };
 })();
