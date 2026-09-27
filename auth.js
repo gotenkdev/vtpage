@@ -1604,6 +1604,96 @@ if (donateProfile && notFoundBox) {
     donateFormCard.hidden = false;
   });
 
+  // ---- Ghi âm lời nhắn (khi streamer bật) ----
+  const recording = { info: null, blob: null, recorder: null, timer: null };
+  const recBox = document.getElementById('recBox');
+  const recStart = document.getElementById('recStart');
+  const recStop = document.getElementById('recStop');
+  const recPlayer = document.getElementById('recPlayer');
+  const recDelete = document.getElementById('recDelete');
+  function setupRecording(info) {
+    recording.info = info;
+    if (!info.enabled || !window.MediaRecorder || !navigator.mediaDevices) return;
+    recBox.hidden = false;
+    document.getElementById('recHint').textContent =
+      `Tối đa ${info.maxSeconds} giây, donate từ ${vnd(info.minAmount)}.`;
+  }
+  function resetRecording() {
+    recording.blob = null;
+    recPlayer.hidden = true;
+    recPlayer.removeAttribute('src');
+    recDelete.hidden = true;
+    recStart.hidden = false;
+  }
+  recStart.addEventListener('click', async () => {
+    hideError(donateErrorBox);
+    let stream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch {
+      showError(donateErrorBox, donateErrorText, 'Không mở được micro. Hãy cho phép trình duyệt dùng micro.');
+      return;
+    }
+    const chunks = [];
+    const type = ['audio/webm;codecs=opus', 'audio/ogg;codecs=opus', 'audio/mp4'].find((t) => MediaRecorder.isTypeSupported(t));
+    const rec = new MediaRecorder(stream, type ? { mimeType: type, audioBitsPerSecond: 32000 } : undefined);
+    recording.recorder = rec;
+    rec.ondataavailable = (e) => e.data.size && chunks.push(e.data);
+    rec.onstop = () => {
+      stream.getTracks().forEach((t) => t.stop());
+      clearInterval(recording.timer);
+      recording.blob = new Blob(chunks, { type: (rec.mimeType || 'audio/webm').split(';')[0] });
+      recPlayer.src = URL.createObjectURL(recording.blob);
+      recPlayer.hidden = false;
+      recDelete.hidden = false;
+      recStop.hidden = true;
+    };
+    rec.start();
+    let seconds = 0;
+    document.getElementById('recTime').textContent = '0';
+    recStart.hidden = true;
+    recStop.hidden = false;
+    recording.timer = setInterval(() => {
+      seconds += 1;
+      document.getElementById('recTime').textContent = String(seconds);
+      if (seconds >= recording.info.maxSeconds) rec.stop();
+    }, 1000);
+  });
+  recStop.addEventListener('click', () => recording.recorder && recording.recorder.state === 'recording' && recording.recorder.stop());
+  recDelete.addEventListener('click', resetRecording);
+  async function uploadRecording() {
+    const res = await fetch(`/api/v1/profiles/${encodeURIComponent(username)}/recordings`, {
+      method: 'POST',
+      headers: { 'content-type': recording.blob.type || 'audio/webm' },
+      credentials: 'same-origin',
+      body: recording.blob,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(window.VTApi.describe(data.message) || 'Không gửi được bản ghi âm.');
+    return data.recordingKey;
+  }
+
+  // ---- Bảng xếp hạng (khi streamer bật) ----
+  async function loadLeaderboard() {
+    try {
+      const { leaderboard } = await window.VTApi.call('GET', `/profiles/${encodeURIComponent(username)}/leaderboard`);
+      if (!leaderboard || leaderboard.length === 0) return;
+      const list = document.getElementById('lbList');
+      leaderboard.forEach((row) => {
+        const li = document.createElement('li');
+        const name = document.createElement('span');
+        name.textContent = row.name;
+        const total = document.createElement('strong');
+        total.textContent = vnd(row.total);
+        li.append(name, total);
+        list.append(li);
+      });
+      document.getElementById('leaderboard').hidden = false;
+    } catch {
+      // không có bảng xếp hạng cũng không sao
+    }
+  }
+
   donateForm.addEventListener('submit', (event) => {
     event.preventDefault();
     hideError(donateErrorBox);
@@ -1616,6 +1706,10 @@ if (donateProfile && notFoundBox) {
     const button = donateForm.querySelector('button[type="submit"]');
     void submitWithLock(button, async () => {
       try {
+        // Bản ghi âm (nếu có và đủ số tiền tối thiểu): tải lên trước, gắn khóa vào đơn.
+        if (recording.blob && recording.info && amount >= recording.info.minAmount) {
+          body.recordingKey = await uploadRecording();
+        }
         const { donation } = await window.VTApi.call(
           'POST',
           `/profiles/${encodeURIComponent(username)}/donations`,
@@ -1679,6 +1773,11 @@ if (donateProfile && notFoundBox) {
         avatarFallback.textContent = avatarInitial(profile.username);
       }
       donateProfile.hidden = false;
+      if (profile.donate) {
+        setupRecording(profile.donate.recording);
+        if (profile.donate.minAmount > 2000) amountInput.min = String(profile.donate.minAmount);
+        if (profile.donate.showLeaderboard) void loadLeaderboard();
+      }
       if (profile.acceptingDonations === false) {
         donateNotReady.querySelector('p').textContent = 'Streamer đang tạm ngưng nhận donate. Hãy quay lại sau.';
         donateNotReady.hidden = false;
@@ -1770,7 +1869,7 @@ if (authButtons) {
                 <a class="acct-item" href="profile.html">${acctIcon('profile')}<span>Hồ sơ trang</span></a>
                 <a class="acct-item" href="bank-account.html">${acctIcon('bank')}<span>Thanh toán</span></a>
                 <a class="acct-item" href="donations.html">${acctIcon('list')}<span>Lịch sử donate</span></a>
-                <a class="acct-item" href="overlay-settings.html">${acctIcon('screen')}<span>Overlay OBS</span></a>
+                <a class="acct-item" href="overlay-settings.html">${acctIcon('screen')}<span>Cài đặt Donate</span></a>
                 <a class="acct-item" id="acctView" href="profile.html" hidden>${acctIcon('eye')}<span>Xem trang donate</span></a>
               </div>
             </div>

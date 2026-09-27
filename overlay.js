@@ -1,67 +1,68 @@
-// Trang này chạy trong OBS Browser Source (nền phải trong suốt) hoặc để streamer tự xem trước.
-// Token nằm ở #hash, không phải ?query, để KHÔNG BAO GIỜ lọt vào log máy chủ hay lịch sử trình duyệt
-// gửi qua Referer — cùng quy ước với complete-signup.html/reset-password.html.
+// Trang này chạy trong OBS Browser Source (nền trong suốt) hoặc để streamer tự xem trước.
+// Token nằm ở #hash, không phải ?query, để KHÔNG BAO GIỜ lọt vào log máy chủ hay Referer.
 (function () {
   const token = new URLSearchParams(window.location.hash.replace(/^#/, '')).get('token');
   const notice = document.getElementById('overlayNotice');
-  const toast = document.getElementById('toast');
-  const toastName = document.getElementById('toastName');
-  const toastAmount = document.getElementById('toastAmount');
-  const toastMessage = document.getElementById('toastMessage');
+  const stage = document.getElementById('stage');
 
   function showNotice(text) {
     notice.textContent = text;
     notice.hidden = false;
   }
-
   if (!token || !/^vtol_[0-9a-f]{64}$/.test(token)) {
-    showNotice('Thiếu hoặc sai token overlay. Lấy địa chỉ đúng ở trang Overlay trong hồ sơ của bạn.');
+    showNotice('Thiếu hoặc sai link overlay. Lấy link đúng ở trang Cài đặt Donate.');
     return;
   }
 
-  const amountFormatter = new Intl.NumberFormat('vi-VN');
-  let hideTimer = null;
+  let current = null;
+  const base = '/api/v1/overlay/' + encodeURIComponent(token);
 
-  function showToast(donorName, amount, message) {
-    clearTimeout(hideTimer);
-    toastName.textContent = donorName || 'Người ủng hộ ẩn danh';
-    toastAmount.textContent = amountFormatter.format(amount) + 'đ';
-    toastMessage.textContent = message || '';
-    toastMessage.hidden = !message;
-    toast.classList.remove('is-shown');
-    // Buộc reflow để lần donate liên tiếp cũng chạy lại animation từ đầu, không bị gộp.
-    void toast.offsetWidth;
-    toast.classList.add('is-shown');
-    hideTimer = setTimeout(() => toast.classList.remove('is-shown'), 8000);
+  // Cài đặt được tải lại định kỳ: streamer bấm "Cập nhật" ở trang cài đặt thì overlay đổi theo trong vòng 15 giây, không cần sửa OBS.
+  async function loadSettings() {
+    try {
+      const res = await fetch(base + '/settings', { credentials: 'omit', cache: 'no-store' });
+      if (res.status === 404) {
+        showNotice('Link overlay đã bị đổi hoặc không còn hiệu lực. Lấy link mới ở trang Cài đặt Donate.');
+        return;
+      }
+      if (res.ok) current = await res.json();
+    } catch {
+      // mất mạng tạm thời: giữ cài đặt cũ
+    }
   }
 
-  function connect() {
-    const source = new EventSource('/api/v1/overlay/' + encodeURIComponent(token) + '/stream');
+  const player = window.VTAlerts.createPlayer(stage, () => current);
 
-    source.addEventListener('donation.confirmed', (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        showToast(data.donorName, data.amount, data.message);
-      } catch (err) {
-        console.error('Không đọc được sự kiện donate', err);
-      }
-    });
-
-    source.addEventListener('overlay.test', (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        showToast(data.donorName || 'Sự kiện thử', data.amount || 0, data.message || 'Đây là sự kiện thử.');
-      } catch {
-        showToast('Sự kiện thử', 0, 'Đây là sự kiện thử.');
-      }
-    });
-
-    // Token sai/đã bị xoay (server đóng bằng 404) hoặc mất mạng tạm thời: EventSource tự nối lại theo
-    // chuẩn SSE (không cần code tay), Last-Event-ID gửi kèm tự động nên không bỏ sót donate nào.
-    source.onerror = () => {
-      console.warn('Kết nối overlay bị ngắt, trình duyệt sẽ tự thử lại.');
+  function toEvent(data, test) {
+    return {
+      donorName: data.donorName,
+      amount: Number(data.amount) || 0,
+      message: data.message || '',
+      vipLevel: Number(data.vipLevel) || 0,
+      recordingUrl:
+        typeof data.recordingKey === 'string' && /^[a-f0-9]{32}\.[a-z0-9]{3,4}$/.test(data.recordingKey)
+          ? '/api/v1/media/' + data.recordingKey
+          : null,
+      test,
     };
   }
 
-  connect();
+  function connect() {
+    const source = new EventSource(base + '/stream');
+    const handle = (test) => (event) => {
+      if (!current) return;
+      try {
+        player.push(toEvent(JSON.parse(event.data), test));
+      } catch (err) {
+        console.error('Không đọc được sự kiện donate', err);
+      }
+    };
+    source.addEventListener('donation.confirmed', handle(false));
+    source.addEventListener('overlay.test', handle(true));
+    // Rớt mạng: EventSource tự nối lại theo chuẩn SSE, Last-Event-ID gửi kèm nên không bỏ sót donate nào.
+    source.onerror = () => console.warn('Kết nối overlay bị ngắt, trình duyệt sẽ tự thử lại.');
+  }
+
+  loadSettings().then(connect);
+  setInterval(loadSettings, 15000);
 })();

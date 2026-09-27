@@ -3,15 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Overlay - VT Page</title>
+  <title>Cài đặt Donate - VT Page</title>
   <meta name="theme-color" content="#E9EAEE">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="preload" href="fonts/bricolage-grotesque-latin-600-800.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/doto-latin-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css">
-  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="style.css?v=9">
   <link rel="stylesheet" href="dashboard.css?v=9">
+  <link rel="stylesheet" href="alert-themes.css?v=2">
+  <link rel="stylesheet" href="donate-settings.css?v=1">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
 </head>
 <body class="page-auth" data-dash="overlay">
@@ -54,65 +56,179 @@
 
   <main class="settings">
     <div class="wrap">
-      <section class="auth-plate settings-card" aria-labelledby="settings-title">
-        <h1 class="auth-title" id="settings-title">Overlay (OBS)</h1>
+      <section class="auth-plate settings-card" id="dsLoading">
         <p class="auth-subtitle" id="settingsSubtitle">Đang tải...</p>
-
-        <div class="settings-skeleton" id="settingsSkeleton">
-          <div class="skeleton-block"></div>
-          <div class="skeleton-block"></div>
-        </div>
-
-        <!-- Thiếu điều kiện: chưa bật 2FA -->
-        <div id="overlayGate" hidden>
-          <p class="auth-subtitle" id="gateText"></p>
-        </div>
-
-        <div id="overlayContent" hidden>
-          <p class="mfa-status"><svg class="ic"><use href="#i-screen"/></svg> <span id="tokenStatusText"></span></p>
-          <p class="form-hint" style="margin-bottom: 22px;">Dán địa chỉ overlay vào một Browser Source trong OBS (hoặc phần mềm tương đương) để hiện thông báo donate theo thời gian thực. Ai cầm được địa chỉ này cũng xem được donate của bạn — đừng chia sẻ công khai; nếu lộ, xoay token để vô hiệu ngay.</p>
-
-          <div class="settings-actions">
-            <button type="button" class="btn btn-primary" id="rotateBtn">Xoay token</button>
-            <button type="button" class="btn btn-outline" id="testEventBtn">Gửi sự kiện thử</button>
-          </div>
-
-          <p class="form-error" id="overlayError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="overlayErrorText"></span></p>
-          <p class="form-hint is-good" id="testEventOk" hidden>Đã gửi sự kiện thử — mở overlay ở dưới (hoặc trong OBS) để xem.</p>
-
-          <!-- Hiện đúng một lần, ngay sau khi xoay -->
-          <div id="tokenReveal" hidden>
-            <h2 class="section-heading">Địa chỉ overlay mới</h2>
-            <p class="form-error" role="alert"><svg class="ic"><use href="#i-alert"/></svg><span>Sao chép và dán ngay vào OBS. Trang này sẽ không hiện lại được sau khi tải lại — nếu mất, xoay lần nữa (địa chỉ cũ mất hiệu lực ngay, overlay cũ đang mở sẽ ngắt kết nối).</span></p>
-            <p class="secret-box" id="overlayUrlBox"></p>
-            <button type="button" class="copy-btn" data-copy="overlayUrlBox">Sao chép địa chỉ</button>
-
-            <h2 class="section-heading">Xem trước</h2>
-            <p class="form-hint" style="margin-bottom: 10px;">Bản xem trước dưới đây chỉ hoạt động trong phiên này — tải lại trang sẽ mất khung xem trước (không phải lỗi, địa chỉ overlay vẫn dùng được trong OBS).</p>
-            <div class="overlay-preview">
-              <iframe id="overlayPreviewFrame" title="Xem trước overlay" loading="lazy"></iframe>
-            </div>
-          </div>
-        </div>
-
-        <!-- Ô xác minh lại (step-up), cần khi xoay token -->
-        <div id="stepUpPanel" class="step-up-panel" hidden>
-          <p class="auth-subtitle">Cần xác minh lại để tiếp tục — nhập mã 2FA hiện tại:</p>
-          <form class="mfa-form" id="stepUpForm">
-            <div class="form-field">
-              <input type="text" id="stepUpCode" inputmode="numeric" autocomplete="one-time-code" required>
-            </div>
-            <p class="form-error" id="stepUpError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="stepUpErrorText"></span></p>
-            <button type="submit" class="btn btn-primary btn-lg btn-submit">Xác nhận</button>
-          </form>
-        </div>
+        <div class="settings-skeleton"><div class="skeleton-block"></div><div class="skeleton-block"></div></div>
       </section>
+
+      <div class="ds" id="donateSettings" hidden>
+        <nav class="ds-tabs" role="tablist" aria-label="Công cụ tương tác">
+          <button type="button" class="ds-tab" role="tab" aria-selected="true">Donate</button>
+          <button type="button" class="ds-tab" role="tab" aria-selected="false" disabled title="Sắp có">Phát nhạc <small>sắp có</small></button>
+          <button type="button" class="ds-tab" role="tab" aria-selected="false" disabled title="Sắp có">Mục tiêu <small>sắp có</small></button>
+        </nav>
+
+        <div class="ds-grid">
+          <section class="pe-card ds-form" aria-label="Cài đặt thông báo donate">
+            <div class="ds-subtabs" role="tablist" aria-label="Nhóm cài đặt">
+              <button type="button" class="ds-subtab" data-panel="content" aria-selected="true">Nội dung</button>
+              <button type="button" class="ds-subtab" data-panel="image" aria-selected="false">Hình ảnh</button>
+              <button type="button" class="ds-subtab" data-panel="sound" aria-selected="false">Âm thanh</button>
+              <button type="button" class="ds-subtab" data-panel="recording" aria-selected="false">Ghi âm</button>
+              <button type="button" class="ds-subtab" data-panel="tts" aria-selected="false">Giọng đọc</button>
+              <button type="button" class="ds-subtab" data-panel="other" aria-selected="false">Khác</button>
+            </div>
+
+            <div class="ds-panel" data-panel="content">
+              <h2 class="pe-h">Nội dung</h2>
+              <p class="pe-sub">Cá nhân hóa thông báo, giao diện và vị trí trên buổi live.</p>
+              <div class="form-field">
+                <div class="pe-label-row"><label for="dsTemplate">Nội dung hiển thị</label><button type="button" class="link-btn" data-reset="display.template">Đặt lại</button></div>
+                <textarea id="dsTemplate" data-k="display.template" rows="2" maxlength="200"></textarea>
+                <p class="form-hint">Chèn {name} để hiện tên và {amount} cho số tiền.</p>
+              </div>
+              <div class="ds-row">
+                <div class="form-field"><label for="dsMinSeconds">Thời gian hiển thị tối thiểu (giây)</label><input id="dsMinSeconds" type="number" min="3" max="60" data-k="display.minSeconds"></div>
+                <div class="form-field"><label for="dsPosition">Vị trí xuất hiện</label><select id="dsPosition" data-k="display.position" data-options="POSITIONS"></select></div>
+              </div>
+              <div class="ds-row">
+                <div class="form-field"><div class="pe-label-row"><label for="dsMsgSize">Kích cỡ lời nhắn</label><output data-for="dsMsgSize"></output></div><input id="dsMsgSize" type="range" min="10" max="100" data-k="display.messageSize" data-unit="px"></div>
+                <div class="form-field"><div class="pe-label-row"><label for="dsOpacity">Độ trong suốt</label><output data-for="dsOpacity"></output></div><input id="dsOpacity" type="range" min="10" max="100" data-k="display.opacity" data-unit="%"></div>
+              </div>
+              <div class="form-field"><label for="dsTheme">Giao diện hiển thị</label><select id="dsTheme" data-k="display.theme" data-options="THEMES"></select></div>
+              <fieldset class="ds-classic" id="dsClassic">
+                <legend>Tùy chỉnh nâng cao — chỉ áp dụng cho giao diện Cổ điển</legend>
+                <div class="ds-row">
+                  <div class="form-field"><label for="dsTextEffect">Hiệu ứng chữ</label><select id="dsTextEffect" data-k="display.classic.textEffect" data-options="TEXT_EFFECTS"></select></div>
+                  <div class="form-field"><div class="pe-label-row"><label for="dsNameSize">Kích cỡ tên người dùng</label><output data-for="dsNameSize"></output></div><input id="dsNameSize" type="range" min="10" max="100" data-k="display.classic.nameSize" data-unit="px"></div>
+                </div>
+                <div class="ds-row">
+                  <div class="form-field"><label for="dsIn">Hiệu ứng xuất hiện</label><select id="dsIn" data-k="display.classic.inAnimation" data-options="IN_ANIMATIONS"></select></div>
+                  <div class="form-field"><label for="dsOut">Hiệu ứng biến mất</label><select id="dsOut" data-k="display.classic.outAnimation" data-options="OUT_ANIMATIONS"></select></div>
+                </div>
+                <div class="ds-colors">
+                  <label>Màu tên <input type="color" data-k="display.classic.nameColor"></label>
+                  <label>Màu số tiền <input type="color" data-k="display.classic.amountColor"></label>
+                  <label>Màu lời nhắn <input type="color" data-k="display.classic.messageColor"></label>
+                  <label>Màu nền <input type="color" data-k="display.classic.backgroundColor"></label>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="ds-panel" data-panel="image" hidden>
+              <div class="ds-switch-row"><div><h2 class="pe-h">Hình ảnh</h2><p class="pe-sub">Ảnh hoặc GIF hiện cùng thông báo.</p></div><button type="button" class="switch" role="switch" data-k="image.enabled" aria-label="Bật hình ảnh"><span></span></button></div>
+              <div class="ds-media-box" id="dsImageBox"><img id="dsImagePreview" alt="" hidden><p class="pe-sub" id="dsImageEmpty">Chưa có ảnh.</p></div>
+              <div class="ds-actions">
+                <label class="btn btn-outline btn-sm" for="dsImageInput">Tải lên ảnh/GIF</label>
+                <input type="file" id="dsImageInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+                <button type="button" class="btn btn-ghost btn-sm" id="dsImageRemove">Bỏ ảnh</button>
+              </div>
+              <p class="form-hint">PNG, JPEG, WebP hoặc GIF động, tối đa 2 MB. Ảnh được thu vào khung 600×600.</p>
+            </div>
+
+            <div class="ds-panel" data-panel="sound" hidden>
+              <div class="ds-switch-row"><div><h2 class="pe-h">Âm thanh</h2><p class="pe-sub">Âm thanh phát khi có donate.</p></div><button type="button" class="switch" role="switch" data-k="sound.enabled" aria-label="Bật âm thanh"><span></span></button></div>
+              <div class="ds-sounds" id="dsSounds" role="radiogroup" aria-label="Chọn âm thanh"></div>
+              <div class="ds-actions">
+                <label class="btn btn-outline btn-sm" for="dsSoundInput">Tải lên âm thanh riêng</label>
+                <input type="file" id="dsSoundInput" accept="audio/mpeg,audio/ogg,audio/wav,audio/webm,audio/mp4" hidden>
+                <span class="form-hint" id="dsSoundCustomHint"></span>
+              </div>
+              <div class="form-field"><div class="pe-label-row"><label for="dsVolume">Âm lượng</label><output data-for="dsVolume"></output></div><input id="dsVolume" type="range" min="0" max="100" data-k="sound.volume"></div>
+            </div>
+
+            <div class="ds-panel" data-panel="recording" hidden>
+              <div class="ds-switch-row"><div><h2 class="pe-h">Ghi âm</h2><p class="pe-sub">Cho phép người xem ghi âm lời nhắn gửi kèm donate.</p></div><button type="button" class="switch" role="switch" data-k="recording.enabled" aria-label="Cho phép ghi âm"><span></span></button></div>
+              <div class="ds-row">
+                <div class="form-field"><label for="dsRecMax">Giới hạn thời gian tối đa (giây)</label><input id="dsRecMax" type="number" min="5" max="60" data-k="recording.maxSeconds"></div>
+                <div class="form-field"><label for="dsRecMin">Số tiền tối thiểu để ghi âm (VND)</label><input id="dsRecMin" type="number" min="0" step="1000" data-k="recording.minAmount"></div>
+              </div>
+              <label class="pay-check"><span><strong>Phát ghi âm trên live</strong><small>Tắt nếu chỉ muốn tự nghe trong lịch sử.</small></span><input type="checkbox" data-k="recording.showOnLive"></label>
+            </div>
+
+            <div class="ds-panel" data-panel="tts" hidden>
+              <div class="ds-switch-row"><div><h2 class="pe-h">Giọng đọc</h2><p class="pe-sub">Đọc lời nhắn donate trên live bằng giọng có sẵn của máy stream.</p></div><button type="button" class="switch" role="switch" data-k="tts.enabled" aria-label="Bật giọng đọc"><span></span></button></div>
+              <div class="form-field">
+                <div class="pe-label-row"><label for="dsTtsTemplate">Nội dung đọc</label><button type="button" class="link-btn" data-reset="tts.template">Đặt lại</button></div>
+                <textarea id="dsTtsTemplate" data-k="tts.template" rows="2" maxlength="300"></textarea>
+                <p class="form-hint">{name}: tên, {amount}: số tiền, {text}: lời nhắn.</p>
+              </div>
+              <div class="ds-row">
+                <div class="form-field"><label for="dsVoice">Giọng đọc</label><select id="dsVoice" data-k="tts.voice"><option value="vi_female">Tiếng Việt · Nữ</option><option value="vi_male">Tiếng Việt · Nam</option><option value="default">Mặc định của máy</option></select></div>
+                <div class="form-field"><label for="dsTtsMin">Số tiền tối thiểu để đọc (VND)</label><input id="dsTtsMin" type="number" min="0" step="1000" data-k="tts.minAmount"></div>
+              </div>
+              <label class="pay-check"><span><strong>Không đọc nội dung có chứa liên kết</strong></span><input type="checkbox" data-k="tts.skipLinks"></label>
+              <label class="pay-check"><span><strong>Không đọc nội dung spam</strong><small>Ký tự hoặc từ lặp lại liên tục, lời nhắn quá dài.</small></span><input type="checkbox" data-k="tts.skipSpam"></label>
+              <div class="form-field"><div class="pe-label-row"><label for="dsTtsVol">Âm lượng</label><output data-for="dsTtsVol"></output></div><input id="dsTtsVol" type="range" min="0" max="100" data-k="tts.volume"></div>
+              <button type="button" class="btn btn-outline btn-sm" id="dsTtsTest">Nghe thử</button>
+              <p class="form-hint">Giọng tiếng Việt phụ thuộc máy chạy OBS (Windows: cài gói ngôn ngữ Tiếng Việt có giọng nói).</p>
+            </div>
+
+            <div class="ds-panel" data-panel="other" hidden>
+              <h2 class="pe-h">Cài đặt khác</h2>
+              <div class="ds-switch-row"><div><strong>Bật WOW donate</strong><p class="pe-sub">Hiệu ứng bùng nổ, hiện lâu hơn cho donate lớn.</p></div><button type="button" class="switch" role="switch" data-k="other.wowEnabled" aria-label="Bật WOW donate"><span></span></button></div>
+              <div class="ds-row">
+                <div class="form-field"><label for="dsWowMin">WOW donate tối thiểu (VND)</label><input id="dsWowMin" type="number" min="0" step="1000" data-k="other.wowMinAmount"></div>
+                <div class="form-field"><label for="dsMinAmount">Số tiền donate tối thiểu (VND)</label><input id="dsMinAmount" type="number" min="0" step="1000" data-k="other.minAmount"></div>
+              </div>
+              <div class="form-field"><label for="dsVip">Hiện huy hiệu VIP khi người donate đạt</label><select id="dsVip" data-k="other.vipBadgeLevel" data-number></select>
+                <p class="form-hint">VIP tính theo tổng đã donate cho trang của bạn (gom theo tên): VIP 1 từ 50.000đ, VIP 5 từ 1.000.000đ, VIP 10 từ 50.000.000đ.</p></div>
+              <label class="pay-check"><span><strong>Hiện bảng xếp hạng</strong><small>Top người donate trên trang donate công khai.</small></span><input type="checkbox" data-k="other.showLeaderboard"></label>
+              <div class="form-field">
+                <label for="dsKeyword">Lọc từ khóa</label>
+                <div class="ds-tags" id="dsKeywords"><input id="dsKeyword" maxlength="40" placeholder="Nhập từ khóa và nhấn Enter"></div>
+                <p class="form-hint">Từ khóa trong lời nhắn được thay bằng *** trên live và không được đọc.</p>
+              </div>
+            </div>
+          </section>
+
+          <aside class="ds-side">
+            <section class="pe-card ds-preview-card" aria-labelledby="dsPreviewTitle">
+              <div class="pe-side-head"><h2 class="pe-h" id="dsPreviewTitle">Xem trước</h2><button type="button" class="btn btn-primary btn-sm" id="dsPreviewBtn">Phát thử</button></div>
+              <div class="ds-preview"><div class="ds-preview-scale" id="dsPreviewScale"><div class="va-stage" id="dsPreviewStage"></div></div></div>
+              <p class="form-hint" id="dsThemeName"></p>
+            </section>
+            <section class="pe-card" aria-labelledby="dsObsTitle">
+              <h2 class="pe-h" id="dsObsTitle">Kết nối với OBS</h2>
+              <p class="pe-sub">Dán vào OBS → Browser Source. Đổi giao diện lúc nào cũng được mà không phải sửa lại link.</p>
+              <div class="form-field">
+                <label for="dsObsUrl">Link hiển thị</label>
+                <div class="pe-prefixed"><input id="dsObsUrl" readonly placeholder="Chưa có link — bấm Tạo link"><button type="button" class="pe-copy" id="dsObsCopy" aria-label="Sao chép link" title="Sao chép"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div>
+                <p class="form-hint">Ai có link này đều xem được donate của bạn theo thời gian thực. Nếu lỡ lộ, bấm Đổi link: link cũ mất hiệu lực ngay.</p>
+              </div>
+              <div class="ds-actions">
+                <button type="button" class="btn btn-outline btn-sm" id="dsRotate">Tạo link</button>
+                <button type="button" class="btn btn-outline btn-sm" id="dsTestLive">Gửi thử lên live</button>
+              </div>
+              <p class="form-error" id="dsObsError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="dsObsErrorText"></span></p>
+              <p class="form-hint is-good" id="dsObsOk" hidden></p>
+              <div id="stepUpPanel" class="step-up-panel" hidden>
+                <p class="auth-subtitle">Cần xác minh lại để tiếp tục — nhập mã 2FA hiện tại:</p>
+                <form class="mfa-form" id="stepUpForm">
+                  <div class="form-field"><input type="text" id="stepUpCode" inputmode="numeric" autocomplete="one-time-code" required></div>
+                  <p class="form-error" id="stepUpError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="stepUpErrorText"></span></p>
+                  <button type="submit" class="btn btn-primary btn-lg btn-submit">Xác nhận</button>
+                </form>
+              </div>
+            </section>
+          </aside>
+
+          <div class="pe-bar" role="region" aria-label="Lưu thay đổi">
+            <p class="pe-status" id="dsStatus" role="status">Chưa có thay đổi.</p>
+            <p class="form-error" id="dsSaveError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="dsSaveErrorText"></span></p>
+            <button type="button" class="btn btn-ghost" id="dsUndo" disabled>Hoàn tác</button>
+            <button type="button" class="btn btn-primary" id="dsSave" disabled>Cập nhật</button>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 
   <script src="fx.js"></script>
-  <script src="api.js?v=4"></script>
-  <script src="auth.js?v=9"></script>
-  <script src="dashboard.js?v=4"></script>
+  <script src="api.js?v=5"></script>
+  <script src="auth.js?v=10"></script>
+  <script src="alert-render.js?v=1"></script>
+  <script src="donate-settings.js?v=1"></script>
+  <script src="dashboard.js?v=5"></script>
 </body>
 </html>

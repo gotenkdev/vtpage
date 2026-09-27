@@ -5,28 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Overlay - VT Page</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="fonts/bricolage-grotesque-latin-600-800.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="fonts/doto-latin-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css">
-  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="alert-themes.css?v=2">
+  <style>html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; } #overlayNotice { position: fixed; top: 24px; left: 24px; right: 24px; margin: 0; padding: 14px 18px; border-radius: 12px; background: #fff3f0; color: #9a2a00; font: 600 16px/1.4 system-ui, sans-serif; }</style>
 </head>
-<body class="page-overlay">
-  <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
-    <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4"/></symbol>
-  </svg>
-
-  <!-- Chỉ hiện khi mở trực tiếp thiếu/sai token (để tự kiểm tra) — bình thường trong OBS sẽ không thấy gì. -->
-  <p id="overlayNotice" class="donate-expired" style="position:fixed;top:24px;left:24px;right:24px;" hidden></p>
-
-  <div id="toast" class="donate-toast" aria-live="polite">
-    <div class="donate-toast-icon"><svg class="ic"><use href="#i-coin"/></svg></div>
-    <div class="donate-toast-body">
-      <div class="donate-toast-name" id="toastName"></div>
-      <div class="donate-toast-amount" id="toastAmount"></div>
-      <div class="donate-toast-message" id="toastMessage"></div>
-    </div>
-  </div>
-
-  <script src="overlay.js"></script>
+<body>
+  <!-- Chỉ hiện khi mở trực tiếp thiếu/sai token (để tự kiểm tra); bình thường trong OBS không thấy gì ngoài thông báo donate. -->
+  <p id="overlayNotice" hidden></p>
+  <div class="va-stage" id="stage" aria-live="polite"></div>
+  <script src="alert-render.js?v=1"></script>
+  <script src="overlay.js?v=2"></script>
 </body>
 </html>

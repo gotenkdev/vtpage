@@ -1471,3 +1471,17 @@ html[data-motion="off"] .reveal { opacity: 1 !important; transform: none !import
 .creator-socials { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 14px; }
 .creator-socials a { padding: 8px 14px; border-radius: 99px; background: #fff; box-shadow: 0 0 0 1px var(--line); color: var(--ink); font: 600 0.88rem/1 var(--font-text); text-decoration: none; }
 .creator-socials a:hover { box-shadow: 0 0 0 1px var(--orange); color: var(--orange-deep); }
+
+/* Trang donate công khai: ghi âm lời nhắn, bảng xếp hạng. */
+.rec-box { display: grid; gap: 8px; padding: 12px 14px; border-radius: 14px; border: 1px dashed rgba(20, 22, 26, 0.2); }
+.rec-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; align-items: baseline; }
+.rec-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.rec-controls audio { height: 36px; max-width: 100%; }
+#recStop { color: #c81e1e; border-color: #c81e1e; }
+.lb-list { margin: 10px 0 0; padding: 0; list-style: none; counter-reset: lb; display: grid; gap: 6px; }
+.lb-list li { counter-increment: lb; display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px var(--line); }
+.lb-list li::before { content: counter(lb); width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; background: var(--plate-2); font-weight: 800; font-size: 0.85rem; }
+.lb-list li:nth-child(1)::before { background: #ffd24c; }
+.lb-list li:nth-child(2)::before { background: #d9dde3; }
+.lb-list li:nth-child(3)::before { background: #f0b27a; }
+.lb-list li span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

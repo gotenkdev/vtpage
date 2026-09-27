@@ -1,0 +1,315 @@
+/* Thông báo donate: khung, 9 vị trí, 39 giao diện, hiệu ứng vào/ra/chữ, WOW. Dùng chung cho overlay.html và bản xem trước. */
+.va-stage { position: absolute; inset: 0; overflow: hidden; pointer-events: none; font-family: 'Be Vietnam Pro', 'Bricolage Grotesque', system-ui, sans-serif; }
+.va-alert { position: absolute; display: flex; width: max-content; max-width: min(640px, 92%); --va-name-color: #fff; --va-amount-color: #ffd23f; --va-msg-color: #fff; --va-bg: #14161a; }
+.va-pos-center { left: 50%; top: 50%; transform: translate(-50%, -50%); }
+.va-pos-middle_left { left: 4%; top: 50%; transform: translateY(-50%); }
+.va-pos-middle_right { right: 4%; top: 50%; transform: translateY(-50%); }
+.va-pos-bottom_left { left: 4%; bottom: 6%; }
+.va-pos-bottom_center { left: 50%; bottom: 6%; transform: translateX(-50%); }
+.va-pos-bottom_right { right: 4%; bottom: 6%; }
+.va-pos-top_left { left: 4%; top: 6%; }
+.va-pos-top_center { left: 50%; top: 6%; transform: translateX(-50%); }
+.va-pos-top_right { right: 4%; top: 6%; }
+.va-inner { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.va-media { max-width: 240px; max-height: 200px; object-fit: contain; filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.35)); }
+.va-card { position: relative; overflow: hidden; padding: 16px 24px; text-align: center; color: #fff; border-radius: 18px; min-width: 260px; }
+.va-deco { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.va-card > :not(.va-deco) { position: relative; z-index: 1; }
+.va-line { font-size: var(--va-msg-size); font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; }
+.va-name { font-size: var(--va-name-size); font-weight: 800; color: var(--va-name-color); display: inline-block; }
+.va-amount { color: var(--va-amount-color); font-weight: 800; white-space: nowrap; }
+.va-msg { margin-top: 8px; font-size: calc(var(--va-msg-size) * 0.72); font-weight: 500; line-height: 1.35; color: var(--va-msg-color); overflow-wrap: anywhere; max-width: 560px; }
+.va-vip { display: inline-block; margin-bottom: 6px; padding: 3px 10px; border-radius: 99px; font: 800 12px/1.2 system-ui, sans-serif; letter-spacing: 0.08em; color: #1b1300; background: linear-gradient(90deg, #ffd96a, #ffae00); }
+
+/* Hiệu ứng mặc định của các giao diện (không phải Cổ điển) */
+@keyframes va-themeIn { from { opacity: 0; transform: translateY(24px) scale(0.92); filter: blur(8px); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes va-themeOut { to { opacity: 0; transform: translateY(-16px) scale(0.96); filter: blur(6px); } }
+
+/* ---- WOW donate: tia bung + rung nhẹ + viền sáng ---- */
+.va-alert.is-wow .va-card { animation: va-wowGlow 1.6s ease-in-out infinite; }
+@keyframes va-wowGlow { 50% { box-shadow: 0 0 0 3px rgba(255, 210, 63, 0.9), 0 0 60px 10px rgba(255, 170, 0, 0.55); } }
+.va-wow { position: absolute; left: 50%; top: 50%; width: 0; height: 0; z-index: 2; }
+.va-wow i { position: absolute; width: 8px; height: 18px; border-radius: 4px; background: hsl(calc(var(--a) * 1), 95%, 60%); transform: rotate(var(--a)) translateY(0); animation: va-burst 1.4s var(--d) cubic-bezier(.2,.7,.3,1) both; }
+@keyframes va-burst { 0% { opacity: 1; transform: rotate(var(--a)) translateY(0) scale(0.4); } 100% { opacity: 0; transform: rotate(var(--a)) translateY(-240px) scale(1); } }
+
+/* ===================== 39 GIAO DIỆN ===================== */
+.va-theme-aurora_glass .va-card { background: rgba(18, 20, 32, 0.55); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.18); }
+.va-theme-aurora_glass .va-deco { background: conic-gradient(from var(--va-spin, 0deg), #7b5cff55, #00e0ff44, #ff5ac455, #7b5cff55); filter: blur(28px); animation: va-spinBg 6s linear infinite; }
+.va-theme-aurora_glass .va-amount { color: #8ff0ff; }
+
+.va-theme-mono_slate .va-card { background: #1c1f24; border: 1px solid #3a3f47; border-radius: 10px; font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
+.va-theme-mono_slate .va-name { color: #e6e6e6; }
+.va-theme-mono_slate .va-amount { color: #a3e635; }
+.va-theme-mono_slate .va-deco { border-top: 2px solid #a3e635; animation: va-scanX 2.4s ease-in-out infinite; }
+
+.va-theme-frost_light .va-card { background: rgba(255, 255, 255, 0.78); backdrop-filter: blur(14px); color: #14161a; border: 1px solid #fff; box-shadow: 0 20px 50px -20px rgba(20, 22, 26, 0.5); }
+.va-theme-frost_light .va-name { color: #2563eb; }
+.va-theme-frost_light .va-amount { color: #e11d48; }
+.va-theme-frost_light .va-msg { color: #334155; }
+.va-theme-frost_light .va-deco { background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.9) 50%, transparent 70%); background-size: 250% 100%; animation: va-shine 3s linear infinite; }
+
+.va-theme-gradient_wave .va-card { background: linear-gradient(120deg, #ff5a1f, #ff2e7e, #7b5cff, #ff5a1f); background-size: 300% 300%; animation: va-gradMove 5s ease infinite; }
+.va-theme-gradient_wave .va-amount { color: #fff3a1; }
+
+.va-theme-spotlight .va-card { background: radial-gradient(ellipse at 50% 0%, #3a3a3a, #0b0b0b 70%); border-radius: 6px; }
+.va-theme-spotlight .va-deco { background: radial-gradient(circle at var(--x, 50%) 0%, rgba(255, 244, 200, 0.45), transparent 55%); animation: va-sweep 3.2s ease-in-out infinite alternate; }
+.va-theme-spotlight .va-amount { color: #ffe08a; }
+
+.va-theme-ticker_bar .va-card { border-radius: 0; background: #0f172a; border-left: 6px solid #ff5a1f; text-align: left; min-width: 420px; }
+.va-theme-ticker_bar .va-deco { background: repeating-linear-gradient(90deg, transparent 0 40px, rgba(255, 255, 255, 0.04) 40px 80px); animation: va-slideBg 2s linear infinite; }
+
+.va-theme-candy_pop .va-card { background: #ffd6ec; color: #5b1040; border: 4px solid #fff; border-radius: 28px; box-shadow: 0 8px 0 #ff7ab8; }
+.va-theme-candy_pop .va-name { color: #e11d74; }
+.va-theme-candy_pop .va-amount { color: #7c3aed; }
+.va-theme-candy_pop .va-msg { color: #6b2150; }
+.va-theme-candy_pop .va-card { animation: va-float 2.4s ease-in-out infinite; }
+
+.va-theme-comic_boom .va-card { background: #ffe600; color: #111; border: 4px solid #111; border-radius: 4px; box-shadow: 8px 8px 0 #111; font-family: 'Comic Sans MS', 'Bricolage Grotesque', sans-serif; transform: rotate(-2deg); }
+.va-theme-comic_boom .va-name { color: #e10600; text-transform: uppercase; }
+.va-theme-comic_boom .va-amount { color: #0047ff; }
+.va-theme-comic_boom .va-msg { color: #111; }
+.va-theme-comic_boom .va-deco { background: radial-gradient(circle, rgba(0,0,0,0.12) 1.2px, transparent 1.4px) 0 0 / 10px 10px; }
+
+.va-theme-bubble_chat .va-card { background: #fff; color: #14161a; border-radius: 22px 22px 22px 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); text-align: left; }
+.va-theme-bubble_chat .va-name { color: #2563eb; }
+.va-theme-bubble_chat .va-amount { color: #16a34a; }
+.va-theme-bubble_chat .va-msg { color: #334155; }
+
+.va-theme-sticker_note .va-card { background: #fff59d; color: #3b2f00; border-radius: 2px; box-shadow: 0 14px 20px -8px rgba(0,0,0,0.45); transform: rotate(1.5deg); font-family: 'Bricolage Grotesque', sans-serif; }
+.va-theme-sticker_note .va-deco { background: linear-gradient(transparent 0 24px, rgba(0,0,0,0.06) 24px 25px) 0 0 / 100% 25px; }
+.va-theme-sticker_note .va-name, .va-theme-sticker_note .va-amount { color: #c2410c; }
+.va-theme-sticker_note .va-msg { color: #3b2f00; }
+
+.va-theme-rainbow_fun .va-card { background: #fff; color: #111; border: 5px solid transparent; border-radius: 20px; background-clip: padding-box; }
+.va-theme-rainbow_fun .va-deco { inset: -5px; z-index: -1; border-radius: 22px; background: linear-gradient(90deg, #ff004c, #ff9900, #ffe600, #22c55e, #00b3ff, #7b5cff, #ff004c); background-size: 200% 100%; animation: va-slideBg 2s linear infinite; }
+.va-theme-rainbow_fun .va-card { overflow: visible; }
+.va-theme-rainbow_fun .va-name { color: #7b5cff; }
+.va-theme-rainbow_fun .va-amount { color: #ff004c; }
+.va-theme-rainbow_fun .va-msg { color: #333; }
+
+.va-theme-neon_hud .va-card { background: rgba(0, 12, 20, 0.85); border: 1px solid #00f0ff; border-radius: 4px; box-shadow: 0 0 18px #00f0ff88, inset 0 0 18px #00f0ff33; font-family: ui-monospace, Menlo, monospace; }
+.va-theme-neon_hud .va-name { color: #00f0ff; text-shadow: 0 0 10px #00f0ff; }
+.va-theme-neon_hud .va-amount { color: #ff2bd6; text-shadow: 0 0 10px #ff2bd6; }
+.va-theme-neon_hud .va-deco { background: linear-gradient(transparent 50%, rgba(0, 240, 255, 0.08) 50%) 0 0 / 100% 4px; animation: va-flicker 3s infinite; }
+
+.va-theme-cyber_glitch .va-card { background: #0a0a0f; border: 2px solid #f0ff00; border-radius: 0; clip-path: polygon(0 0, 94% 0, 100% 22%, 100% 100%, 6% 100%, 0 78%); }
+.va-theme-cyber_glitch .va-name { color: #f0ff00; animation: va-glitch 1.8s steps(2) infinite; }
+.va-theme-cyber_glitch .va-amount { color: #00ffd5; }
+
+.va-theme-matrix_terminal .va-card { background: #000; border: 1px solid #00ff41; border-radius: 2px; font-family: ui-monospace, Menlo, monospace; text-align: left; color: #00ff41; }
+.va-theme-matrix_terminal .va-name, .va-theme-matrix_terminal .va-amount, .va-theme-matrix_terminal .va-msg { color: #00ff41; text-shadow: 0 0 6px #00ff41; }
+.va-theme-matrix_terminal .va-line::before { content: '> '; }
+.va-theme-matrix_terminal .va-line::after { content: '_'; animation: va-blink 1s steps(1) infinite; }
+.va-theme-matrix_terminal .va-deco { background: linear-gradient(rgba(0, 255, 65, 0.06) 1px, transparent 1px) 0 0 / 100% 3px; }
+
+.va-theme-rgb_gamer .va-card { background: #0d0d12; border-radius: 12px; }
+.va-theme-rgb_gamer .va-deco { inset: -2px; z-index: -1; border-radius: 14px; background: conic-gradient(from var(--va-spin, 0deg), red, yellow, lime, cyan, blue, magenta, red); animation: va-spinBg 2.5s linear infinite; }
+.va-theme-rgb_gamer .va-card { overflow: visible; box-shadow: 0 0 0 2px #0d0d12; }
+.va-theme-rgb_gamer .va-card::after { content: ''; position: absolute; inset: 2px; background: #0d0d12; border-radius: 10px; z-index: 0; }
+.va-theme-rgb_gamer .va-amount { color: #39ff14; }
+
+.va-theme-holo_blue .va-card { background: linear-gradient(135deg, rgba(0, 150, 255, 0.28), rgba(0, 60, 140, 0.45)); border: 1px solid rgba(120, 200, 255, 0.7); backdrop-filter: blur(8px); border-radius: 14px; }
+.va-theme-holo_blue .va-deco { background: linear-gradient(transparent, rgba(160, 220, 255, 0.35), transparent) 0 0 / 100% 40%; background-repeat: no-repeat; animation: va-scanY 2.6s linear infinite; }
+.va-theme-holo_blue .va-name { color: #a8e1ff; }
+.va-theme-holo_blue .va-amount { color: #ffffff; }
+
+.va-theme-pixel_quest .va-card { background: #2b1d4f; border: 4px solid #fff; border-radius: 0; box-shadow: 0 0 0 4px #000, 8px 8px 0 4px #000; font-family: ui-monospace, Menlo, monospace; text-shadow: 2px 2px 0 #000; }
+.va-theme-pixel_quest .va-line { font-weight: 800; }
+.va-theme-pixel_quest .va-name { color: #ffd23f; }
+.va-theme-pixel_quest .va-amount { color: #4ade80; }
+
+.va-theme-pubg_airdrop .va-card { background: linear-gradient(#3d3a22, #23210f); border: 2px solid #f2a900; border-radius: 4px; font-family: 'Bricolage Grotesque', sans-serif; text-transform: uppercase; letter-spacing: 0.02em; }
+.va-theme-pubg_airdrop .va-deco { background: repeating-linear-gradient(-45deg, #f2a90022 0 12px, transparent 12px 24px); animation: va-slideBg 3s linear infinite; }
+.va-theme-pubg_airdrop .va-name { color: #f2a900; }
+.va-theme-pubg_airdrop .va-msg { text-transform: none; }
+.va-theme-pubg_airdrop .va-card { animation: va-sway 3s ease-in-out infinite; }
+
+.va-theme-arena_gold .va-card { background: linear-gradient(180deg, #1b1407, #0c0903); border: 2px solid #d4a73a; border-radius: 6px; box-shadow: 0 0 28px #d4a73a55; }
+.va-theme-arena_gold .va-name, .va-theme-arena_gold .va-amount { background: linear-gradient(90deg, #f7e19a, #d4a73a, #f7e19a); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: va-slideBg 3s linear infinite; }
+
+.va-theme-hextech .va-card { background: linear-gradient(180deg, #0a1428, #091428); border: 2px solid #c8aa6e; border-radius: 2px; clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px); }
+.va-theme-hextech .va-name { color: #f0e6d2; }
+.va-theme-hextech .va-amount { color: #0ac8b9; text-shadow: 0 0 10px #0ac8b9; }
+.va-theme-hextech .va-deco { background: radial-gradient(circle at 50% 120%, #0ac8b955, transparent 60%); animation: va-pulseBg 2.4s ease-in-out infinite; }
+
+.va-theme-valorant_strike .va-card { background: #0f1923; border-left: 8px solid #ff4655; border-radius: 0; clip-path: polygon(0 0, 100% 0, 96% 100%, 0 100%); text-align: left; min-width: 380px; font-family: 'Bricolage Grotesque', sans-serif; text-transform: uppercase; }
+.va-theme-valorant_strike .va-name { color: #ff4655; }
+.va-theme-valorant_strike .va-amount { color: #ece8e1; }
+.va-theme-valorant_strike .va-msg { text-transform: none; color: #ece8e1; }
+.va-theme-valorant_strike .va-deco { background: linear-gradient(90deg, #ff465522, transparent 40%); animation: va-scanX 2s ease-in-out infinite; }
+
+.va-theme-ff_booyah .va-card { background: linear-gradient(135deg, #ff8a00, #e52e71); border: 3px solid #fff3c4; border-radius: 16px; font-family: 'Bricolage Grotesque', sans-serif; font-style: italic; }
+.va-theme-ff_booyah .va-name { color: #fff3c4; text-shadow: 2px 2px 0 #7a1b00; }
+.va-theme-ff_booyah .va-amount { color: #ffffff; text-shadow: 2px 2px 0 #7a1b00; }
+.va-theme-ff_booyah .va-card { animation: va-heartbeat 1.6s ease-in-out infinite; }
+
+.va-theme-football_pitch .va-card { background: repeating-linear-gradient(90deg, #1f7a3a 0 40px, #238a42 40px 80px); border: 3px solid #fff; border-radius: 10px; }
+.va-theme-football_pitch .va-deco { border: 2px solid rgba(255,255,255,0.6); border-radius: 50%; width: 70px; height: 70px; inset: auto; left: calc(50% - 35px); top: calc(50% - 35px); }
+.va-theme-football_pitch .va-amount { color: #fff176; }
+
+.va-theme-golden_lux .va-card { background: #0d0b07; border: 1px solid #c9a24a; border-radius: 4px; font-family: 'Playfair Display', Georgia, serif; }
+.va-theme-golden_lux .va-deco { background: linear-gradient(110deg, transparent 35%, rgba(255, 223, 140, 0.35) 50%, transparent 65%); background-size: 250% 100%; animation: va-shine 3.5s linear infinite; }
+.va-theme-golden_lux .va-name, .va-theme-golden_lux .va-amount { color: #e6c46e; }
+
+.va-theme-royal_purple .va-card { background: linear-gradient(160deg, #3b0764, #1e0536); border: 2px solid #c084fc; border-radius: 16px; box-shadow: 0 0 30px #a855f766; }
+.va-theme-royal_purple .va-name { color: #f5d0fe; }
+.va-theme-royal_purple .va-amount { color: #fde68a; }
+.va-theme-royal_purple .va-deco { background: radial-gradient(circle, #ffffff 1px, transparent 1.5px) 0 0 / 22px 22px; opacity: 0.25; animation: va-twinkle 2s ease-in-out infinite; }
+
+.va-theme-marble_white .va-card { background: linear-gradient(135deg, #fafafa, #e7e5e4 40%, #fafafa 60%, #d6d3d1); color: #1c1917; border-radius: 12px; border: 1px solid #fff; box-shadow: 0 18px 40px -18px rgba(0,0,0,0.5); font-family: 'Playfair Display', Georgia, serif; }
+.va-theme-marble_white .va-name { color: #1c1917; }
+.va-theme-marble_white .va-amount { color: #a16207; }
+.va-theme-marble_white .va-msg { color: #44403c; }
+
+.va-theme-diamond_ice .va-card { background: linear-gradient(135deg, rgba(200, 240, 255, 0.35), rgba(80, 160, 220, 0.25)); backdrop-filter: blur(10px); border: 1px solid #e0f7ff; border-radius: 18px; }
+.va-theme-diamond_ice .va-deco { background: linear-gradient(120deg, transparent 40%, rgba(255,255,255,0.7) 50%, transparent 60%); background-size: 300% 100%; animation: va-shine 2.4s linear infinite; }
+.va-theme-diamond_ice .va-name { color: #e0f7ff; text-shadow: 0 0 12px #7dd3fc; }
+.va-theme-diamond_ice .va-amount { color: #ffffff; }
+
+.va-theme-crt_tv .va-card { background: #101410; border: 10px solid #2a2a2a; border-radius: 26px; box-shadow: inset 0 0 40px rgba(0,0,0,0.9); font-family: ui-monospace, Menlo, monospace; }
+.va-theme-crt_tv .va-deco { background: linear-gradient(rgba(255,255,255,0.05) 50%, transparent 50%) 0 0 / 100% 3px; animation: va-flicker 0.15s infinite; }
+.va-theme-crt_tv .va-name, .va-theme-crt_tv .va-amount { color: #9dff9d; text-shadow: 0 0 8px #3aff3a; }
+
+.va-theme-vhs_tape .va-card { background: #111; border-radius: 4px; font-family: ui-monospace, Menlo, monospace; text-transform: uppercase; }
+.va-theme-vhs_tape .va-name { color: #fff; text-shadow: 2px 0 #ff004c, -2px 0 #00e1ff; animation: va-jitter 0.4s steps(2) infinite; }
+.va-theme-vhs_tape .va-amount { color: #ffe600; }
+.va-theme-vhs_tape .va-msg { text-transform: none; }
+.va-theme-vhs_tape .va-deco { background: linear-gradient(transparent 0 92%, rgba(255,255,255,0.25) 92% 94%, transparent 94%); background-size: 100% 200%; animation: va-scanY 1.8s linear infinite; }
+
+.va-theme-neon_sign .va-card { background: #0b0b10; border: 2px solid #ff3fa4; border-radius: 30px; box-shadow: 0 0 12px #ff3fa4, inset 0 0 12px #ff3fa4; }
+.va-theme-neon_sign .va-name { color: #fff; text-shadow: 0 0 6px #fff, 0 0 18px #ff3fa4, 0 0 32px #ff3fa4; animation: va-neonFlicker 4s infinite; }
+.va-theme-neon_sign .va-amount { color: #fff; text-shadow: 0 0 6px #fff, 0 0 18px #3ff0ff, 0 0 32px #3ff0ff; }
+
+.va-theme-synthwave .va-card { background: linear-gradient(180deg, #2b0a3d 0%, #7a0f5a 60%, #ff6a3d 100%); border-radius: 8px; border-top: 2px solid #ff9de2; }
+.va-theme-synthwave .va-deco { top: 55%; background: linear-gradient(rgba(255, 110, 199, 0.55) 1px, transparent 1px) 0 0 / 100% 12px, linear-gradient(90deg, rgba(255, 110, 199, 0.55) 1px, transparent 1px) 0 0 / 28px 100%; transform: perspective(120px) rotateX(55deg); transform-origin: top; animation: va-grid 1.2s linear infinite; }
+.va-theme-synthwave .va-name { color: #fff; text-shadow: 0 0 12px #ff5ad6; }
+.va-theme-synthwave .va-amount { color: #ffe66d; }
+
+.va-theme-confetti_gold .va-card { background: #1a1305; border: 2px solid #e8b33b; border-radius: 16px; }
+.va-theme-confetti_gold .va-deco { background: radial-gradient(circle, #ffd24c 2px, transparent 2.5px) 0 0 / 26px 26px, radial-gradient(circle, #ff6b6b 1.5px, transparent 2px) 13px 13px / 26px 26px; animation: va-fall 2.2s linear infinite; opacity: 0.8; }
+.va-theme-confetti_gold .va-name, .va-theme-confetti_gold .va-amount { color: #ffd24c; }
+
+.va-theme-heart_love .va-card { background: linear-gradient(135deg, #ff5f8f, #ff98b3); border-radius: 26px; border: 3px solid #fff; }
+.va-theme-heart_love .va-deco::before, .va-theme-heart_love .va-deco::after { content: '♥'; position: absolute; font-size: 26px; color: #fff; opacity: 0.8; animation: va-rise 2.4s ease-in infinite; left: 12%; bottom: -20px; }
+.va-theme-heart_love .va-deco::after { left: 82%; animation-delay: 1.2s; font-size: 20px; }
+.va-theme-heart_love .va-amount { color: #fff4b8; }
+
+.va-theme-fire_blaze .va-card { background: linear-gradient(0deg, #3a0500, #120200); border: 2px solid #ff6a00; border-radius: 12px; }
+.va-theme-fire_blaze .va-deco { top: 40%; background: radial-gradient(ellipse at 50% 100%, #ff6a00cc, #ff2d0066 40%, transparent 70%); animation: va-flame 0.9s ease-in-out infinite alternate; }
+.va-theme-fire_blaze .va-name { color: #ffd166; text-shadow: 0 0 12px #ff6a00; }
+.va-theme-fire_blaze .va-amount { color: #fff; }
+
+.va-theme-frost_snow .va-card { background: linear-gradient(180deg, #0b2447, #19376d); border: 2px solid #a5d8ff; border-radius: 16px; }
+.va-theme-frost_snow .va-deco { background: radial-gradient(circle, #fff 1.4px, transparent 1.8px) 0 0 / 24px 24px, radial-gradient(circle, #fff 1px, transparent 1.4px) 12px 8px / 30px 30px; animation: va-fall 4s linear infinite; opacity: 0.7; }
+.va-theme-frost_snow .va-name { color: #d0ebff; }
+.va-theme-frost_snow .va-amount { color: #ffffff; }
+
+.va-theme-level_up .va-card { background: #111827; border: 3px solid #4ade80; border-radius: 10px; font-family: 'Bricolage Grotesque', sans-serif; }
+.va-theme-level_up .va-deco { top: auto; height: 6px; background: linear-gradient(90deg, #4ade80, #22d3ee); transform-origin: left; animation: va-fillBar 2.2s ease-out infinite; }
+.va-theme-level_up .va-name { color: #4ade80; }
+.va-theme-level_up .va-amount { color: #facc15; }
+.va-theme-level_up .va-line::before { content: 'LEVEL UP! '; color: #22d3ee; font-weight: 800; }
+
+/* Cổ điển: màu/hiệu ứng tùy chỉnh (biến CSS đặt từ cài đặt) */
+.va-theme-classic_1 .va-card { background: transparent; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 2px #000; }
+.va-theme-classic_2 .va-card { background: color-mix(in srgb, var(--va-bg) 80%, transparent); border-radius: 14px; }
+.va-theme-classic_3 .va-card { background: var(--va-bg); border-radius: 40px; padding: 14px 34px; border: 3px solid var(--va-amount-color); }
+[class*='va-theme-classic_'] .va-msg { color: var(--va-msg-color); }
+[data-text-effect='bounce'] .va-name { animation: va-bounce 1.2s infinite; }
+[data-text-effect='flash'] .va-name { animation: va-flash 1.6s infinite; }
+[data-text-effect='pulse'] .va-name { animation: va-pulse 1.2s infinite; }
+[data-text-effect='rubberBand'] .va-name { animation: va-rubberBand 1.4s infinite; }
+[data-text-effect='shake'] .va-name { animation: va-shake 1.2s infinite; }
+[data-text-effect='swing'] .va-name { animation: va-swing 1.4s infinite; transform-origin: top center; }
+[data-text-effect='tada'] .va-name { animation: va-tada 1.4s infinite; }
+[data-text-effect='wobble'] .va-name { animation: va-wobble 1.4s infinite; }
+
+/* ---- Hiệu ứng nền liên tục ---- */
+@property --va-spin { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@keyframes va-spinBg { to { --va-spin: 360deg; } }
+@keyframes va-shine { from { background-position: 150% 0; } to { background-position: -50% 0; } }
+@keyframes va-gradMove { 50% { background-position: 100% 50%; } }
+@keyframes va-sweep { from { --x: 10%; background-position: -120px 0; } to { background-position: 120px 0; } }
+@keyframes va-slideBg { to { background-position: 200% 0; } }
+@keyframes va-scanX { 0%, 100% { transform: translateX(-30%); } 50% { transform: translateX(30%); } }
+@keyframes va-scanY { from { background-position: 0 -100%; } to { background-position: 0 200%; } }
+@keyframes va-float { 50% { transform: translateY(-6px); } }
+@keyframes va-sway { 50% { transform: rotate(1.5deg); } }
+@keyframes va-flicker { 0%, 100% { opacity: 1; } 47% { opacity: 1; } 48% { opacity: 0.55; } 50% { opacity: 1; } 82% { opacity: 0.8; } }
+@keyframes va-neonFlicker { 0%, 19%, 23%, 60%, 100% { opacity: 1; } 20%, 22%, 61% { opacity: 0.4; } }
+@keyframes va-glitch { 0% { transform: translate(0); text-shadow: 2px 0 #ff004c, -2px 0 #00ffd5; } 50% { transform: translate(-2px, 1px); text-shadow: -2px 0 #ff004c, 2px 0 #00ffd5; } }
+@keyframes va-jitter { 50% { transform: translateX(1px); } }
+@keyframes va-blink { 50% { opacity: 0; } }
+@keyframes va-pulseBg { 50% { opacity: 0.4; } }
+@keyframes va-twinkle { 50% { opacity: 0.5; } }
+@keyframes va-heartbeat { 0%, 60%, 100% { transform: scale(1); } 20% { transform: scale(1.04); } 40% { transform: scale(0.99); } }
+@keyframes va-grid { to { background-position: 0 12px, 0 0; } }
+@keyframes va-fall { to { background-position: 0 26px, 13px 39px; } }
+@keyframes va-rise { from { transform: translateY(0) scale(0.6); opacity: 0.9; } to { transform: translateY(-110px) scale(1.1); opacity: 0; } }
+@keyframes va-flame { to { transform: scaleY(1.15) translateY(-4px); opacity: 0.8; } }
+@keyframes va-fillBar { from { transform: scaleX(0); } 70%, to { transform: scaleX(1); } }
+
+/* ---- Hiệu ứng chữ (Cổ điển) ---- */
+@keyframes va-bounce { 0%, 20%, 53%, 100% { transform: translateY(0); } 40%, 43% { transform: translateY(-12px); } 70% { transform: translateY(-6px); } 90% { transform: translateY(-2px); } }
+@keyframes va-flash { 0%, 50%, 100% { opacity: 1; } 25%, 75% { opacity: 0.2; } }
+@keyframes va-pulse { 50% { transform: scale(1.08); } }
+@keyframes va-rubberBand { 30% { transform: scale(1.2, 0.8); } 40% { transform: scale(0.8, 1.2); } 50% { transform: scale(1.1, 0.9); } 65% { transform: scale(0.95, 1.05); } 75% { transform: scale(1.03, 0.97); } }
+@keyframes va-shake { 10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); } 20%, 40%, 60%, 80% { transform: translateX(4px); } }
+@keyframes va-swing { 20% { transform: rotate(12deg); } 40% { transform: rotate(-8deg); } 60% { transform: rotate(4deg); } 80% { transform: rotate(-4deg); } }
+@keyframes va-tada { 10%, 20% { transform: scale(0.9) rotate(-3deg); } 30%, 50%, 70%, 90% { transform: scale(1.1) rotate(3deg); } 40%, 60%, 80% { transform: scale(1.1) rotate(-3deg); } }
+@keyframes va-wobble { 15% { transform: translateX(-12px) rotate(-5deg); } 30% { transform: translateX(10px) rotate(3deg); } 45% { transform: translateX(-8px) rotate(-3deg); } 60% { transform: translateX(5px) rotate(2deg); } 75% { transform: translateX(-3px) rotate(-1deg); } }
+
+/* ---- Hiệu ứng xuất hiện (Cổ điển) ---- */
+@keyframes va-bounceIn { 0% { opacity: 0; transform: scale(0.3); } 50% { opacity: 1; transform: scale(1.05); } 70% { transform: scale(0.95); } 100% { transform: scale(1); } }
+@keyframes va-bounceInDown { 0% { opacity: 0; transform: translateY(-600px); } 60% { opacity: 1; transform: translateY(25px); } 80% { transform: translateY(-10px); } 100% { transform: none; } }
+@keyframes va-bounceInLeft { 0% { opacity: 0; transform: translateX(-600px); } 60% { opacity: 1; transform: translateX(25px); } 80% { transform: translateX(-10px); } 100% { transform: none; } }
+@keyframes va-fadeIn { from { opacity: 0; } }
+@keyframes va-fadeInDown { from { opacity: 0; transform: translateY(-40px); } }
+@keyframes va-fadeInDownBig { from { opacity: 0; transform: translateY(-600px); } }
+@keyframes va-fadeInLeft { from { opacity: 0; transform: translateX(-40px); } }
+@keyframes va-fadeInLeftBig { from { opacity: 0; transform: translateX(-600px); } }
+@keyframes va-fadeInUp { from { opacity: 0; transform: translateY(40px); } }
+@keyframes va-flipInX { from { opacity: 0; transform: perspective(400px) rotateX(90deg); } 40% { transform: perspective(400px) rotateX(-15deg); } 70% { transform: perspective(400px) rotateX(8deg); } to { opacity: 1; transform: perspective(400px); } }
+@keyframes va-flipInY { from { opacity: 0; transform: perspective(400px) rotateY(90deg); } 40% { transform: perspective(400px) rotateY(-15deg); } 70% { transform: perspective(400px) rotateY(8deg); } to { opacity: 1; transform: perspective(400px); } }
+@keyframes va-rotateIn { from { opacity: 0; transform: rotate(-200deg); } }
+@keyframes va-rotateInDownLeft { from { opacity: 0; transform-origin: left bottom; transform: rotate(-45deg); } }
+@keyframes va-rotateInDownRight { from { opacity: 0; transform-origin: right bottom; transform: rotate(45deg); } }
+@keyframes va-rotateInUpLeft { from { opacity: 0; transform-origin: left bottom; transform: rotate(45deg); } }
+@keyframes va-slideInUp { from { transform: translateY(120%); } }
+@keyframes va-slideInDown { from { transform: translateY(-120%); } }
+@keyframes va-slideInLeft { from { transform: translateX(-120%); } }
+@keyframes va-zoomIn { from { opacity: 0; transform: scale(0.3); } }
+@keyframes va-zoomInDown { from { opacity: 0; transform: scale(0.1) translateY(-600px); } 60% { opacity: 1; transform: scale(0.5) translateY(40px); } }
+@keyframes va-zoomInLeft { from { opacity: 0; transform: scale(0.1) translateX(-600px); } 60% { opacity: 1; transform: scale(0.5) translateX(20px); } }
+@keyframes va-zoomInRight { from { opacity: 0; transform: scale(0.1) translateX(600px); } 60% { opacity: 1; transform: scale(0.5) translateX(-20px); } }
+@keyframes va-zoomInUp { from { opacity: 0; transform: scale(0.1) translateY(600px); } 60% { opacity: 1; transform: scale(0.5) translateY(-40px); } }
+@keyframes va-rollIn { from { opacity: 0; transform: translateX(-100%) rotate(-120deg); } }
+
+/* ---- Hiệu ứng biến mất (Cổ điển) ---- */
+@keyframes va-bounceOut { 20% { transform: scale(0.9); } 50%, 55% { opacity: 1; transform: scale(1.1); } to { opacity: 0; transform: scale(0.3); } }
+@keyframes va-bounceOutLeft { 20% { opacity: 1; transform: translateX(20px); } to { opacity: 0; transform: translateX(-600px); } }
+@keyframes va-bounceOutUp { 20% { transform: translateY(-10px); } 40%, 45% { opacity: 1; transform: translateY(20px); } to { opacity: 0; transform: translateY(-600px); } }
+@keyframes va-fadeOut { to { opacity: 0; } }
+@keyframes va-fadeOutDown { to { opacity: 0; transform: translateY(40px); } }
+@keyframes va-fadeOutLeft { to { opacity: 0; transform: translateX(-40px); } }
+@keyframes va-fadeOutLeftBig { to { opacity: 0; transform: translateX(-600px); } }
+@keyframes va-fadeOutUp { to { opacity: 0; transform: translateY(-40px); } }
+@keyframes va-fadeOutUpBig { to { opacity: 0; transform: translateY(-600px); } }
+@keyframes va-flipOutX { 30% { opacity: 1; transform: perspective(400px) rotateX(-20deg); } to { opacity: 0; transform: perspective(400px) rotateX(90deg); } }
+@keyframes va-flipOutY { 30% { opacity: 1; transform: perspective(400px) rotateY(-15deg); } to { opacity: 0; transform: perspective(400px) rotateY(90deg); } }
+@keyframes va-rotateOut { to { opacity: 0; transform: rotate(200deg); } }
+@keyframes va-rotateOutDownLeft { to { opacity: 0; transform-origin: left bottom; transform: rotate(45deg); } }
+@keyframes va-rotateOutDownRight { to { opacity: 0; transform-origin: right bottom; transform: rotate(-45deg); } }
+@keyframes va-rotateOutUpLeft { to { opacity: 0; transform-origin: left bottom; transform: rotate(-45deg); } }
+@keyframes va-rotateOutUpRight { to { opacity: 0; transform-origin: right bottom; transform: rotate(90deg); } }
+@keyframes va-slideOutUp { to { transform: translateY(-120%); } }
+@keyframes va-slideOutDown { to { transform: translateY(120%); } }
+@keyframes va-slideOutLeft { to { transform: translateX(-120%); } }
+@keyframes va-zoomOut { 50% { opacity: 0; transform: scale(0.3); } to { opacity: 0; } }
+@keyframes va-zoomOutDown { 40% { opacity: 1; transform: scale(0.5) translateY(-60px); } to { opacity: 0; transform: scale(0.1) translateY(600px); } }
+@keyframes va-zoomOutLeft { 40% { opacity: 1; transform: scale(0.5) translateX(40px); } to { opacity: 0; transform: scale(0.1) translateX(-600px); } }
+@keyframes va-zoomOutUp { 40% { opacity: 1; transform: scale(0.5) translateY(60px); } to { opacity: 0; transform: scale(0.1) translateY(-600px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .va-card, .va-deco, .va-name, .va-deco::before, .va-deco::after { animation: none !important; }
+}
