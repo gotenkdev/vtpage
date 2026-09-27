@@ -1,0 +1,95 @@
+/* Mục tiêu ủng hộ: 5 mẫu động, phong cách AWE (tham chiếu refero "AWE"): nền gần đen, chữ porcelain, cyan phát sáng, nhãn mono giãn chữ,
+   đường kẻ mảnh, bề mặt phẳng. Mọi mẫu đều có chuyển động liên tục (không mẫu nào đứng im). --p = phần trăm (0..100). */
+.vg {
+  --void: #010101; --well: #16191b; --charcoal: #1f1f23; --hair: #2a2d31; --graphite: #444; --steel: #828b8d; --porcelain: #e0e0e0;
+  --cyan: #5ce1e6; --cyan-glow: rgba(92, 225, 230, 0.55);
+  --serif: 'Iowan Old Style', 'Cormorant Garamond', 'Times New Roman', Georgia, serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --sans: 'Inter', 'Be Vietnam Pro', system-ui, sans-serif;
+  position: relative; color: var(--porcelain); font-family: var(--sans); box-sizing: border-box;
+  animation: vg-enter 0.9s cubic-bezier(.2,.8,.2,1) both;
+}
+.vg *, .vg *::before, .vg *::after { box-sizing: border-box; }
+.vg-label { font: 300 12px/1.3 var(--mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--steel); }
+.vg-title { font: 600 22px/1.2 var(--sans); letter-spacing: -0.01em; color: var(--porcelain); overflow-wrap: anywhere; }
+.vg-note { font-size: 14px; color: var(--steel); overflow-wrap: anywhere; }
+.vg-note[hidden] { display: none; }
+.vg-row { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
+.vg-figures { font: 400 14px/1.2 var(--mono); letter-spacing: 0.06em; color: var(--steel); }
+.vg-figures b, .vg-raised { color: var(--porcelain); font-weight: 600; }
+.vg-pct { font: 400 14px/1 var(--mono); letter-spacing: 0.1em; color: var(--cyan); text-shadow: 0 0 12px var(--cyan-glow); }
+@keyframes vg-enter { from { opacity: 0; transform: translateY(14px); filter: blur(8px); } }
+
+/* Nhịp khi có donate mới; ăn mừng khi đạt mục tiêu (dùng chung) */
+.vg.is-bump::after { content: ''; position: absolute; inset: -2px; border-radius: inherit; pointer-events: none; box-shadow: 0 0 0 1px var(--cyan), 0 0 40px 4px var(--cyan-glow); animation: vg-bump 1.4s ease-out both; }
+@keyframes vg-bump { from { opacity: 1; } to { opacity: 0; } }
+.vg.is-done { --cyan: #f5e7a1; --cyan-glow: rgba(245, 231, 161, 0.6); }
+.vg.is-done .vg-title::after { content: '  ✦ ĐÃ ĐẠT MỤC TIÊU'; font: 400 11px/1 var(--mono); letter-spacing: 0.2em; color: var(--cyan); animation: vg-blink 1.6s ease-in-out infinite; }
+@keyframes vg-blink { 50% { opacity: 0.35; } }
+
+/* ============ 1. ORBIT — vòng tiến độ, chấm sáng quỹ đạo, vòng vạch quay chậm ============ */
+.vg-orbit { display: flex; align-items: center; gap: 26px; width: 560px; padding: 22px 28px; border-radius: 28px; background: linear-gradient(180deg, #0b0c0d, var(--void)); border: 1px solid var(--hair); }
+.vg-orbit-ring { position: relative; width: 168px; height: 168px; flex: none; }
+.vg-orbit-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+.vg-ticks { fill: none; stroke: var(--graphite); stroke-width: 1; stroke-dasharray: 1 5.4; transform-origin: 100px 100px; animation: vg-rotate 40s linear infinite; }
+.vg-track { fill: none; stroke: var(--charcoal); stroke-width: 6; }
+.vg-arc { fill: none; stroke: var(--porcelain); stroke-width: 6; stroke-linecap: round; stroke-dasharray: var(--p) 100; transition: stroke-dasharray 0.2s linear; filter: drop-shadow(0 0 6px rgba(224, 224, 224, 0.35)); }
+.vg-orbit-dot { position: absolute; inset: 0; transform: rotate(calc(var(--p) * 3.6deg)); }
+.vg-orbit-dot i { position: absolute; left: 50%; top: 11%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 14px 4px var(--cyan-glow); animation: vg-pulse 1.8s ease-in-out infinite; }
+.vg-orbit-center { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: 2px; }
+.vg-orbit-center .vg-pct { font: 400 44px/1 var(--serif); letter-spacing: -0.03em; color: var(--porcelain); text-shadow: none; }
+.vg-orbit-text { display: grid; gap: 6px; min-width: 0; }
+.vg-orbit-text .vg-sep { margin: 0 6px; color: var(--graphite); }
+@keyframes vg-rotate { to { transform: rotate(360deg); } }
+@keyframes vg-pulse { 50% { transform: scale(1.35); box-shadow: 0 0 22px 8px var(--cyan-glow); } }
+
+/* ============ 2. INSTRUMENT — thanh đo, vạch chia, tia quét ============ */
+.vg-instrument { display: grid; gap: 10px; width: 620px; padding: 20px 24px; border-radius: 16px; background: var(--well); border: 1px solid var(--hair); }
+.vg-meter { position: relative; height: 34px; margin-top: 6px; border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
+.vg-fill { position: absolute; left: 0; top: 10px; bottom: 10px; width: calc(var(--p) * 1%); background: var(--porcelain); overflow: hidden; }
+.vg-scan { position: absolute; top: 0; bottom: 0; width: 60px; background: linear-gradient(90deg, transparent, var(--cyan), transparent); animation: vg-scan 2.2s ease-in-out infinite; mix-blend-mode: multiply; }
+.vg-fill::after { content: ''; position: absolute; right: -1px; top: -10px; bottom: -10px; width: 2px; background: var(--cyan); box-shadow: 0 0 12px 2px var(--cyan-glow); animation: vg-blink 1.2s ease-in-out infinite; }
+.vg-scale { position: absolute; inset: 0; display: flex; justify-content: space-between; pointer-events: none; }
+.vg-scale i { width: 1px; height: 6px; background: var(--graphite); }
+.vg-scale i:nth-child(5n + 1) { height: 10px; background: var(--steel); }
+@keyframes vg-scan { from { left: -60px; } to { left: 100%; } }
+
+/* ============ 3. LIQUID — ống chất lỏng gợn sóng, bọt nổi ============ */
+.vg.vg-liquid { display: grid; gap: 10px; width: 600px; padding: 20px 24px; border-radius: 22px; background: var(--void); border: 1px solid var(--hair); }
+.vg-tank { position: relative; height: 56px; border-radius: 999px; background: var(--well); border: 1px solid var(--hair); overflow: hidden; }
+.vg-fluid { position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--p) * 1%); background: linear-gradient(180deg, rgba(92, 225, 230, 0.55), rgba(224, 224, 224, 0.85)); transition: width 0.2s linear; overflow: visible; }
+.vg-fluid::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, rgba(255,255,255,0.12) 0 2px, transparent 2px 22px); animation: vg-flow 1.6s linear infinite; }
+.vg-edge { position: absolute; right: -9px; top: -6px; bottom: -6px; width: 18px; border-radius: 50%; background: radial-gradient(ellipse at center, #ffffff 0%, var(--cyan) 35%, transparent 70%); filter: blur(1px); box-shadow: 0 0 18px 4px var(--cyan-glow); animation: vg-slosh 1.3s ease-in-out infinite alternate; }
+@keyframes vg-slosh { from { transform: scaleY(0.82) translateX(-2px); } to { transform: scaleY(1.08) translateX(2px); } }
+.vg-bubble { position: absolute; bottom: 6px; width: 7px; height: 7px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.8); animation: vg-bubble 2.6s ease-in infinite; }
+.vg-bubble:nth-of-type(1) { left: 20%; }
+.vg-bubble:nth-of-type(2) { left: 55%; animation-delay: 0.9s; width: 5px; height: 5px; }
+.vg-bubble:nth-of-type(3) { left: 80%; animation-delay: 1.7s; }
+.vg.vg-liquid .vg-raised { font: 400 30px/1 var(--serif); letter-spacing: -0.02em; }
+@keyframes vg-flow { to { background-position: 22px 0; } }
+@keyframes vg-bubble { from { transform: translateY(0); opacity: 0.9; } to { transform: translateY(-46px); opacity: 0; } }
+
+/* ============ 4. SEGMENTS — ô sáng lần lượt, ô kế tiếp nhấp nháy ============ */
+.vg-segments { display: grid; gap: 10px; width: 600px; padding: 20px 24px; border-radius: 16px; background: linear-gradient(180deg, var(--well), var(--void)); border: 1px solid var(--hair); }
+.vg-segs { display: grid; grid-template-columns: repeat(24, 1fr); gap: 4px; height: 38px; }
+.vg-segs i { border-radius: 3px; background: var(--charcoal); border: 1px solid var(--hair); transition: background 0.3s; }
+.vg-segs i.on { background: var(--porcelain); border-color: var(--porcelain); animation: vg-seg 2.4s ease-in-out infinite; animation-delay: calc(var(--i) * 0.06s); }
+.vg-segs i.next { border-color: var(--cyan); animation: vg-next 0.9s ease-in-out infinite; }
+.vg-segments .vg-raised { font: 400 26px/1 var(--serif); }
+@keyframes vg-seg { 0%, 70%, 100% { filter: none; } 80% { filter: brightness(1.4) drop-shadow(0 0 6px var(--cyan-glow)); background: #ffffff; } }
+@keyframes vg-next { 50% { background: rgba(92, 225, 230, 0.45); box-shadow: 0 0 12px var(--cyan-glow); } }
+
+/* ============ 5. EDITORIAL — số lớn kiểu tạp chí, đường mảnh có đầu sáng ============ */
+.vg-editorial { display: grid; gap: 8px; width: 620px; padding: 24px 28px 20px; border-radius: 16px; background: var(--void); border: 1px solid var(--hair); }
+.vg-editorial .vg-title { font-weight: 400; font-size: 18px; color: var(--steel); }
+.vg-big { font: 400 72px/0.95 var(--serif); letter-spacing: -0.04em; color: var(--porcelain); }
+.vg-big b { font-weight: 400; background: linear-gradient(100deg, var(--porcelain) 40%, #ffffff 50%, var(--porcelain) 60%); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: vg-sheen 4s linear infinite; }
+.vg-line { position: relative; height: 1px; margin: 8px 0 4px; background: var(--hair); }
+.vg-line::before { content: ''; position: absolute; left: 0; top: 0; height: 1px; width: calc(var(--p) * 1%); background: var(--porcelain); }
+.vg-head { position: absolute; top: -3px; left: calc(var(--p) * 1% - 3px); width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 14px 4px var(--cyan-glow); animation: vg-pulse 1.6s ease-in-out infinite; }
+.vg-line::after { content: ''; position: absolute; top: 0; height: 1px; width: 80px; left: 0; background: linear-gradient(90deg, transparent, var(--cyan), transparent); animation: vg-glide 3s ease-in-out infinite; max-width: calc(var(--p) * 1%); }
+.vg-editorial em.vg-pct { font: italic 400 26px/1 var(--serif); color: var(--cyan); letter-spacing: -0.01em; }
+@keyframes vg-sheen { from { background-position: 150% 0; } to { background-position: -50% 0; } }
+@keyframes vg-glide { from { transform: translateX(-80px); } to { transform: translateX(560px); } }
+
+@media (prefers-reduced-motion: reduce) { .vg, .vg *, .vg::after { animation: none !important; } }

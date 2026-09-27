@@ -47,3 +47,15 @@
 .ds .pe-bar { grid-column: 1 / -1; }
 @media (max-width: 1100px) { .ds-grid { grid-template-columns: 1fr; } .ds-side { position: static; } }
 @media (max-width: 560px) { .ds-row, .ds-colors { grid-template-columns: 1fr 1fr; } .ds-row { grid-template-columns: 1fr; } }
+
+/* ---- Tab Mục tiêu ---- */
+.ds-goal-templates { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-top: 8px; }
+.ds-goal-card { display: grid; gap: 6px; padding: 6px; border-radius: 14px; border: 2px solid transparent; background: #fff; box-shadow: 0 0 0 1px var(--line); cursor: pointer; text-align: left; font: inherit; color: inherit; }
+.ds-goal-card[aria-checked="true"] { border-color: var(--orange); box-shadow: none; }
+.ds-goal-card:focus-visible { outline: 2px solid var(--orange-deep); outline-offset: 2px; }
+.ds-goal-thumb { position: relative; display: block; height: 78px; border-radius: 10px; overflow: hidden; background: radial-gradient(ellipse at 50% 30%, #1a1d22, #030303); }
+.ds-goal-thumb-inner { position: absolute; left: 6px; top: 6px; transform: scale(0.24); transform-origin: 0 0; pointer-events: none; }
+.ds-goal-name { font-size: 0.82rem; font-weight: 600; padding: 0 4px 2px; }
+.ds-goal-preview { aspect-ratio: 700 / 300; background: radial-gradient(ellipse at 50% 30%, #1a1d22, #030303); }
+.ds-goal-scale { width: 700px; height: 300px; display: grid; place-items: center; }
+.ds-goal-reset { justify-content: space-between; }

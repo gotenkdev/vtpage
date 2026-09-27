@@ -13,7 +13,8 @@
   <link rel="stylesheet" href="style.css?v=9">
   <link rel="stylesheet" href="dashboard.css?v=9">
   <link rel="stylesheet" href="alert-themes.css?v=2">
-  <link rel="stylesheet" href="donate-settings.css?v=1">
+  <link rel="stylesheet" href="donate-settings.css?v=2">
+  <link rel="stylesheet" href="goal-themes.css?v=2">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
 </head>
 <body class="page-auth" data-dash="overlay">
@@ -63,12 +64,12 @@
 
       <div class="ds" id="donateSettings" hidden>
         <nav class="ds-tabs" role="tablist" aria-label="Công cụ tương tác">
-          <button type="button" class="ds-tab" role="tab" aria-selected="true">Donate</button>
+          <button type="button" class="ds-tab" role="tab" aria-selected="true" data-tool="donate">Donate</button>
           <button type="button" class="ds-tab" role="tab" aria-selected="false" disabled title="Sắp có">Phát nhạc <small>sắp có</small></button>
-          <button type="button" class="ds-tab" role="tab" aria-selected="false" disabled title="Sắp có">Mục tiêu <small>sắp có</small></button>
+          <button type="button" class="ds-tab" role="tab" aria-selected="false" data-tool="goal">Mục tiêu</button>
         </nav>
 
-        <div class="ds-grid">
+        <div class="ds-grid" data-tool-panel="donate">
           <section class="pe-card ds-form" aria-label="Cài đặt thông báo donate">
             <div class="ds-subtabs" role="tablist" aria-label="Nhóm cài đặt">
               <button type="button" class="ds-subtab" data-panel="content" aria-selected="true">Nội dung</button>
@@ -213,13 +214,49 @@
             </section>
           </aside>
 
-          <div class="pe-bar" role="region" aria-label="Lưu thay đổi">
+        </div>
+
+        <div class="ds-grid" data-tool-panel="goal" hidden>
+          <section class="pe-card ds-form" aria-labelledby="dsGoalTitle">
+            <div class="ds-switch-row"><div><h2 class="pe-h" id="dsGoalTitle">Mục tiêu ủng hộ</h2><p class="pe-sub">Thanh tiến độ kêu gọi ủng hộ hiện trên live.</p></div><button type="button" class="switch" role="switch" data-k="goal.enabled" aria-label="Mở mục tiêu"><span></span></button></div>
+            <div class="ds-row">
+              <div class="form-field"><label for="dsGoalName">Tiêu đề</label><input id="dsGoalName" maxlength="60" data-k="goal.title"></div>
+              <div class="form-field"><label for="dsGoalNote">Ghi chú</label><input id="dsGoalNote" maxlength="120" data-k="goal.note"></div>
+            </div>
+            <div class="form-field"><label for="dsGoalTarget">Số tiền kêu gọi (VND)</label><input id="dsGoalTarget" type="number" min="0" step="10000" data-k="goal.targetAmount"></div>
+            <div class="form-field">
+              <span class="pe-label">Mẫu hiển thị</span>
+              <div class="ds-goal-templates" id="dsGoalTemplates" role="radiogroup" aria-label="Mẫu hiển thị"></div>
+            </div>
+            <div class="form-field"><div class="pe-label-row"><label for="dsGoalOpacity">Độ trong suốt</label><output data-for="dsGoalOpacity"></output></div><input id="dsGoalOpacity" type="range" min="10" max="100" data-k="goal.opacity" data-unit="%"></div>
+            <div class="ds-actions ds-goal-reset">
+              <button type="button" class="btn btn-outline btn-sm" id="dsGoalReset">Reset dữ liệu</button>
+              <span class="form-hint" id="dsGoalSince"></span>
+            </div>
+          </section>
+          <aside class="ds-side">
+            <section class="pe-card ds-preview-card" aria-labelledby="dsGoalPreviewTitle">
+              <div class="pe-side-head"><h2 class="pe-h" id="dsGoalPreviewTitle">Xem trước</h2><span class="form-hint" id="dsGoalProgress"></span></div>
+              <div class="ds-preview ds-goal-preview"><div class="ds-preview-scale ds-goal-scale" id="dsGoalScale"><div id="dsGoalStage"></div></div></div>
+              <button type="button" class="btn btn-ghost btn-sm" id="dsGoalDemo">Thử hiệu ứng khi có donate</button>
+            </section>
+            <section class="pe-card" aria-labelledby="dsGoalObsTitle">
+              <h2 class="pe-h" id="dsGoalObsTitle">Kết nối với OBS</h2>
+              <p class="pe-sub">Dán vào OBS → Browser Source (1920×1080). Dùng chung link với thông báo donate, chỉ khác trang.</p>
+              <div class="form-field">
+                <label for="dsGoalUrl">Link hiển thị mục tiêu</label>
+                <div class="pe-prefixed"><input id="dsGoalUrl" readonly placeholder="Tạo link ở tab Donate trước"><button type="button" class="pe-copy" id="dsGoalCopy" aria-label="Sao chép link mục tiêu" title="Sao chép"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div>
+              </div>
+            </section>
+          </aside>
+        </div>
+
+        <div class="pe-bar" role="region" aria-label="Lưu thay đổi">
             <p class="pe-status" id="dsStatus" role="status">Chưa có thay đổi.</p>
             <p class="form-error" id="dsSaveError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="dsSaveErrorText"></span></p>
             <button type="button" class="btn btn-ghost" id="dsUndo" disabled>Hoàn tác</button>
             <button type="button" class="btn btn-primary" id="dsSave" disabled>Cập nhật</button>
           </div>
-        </div>
       </div>
     </div>
   </main>
@@ -228,7 +265,8 @@
   <script src="api.js?v=5"></script>
   <script src="auth.js?v=10"></script>
   <script src="alert-render.js?v=1"></script>
-  <script src="donate-settings.js?v=1"></script>
+  <script src="goal-render.js?v=2"></script>
+  <script src="donate-settings.js?v=2"></script>
   <script src="dashboard.js?v=5"></script>
 </body>
 </html>

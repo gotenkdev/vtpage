@@ -80,6 +80,7 @@
     renderKeywords();
     renderImage();
     refresh();
+    renderGoal();
   }
 
   function readInto(el) {
@@ -96,6 +97,7 @@
     if (e.target.dataset && e.target.dataset.k) {
       readInto(e.target);
       refresh();
+      if (e.target.dataset.k.startsWith('goal.')) renderGoal();
     }
   });
   root.addEventListener('change', (e) => {
@@ -115,6 +117,7 @@
       sw.setAttribute('aria-checked', String(sw.getAttribute('aria-checked') !== 'true'));
       readInto(sw);
       refresh();
+      renderGoal();
     }),
   );
   root.querySelectorAll('[data-reset]').forEach((btn) =>
@@ -320,6 +323,7 @@
       ? 'Link cũ không xem lại được — bấm Đổi link để lấy link mới'
       : 'Chưa có link — bấm Tạo link';
     rotateBtn.textContent = hasToken ? 'Đổi link' : 'Tạo link';
+    syncGoalUrl();
   }
   rotateBtn.addEventListener('click', async () => {
     if (hasToken && !window.confirm('Đổi link sẽ làm link cũ mất hiệu lực ngay, OBS đang dùng link cũ sẽ ngừng hiện thông báo. Tiếp tục?')) return;
@@ -327,6 +331,7 @@
     try {
       const res = await withStepUp($('stepUpPanel'), () => window.VTApi.call('POST', '/me/overlay-token/rotate'));
       obsUrl.value = location.origin + '/overlay.html#token=' + res.token;
+      syncGoalUrl();
       hasToken = true;
       rotateBtn.textContent = 'Đổi link';
       obsMsg('Đã tạo link mới. Dán vào OBS → Browser Source (1920×1080).', '');
@@ -350,6 +355,103 @@
       obsMsg('Đã gửi donate thử lên overlay (OBS). Lưu cài đặt trước để thấy giao diện mới.', '');
     } catch (err) {
       obsMsg('', err.message);
+    }
+  });
+
+  // ---- Công cụ: Donate / Mục tiêu ----
+  const toolTabs = [...root.querySelectorAll('.ds-tab[data-tool]')];
+  toolTabs.forEach((tab) =>
+    tab.addEventListener('click', () => {
+      toolTabs.forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
+      root.querySelectorAll('[data-tool-panel]').forEach((p) => {
+        p.hidden = p.dataset.toolPanel !== tab.dataset.tool;
+      });
+      if (tab.dataset.tool === 'goal') {
+        fitGoal();
+        void loadGoalProgress();
+      }
+    }),
+  );
+
+  // ---- Mục tiêu ----
+  const G = window.VTGoal;
+  let progress = { raised: 0, count: 0 };
+  const goalView = G.mount($('dsGoalStage'));
+  const goalScale = $('dsGoalScale');
+  const fitGoal = () => {
+    const w = goalScale.parentElement.clientWidth;
+    if (w) goalScale.style.transform = 'scale(' + Math.min(1, w / 700) + ')';
+  };
+  new ResizeObserver(fitGoal).observe(goalScale.parentElement);
+  // Thẻ chọn mẫu: mỗi thẻ là một bản thu nhỏ đang chạy của chính mẫu đó.
+  const templatesBox = $('dsGoalTemplates');
+  const miniViews = [];
+  G.TEMPLATES.forEach(([value, label]) => {
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'ds-goal-card';
+    card.setAttribute('role', 'radio');
+    card.dataset.value = value;
+    const thumb = document.createElement('span');
+    thumb.className = 'ds-goal-thumb';
+    const inner = document.createElement('span');
+    inner.className = 'ds-goal-thumb-inner';
+    thumb.append(inner);
+    const name = document.createElement('span');
+    name.className = 'ds-goal-name';
+    name.textContent = label;
+    card.append(thumb, name);
+    card.addEventListener('click', () => {
+      form.goal.template = value;
+      refresh();
+      renderGoal();
+    });
+    templatesBox.append(card);
+    miniViews.push([value, G.mount(inner)]);
+  });
+  function renderGoal() {
+    if (!form) return;
+    templatesBox.querySelectorAll('.ds-goal-card').forEach((c) => c.setAttribute('aria-checked', String(c.dataset.value === form.goal.template)));
+    for (const [value, view] of miniViews) {
+      view.update({ ...form.goal, template: value, opacity: 100, title: form.goal.title }, Math.round(form.goal.targetAmount * 0.65), 12);
+    }
+    goalView.update(form.goal, progress.raised, progress.count);
+    $('dsGoalProgress').textContent = 'Đã nhận ' + new Intl.NumberFormat('vi-VN').format(progress.raised) + 'đ · ' + progress.count + ' lượt';
+    $('dsGoalSince').textContent = form.goal.resetAt
+      ? 'Tính từ ' + new Date(form.goal.resetAt).toLocaleString('vi-VN') + (form.goal.resetAt !== saved.goal.resetAt ? ' — bấm Cập nhật để áp dụng' : '')
+      : 'Đang tính toàn bộ donate từ trước tới nay.';
+  }
+  async function loadGoalProgress() {
+    try {
+      progress = await window.VTApi.call('GET', '/me/goal-progress');
+    } catch {
+      progress = { raised: 0, count: 0 };
+    }
+    renderGoal();
+  }
+  $('dsGoalReset').addEventListener('click', () => {
+    if (!window.confirm('Reset dữ liệu mục tiêu? Tiến độ sẽ tính lại từ 0 kể từ bây giờ (sau khi bấm Cập nhật).')) return;
+    form.goal.resetAt = new Date().toISOString();
+    progress = { raised: 0, count: 0 };
+    refresh();
+    renderGoal();
+  });
+  $('dsGoalDemo').addEventListener('click', () => {
+    const before = progress;
+    goalView.update(form.goal, before.raised + Math.max(10000, Math.round(form.goal.targetAmount * 0.15)), before.count + 1);
+    setTimeout(() => goalView.update(form.goal, before.raised, before.count), 3500);
+  });
+  function syncGoalUrl() {
+    $('dsGoalUrl').value = obsUrl.value ? obsUrl.value.replace('/overlay.html#', '/goal.html#') : '';
+  }
+  $('dsGoalCopy').addEventListener('click', async () => {
+    const v = $('dsGoalUrl').value;
+    if (!v) return;
+    try {
+      await navigator.clipboard.writeText(v);
+      $('dsStatus').textContent = 'Đã sao chép link mục tiêu.';
+    } catch {
+      $('dsGoalUrl').select();
     }
   });
 
