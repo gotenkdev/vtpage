@@ -467,7 +467,7 @@ if (createForm && document.getElementById('profileEditor')) {
   const createErrorText = document.getElementById('createErrorText');
 
   const DEFAULT_USERNAME_HINT =
-    'vtpage.vn/username — chữ, số, gạch dưới, 3-20 ký tự. Không đổi được sau khi tạo.';
+    'vtpay.vn/username — chữ, số, gạch dưới, 3-20 ký tự. Không đổi được sau khi tạo.';
 
   // Đã có hồ sơ: ẩn thẻ tạo hồ sơ, giao cho trình sửa kiểu VT Page (profile-editor.js).
   function showEdit(profile) {
@@ -499,7 +499,7 @@ if (createForm && document.getElementById('profileEditor')) {
           '/username-availability?username=' + encodeURIComponent(value),
         );
         if (result.available) {
-          usernameHint.textContent = 'vtpage.vn/' + value + ' — dùng được.';
+          usernameHint.textContent = 'vtpay.vn/' + value + ' — dùng được.';
           usernameHint.className = 'form-hint is-good';
         } else {
           const reason =
@@ -508,7 +508,7 @@ if (createForm && document.getElementById('profileEditor')) {
               : result.reason === 'reserved'
                 ? 'đã được dành riêng'
                 : 'đã có người dùng';
-          usernameHint.textContent = 'vtpage.vn/' + value + ' — ' + reason + '.';
+          usernameHint.textContent = 'vtpay.vn/' + value + ' — ' + reason + '.';
           usernameHint.className = 'form-hint is-bad';
         }
       } catch {
@@ -1383,7 +1383,7 @@ function setupAccountMenu() {
 
 // (Trang Lịch sử donate /donations: xem donations-page.js.)
 
-// --- Trang u.html: trang donate công khai của một streamer (vtpage.vn/<username>), không cần đăng nhập ---
+// --- Trang u.html: trang donate công khai của một streamer (vtpay.vn/<username>), không cần đăng nhập ---
 const donateProfile = document.getElementById('donateProfile');
 const notFoundBox = document.getElementById('notFound');
 // Ảnh bìa, phân loại, tags và mạng xã hội trên trang donate công khai. Chữ đưa vào bằng textContent; liên kết mạng xã hội

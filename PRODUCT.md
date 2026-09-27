@@ -12,7 +12,7 @@ Người sáng tạo nội dung tại Việt Nam muốn nhận donate từ ngư�
 
 ## Product Purpose
 
-VT Page là nền tảng kỹ thuật số giúp tạo trang cá nhân, mở cửa hàng online, nhận donate và booking. Điểm bán chính hiện tại là tạo trang nhận donate trong 5 giây, miễn phí cho người mới. Thành công là nhà sáng tạo đăng ký và tạo được username `vtpage.vn/<username>` ngay.
+VT Page là nền tảng kỹ thuật số giúp tạo trang cá nhân, mở cửa hàng online, nhận donate và booking. Điểm bán chính hiện tại là tạo trang nhận donate trong 5 giây, miễn phí cho người mới. Thành công là nhà sáng tạo đăng ký và tạo được username `vtpay.vn/<username>` ngay.
 
 ## Positioning
 
