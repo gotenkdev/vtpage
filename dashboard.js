@@ -122,16 +122,7 @@
   p.textContent = info.desc;
   left.append(menuBtn, crumbs, h1, p);
   head.append(left);
-  if (info.group === 'Trang donate') {
-    const tabs = el('nav', { class: 'dash-tabs', 'aria-label': 'Trang donate' });
-    DONATE_ITEMS.filter((i) => !i.soon).forEach((i) => {
-      const a = el('a', { href: i.href });
-      a.textContent = i.label;
-      if (i.id === current) a.setAttribute('aria-current', 'page');
-      tabs.append(a);
-    });
-    head.append(tabs);
-  }
+  // Điều hướng giữa các trang thiết lập chỉ nằm ở menu bên trái (không lặp lại thanh tab ở đầu trang).
 
   // ---- Lắp khung quanh <main> sẵn có ----
   const dash = el('div', { class: 'dash' });
