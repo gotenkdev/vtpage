@@ -1,0 +1,49 @@
+/* Trang hướng dẫn (guide-sepay.html): mục lục dính bên trái, các bước đánh số, style VT Page (nền sáng, cam, bo tròn lớn). */
+.gd { padding: 28px 0 72px; }
+.gd-wrap { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 32px; align-items: start; max-width: 1080px; }
+.gd-toc { position: sticky; top: 20px; display: grid; gap: 2px; padding: 18px; border-radius: 22px; background: #fff; box-shadow: 0 0 0 1px var(--line); }
+.gd-toc a:not(.btn) { padding: 8px 10px; border-radius: 10px; color: var(--ink-2); text-decoration: none; font-weight: 600; font-size: 0.93rem; }
+.gd-toc a:not(.btn):hover { background: var(--plate); color: var(--ink); }
+.gd-back { margin-top: 10px; }
+.gd-eyebrow { margin: 0 0 6px; font: 700 0.76rem/1 var(--font-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); }
+.gd-body { display: grid; gap: 16px; min-width: 0; }
+.gd-body a:not(.btn) { color: var(--orange-deep); font-weight: 600; }
+.gd-body code { padding: 1px 6px; border-radius: 6px; background: var(--plate-2); font-size: 0.92em; }
+.gd-hero { padding: 30px 32px; border-radius: 26px; background: linear-gradient(135deg, #fff 55%, #ffe9dd); box-shadow: 0 0 0 1px var(--line); }
+.gd-hero h1 { margin: 0 0 12px; font: 800 clamp(1.8rem, 3.4vw, 2.6rem)/1.08 var(--font-display); letter-spacing: -0.025em; }
+.gd-lead { margin: 0; max-width: 62ch; color: var(--ink-2); font-size: 1.05rem; line-height: 1.6; }
+.gd-facts { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 0; padding: 0; list-style: none; }
+.gd-facts li { display: grid; gap: 2px; padding: 10px 16px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px var(--line); }
+.gd-facts strong { font: 800 1.1rem/1.1 var(--font-display); color: var(--orange-deep); }
+.gd-facts span { color: var(--ink-3); font-size: 0.84rem; }
+.gd-step { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 18px; padding: 24px 28px; border-radius: 22px; background: #fff; box-shadow: 0 0 0 1px var(--line); scroll-margin-top: 20px; }
+.gd-step h2, .gd-faq h2 { margin: 6px 0 10px; font: 800 1.3rem/1.2 var(--font-display); letter-spacing: -0.015em; }
+.gd-step p { margin: 0 0 10px; line-height: 1.65; color: var(--ink-2); }
+.gd-num { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: var(--orange); color: var(--ink); font: 800 1.2rem/1 var(--font-display); }
+.gd-note { margin-top: 6px; padding: 16px 18px; border-radius: 16px; background: var(--plate); border: 1px solid var(--line); }
+.gd-note > strong { display: block; margin-bottom: 6px; }
+.gd-banks { display: grid; gap: 6px; margin: 4px 0 12px; }
+.gd-banks > div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; padding: 10px 14px; border-radius: 12px; background: #fff; font-size: 0.93rem; }
+.gd-banks .is-ok { color: #11602c; font-weight: 700; }
+.gd-banks .is-no { color: #8a2f06; font-weight: 700; }
+.gd-fields { display: grid; gap: 0; margin: 4px 0 12px; border-radius: 14px; border: 1px solid var(--line); overflow: hidden; }
+.gd-fields > div { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 14px; padding: 12px 16px; border-top: 1px solid var(--line); }
+.gd-fields > div:first-child { border-top: 0; }
+.gd-fields dt { font-weight: 700; }
+.gd-fields dd { margin: 0; color: var(--ink-2); line-height: 1.55; }
+.gd-warn { padding: 12px 14px; border-radius: 12px; background: #fff4d6; color: #6b4200 !important; font-size: 0.93rem; }
+.gd-list { list-style: decimal; margin: 0 0 10px; padding-left: 1.3em; display: grid; gap: 6px; color: var(--ink-2); line-height: 1.6; }
+.gd-faq { padding: 24px 28px; border-radius: 22px; background: #fff; box-shadow: 0 0 0 1px var(--line); }
+.gd-faq details { border-top: 1px solid var(--line); padding: 12px 0; }
+.gd-faq summary { cursor: pointer; font-weight: 700; }
+.gd-faq details p { margin: 8px 0 0; color: var(--ink-2); line-height: 1.6; }
+.gd-end { margin: 8px 0 0; text-align: center; }
+@media (max-width: 860px) {
+  .gd-wrap { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .gd-toc { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gd-toc .gd-eyebrow, .gd-back { grid-column: 1 / -1; }
+  .gd-step { grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 20px; }
+  .gd-hero { padding: 24px 20px; }
+  .gd-fields > div, .gd-banks > div { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+}
+.gd-list li { display: list-item; padding-left: 2px; }

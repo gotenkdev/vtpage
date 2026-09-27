@@ -10,7 +10,7 @@
   <link rel="preload" href="fonts/bricolage-grotesque-latin-600-800.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/doto-latin-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css">
-  <link rel="stylesheet" href="style.css?v=11">
+  <link rel="stylesheet" href="style.css?v=12">
   <link rel="stylesheet" href="dashboard.css?v=11">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
 </head>
@@ -114,7 +114,7 @@
               <span class="pay-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 3.5v5M15 3.5v5"/><path d="M6.5 8.5h11V12a5.5 5.5 0 0 1-11 0z"/><path d="M12 17.5v3"/></svg></span>
               <div class="pay-card-text">
                 <h2 class="pay-h2" id="bankPanelTitle">Ngân hàng (QR Code) · SePay</h2>
-                <p class="pay-desc">Tài khoản, API Key và điều kiện nhận thanh toán.</p>
+                <p class="pay-desc">Tài khoản, API Key và điều kiện nhận thanh toán. <a class="pay-guide" href="/guide-sepay" target="_blank" rel="noopener">Hướng dẫn cài đặt ↗</a></p>
               </div>
               <button type="button" class="btn btn-ghost btn-sm" id="bankPanelClose" aria-label="Đóng">✕</button>
             </div>
@@ -165,6 +165,7 @@
 
               <div class="pay-box">
                 <h3 class="pay-box-title">Kiểm tra trước khi kết nối</h3>
+                <p class="pay-desc">Chưa rõ cách làm? Xem <a class="pay-guide" href="/guide-sepay" target="_blank" rel="noopener">hướng dẫn cài đặt SePay từng bước</a>.</p>
                 <label class="pay-check">
                   <span><strong>Từ khóa giao dịch VTPAGE</strong><small>Nội dung chuyển khoản của mọi đơn donate bắt đầu bằng VTPAGE. Nếu SePay có cấu hình mã thanh toán, hãy đặt tiền tố VTPAGE.</small></span>
                   <input type="checkbox" class="pay-check-box">
