@@ -1285,6 +1285,8 @@ if (rotateBtn && overlayGate) {
 
 // --- Menu tài khoản (bấm ảnh đại diện): hai thẻ Cá nhân / Trang, kiểu VT Pay ---
 const ACCT_ICONS = {
+  bag: '<path d="M5.5 8h13l-1 12h-11z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/>',
+  heart: '<path d="M12 20s-7.5-4.4-7.5-9.9A4.4 4.4 0 0 1 12 7.2a4.4 4.4 0 0 1 7.5 2.9C19.5 15.6 12 20 12 20z"/>',
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 20.5c1-4 4.2-6 8-6s7 2 8 6"/>',
   store: '<path d="M4 9.5 5.5 4.5h13L20 9.5"/><path d="M4 9.5a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0"/><path d="M5.5 11.5v8h13v-8"/><path d="M10 19.5v-4h4v4"/>',
   shield: '<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="m9 12 2 2 4-4"/>',
@@ -1825,8 +1827,14 @@ if (authButtons) {
                 <button type="button" class="acct-tab" role="tab" id="acctTabPage" aria-controls="acctPage" aria-selected="false">${acctIcon('store')}Trang</button>
               </div>
               <div class="acct-pane" id="acctMe" role="tabpanel" aria-labelledby="acctTabMe">
-                <div class="acct-email">${escapeHtml(email)}</div>
-                <div class="acct-group">Tài khoản cá nhân</div>
+                <a class="acct-card" href="/security">
+                  <span class="acct-avatar" aria-hidden="true">${escapeHtml(email.slice(0, 1).toUpperCase())}</span>
+                  <span class="acct-card-meta"><strong>${escapeHtml(email.split('@')[0])}</strong><span>${escapeHtml(email)}</span></span>
+                </a>
+                <div class="acct-group">Hoạt động cá nhân</div>
+                <a class="acct-item" href="/my-orders">${acctIcon('bag')}<span>Đơn hàng</span></a>
+                <a class="acct-item" href="/my-following">${acctIcon('heart')}<span>Đang theo dõi</span></a>
+                <div class="acct-group">Tài khoản</div>
                 <a class="acct-item" href="/security">${acctIcon('shield')}<span>Tài khoản &amp; bảo mật</span></a>
                 <button type="button" class="acct-item" id="logoutBtn">${acctIcon('logout')}<span>Đăng xuất</span></button>
               </div>

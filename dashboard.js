@@ -16,6 +16,8 @@
     top: { group: 'Trang donate', title: 'Bảng xếp hạng Donate', desc: 'Top người ủng hộ theo ngày, tháng, tất cả và widget hiển thị trên live.' },
     orders: { group: 'Trang donate', title: 'Đơn hàng của trang', desc: 'Mọi lệnh donate đã tạo và khoản đã nhận: tìm kiếm, xem chi tiết, xuất dữ liệu.' },
     overlay: { group: 'Trang donate', title: 'Cài đặt Donate', desc: 'Toàn bộ công cụ tương tác trên live: thông báo donate, âm thanh, giọng đọc, ghi âm, phát nhạc, mục tiêu.' },
+    myorders: { group: 'Cá nhân', title: 'Đơn hàng cá nhân', desc: 'Các lệnh donate bạn đã tạo: tìm kiếm, xem trạng thái và chi tiết.' },
+    following: { group: 'Cá nhân', title: 'Đang theo dõi', desc: 'Các trang bạn đang theo dõi.' },
     security: { group: 'Cá nhân', title: 'Tài khoản & bảo mật', desc: 'Xác thực 2 lớp, đổi mật khẩu và email đăng nhập.' },
   };
 
@@ -34,6 +36,7 @@
     menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
     receipt: '<path d="M6 3.5h12v17l-2.5-1.6-2 1.6-1.5-1.2-1.5 1.2-2-1.6L6 20.5z"/><path d="M9 8.5h6M9 12h6M9 15.5h3.5"/>',
     trophy: '<path d="M7.5 4.5h9v5a4.5 4.5 0 0 1-9 0z"/><path d="M7.5 6.5H4.5a3 3 0 0 0 3 4M16.5 6.5h3a3 3 0 0 1-3 4"/><path d="M12 14v3.5M8.5 20h7M9.5 17.5h5"/>',
+    bag: '<path d="M5.5 8h13l-1 12h-11z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/>',
     store: '<path d="M4 9.5 5.5 4.5h13L20 9.5"/><path d="M4 9.5a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0"/><path d="M5.5 11.5v8h13v-8"/><path d="M10 19.5v-4h4v4"/>',
   };
   const svg = (name, cls = 'dash-ic') =>
@@ -46,6 +49,10 @@
     { id: 'donations', label: 'Lịch sử donate', href: '/donations', icon: 'list' },
     { id: 'orders', label: 'Đơn hàng', href: '/orders', icon: 'receipt' },
     { id: 'overlay', label: 'Cài đặt Donate', href: '/overlay-settings', icon: 'screen' },
+  ];
+  const ACTIVITY_ITEMS = [
+    { id: 'myorders', label: 'Đơn hàng', href: '/my-orders', icon: 'bag' },
+    { id: 'following', label: 'Đang theo dõi', href: '/my-following', icon: 'heart', count: true },
   ];
   const PERSONAL_ITEMS = [{ id: 'security', label: 'Tài khoản & bảo mật', href: '/security', icon: 'shield' }];
 
@@ -75,8 +82,30 @@
   tabBar.append(tabMe, tabPage);
   side.append(tabBar);
 
+  // Thẻ Cá nhân dựng giống thẻ Trang: thẻ tài khoản ở đầu, rồi các nhóm mục.
   const paneMe = el('div', { class: 'dash-pane', id: 'dashPaneMe', role: 'tabpanel', 'aria-labelledby': 'dashTabMe' });
-  paneMe.append(Object.assign(el('div', { class: 'dash-group-title' }), { textContent: 'Tài khoản cá nhân' }));
+  const meCard = el('div', { class: 'dash-page-card' });
+  const meLink = el('a', { class: 'dash-page-main', href: '/security' });
+  const meAvatar = el('span', { class: 'dash-avatar', 'aria-hidden': 'true' });
+  const meMeta = el('span', { class: 'dash-page-meta' });
+  const meName = el('strong');
+  const meMail = el('span');
+  meName.textContent = 'Đang tải…';
+  meMeta.append(meName, meMail);
+  meLink.append(meAvatar, meMeta);
+  meCard.append(meLink);
+  paneMe.append(meCard);
+  paneMe.append(Object.assign(el('div', { class: 'dash-group-title' }), { textContent: 'Hoạt động cá nhân' }));
+  let followCount = null;
+  ACTIVITY_ITEMS.forEach((i) => {
+    const a = link(i);
+    if (i.count) {
+      followCount = el('span', { class: 'dash-count' });
+      a.append(followCount);
+    }
+    paneMe.append(a);
+  });
+  paneMe.append(Object.assign(el('div', { class: 'dash-group-title' }), { textContent: 'Tài khoản' }));
   PERSONAL_ITEMS.forEach((i) => paneMe.append(link(i)));
   const logout = el('button', { class: 'dash-link', type: 'button' }, svg('logout') + '<span class="grow">Đăng xuất</span>');
   logout.addEventListener('click', async () => {
@@ -87,6 +116,20 @@
     }
   });
   paneMe.append(logout);
+  window.VTApi.me()
+    .then((me) => {
+      if (!me) return;
+      const email = me.user.email;
+      meName.textContent = email.split('@')[0];
+      meMail.textContent = email;
+      meAvatar.textContent = email.slice(0, 1).toUpperCase();
+    })
+    .catch(() => (meName.textContent = 'Tài khoản của bạn'));
+  window.VTApi.call('GET', '/me/following')
+    .then(({ following }) => {
+      if (followCount) followCount.textContent = String(following.length);
+    })
+    .catch(() => undefined);
 
   const panePage = el('div', { class: 'dash-pane', id: 'dashPanePage', role: 'tabpanel', 'aria-labelledby': 'dashTabPage' });
   const card = el('div', { class: 'dash-page-card' });

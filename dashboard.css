@@ -302,3 +302,5 @@
 /* Thanh thẻ hồ sơ (4 thẻ): xuống dòng khi không đủ chỗ thay vì cắt thẻ cuối. */
 .pe-tabs { flex-wrap: wrap; overflow: visible; }
 .pe-tab { flex: 1 1 auto; }
+.dash-count { min-width: 22px; padding: 3px 7px; border-radius: 99px; background: var(--plate-2); color: var(--ink-2); font: 700 0.75rem/1 var(--font-text); text-align: center; font-variant-numeric: tabular-nums; }
+.dash-count:empty { display: none; }
