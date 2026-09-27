@@ -199,6 +199,8 @@
       me = null;
     }
     renderFollow({ following: false, followers: profile.followers || 0 });
+    const signedIn = me && me.mfa && (!me.mfa.enabled || me.mfa.verified);
+    $('vpLoginHint').hidden = Boolean(signedIn);
     if (me && me.mfa && (!me.mfa.enabled || me.mfa.verified)) {
       window.VTApi.call('GET', base + '/follow').then(renderFollow).catch(() => undefined);
     }

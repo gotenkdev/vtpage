@@ -92,3 +92,4 @@
 @media (max-width: 420px) { .vp-tab { padding-inline: 6px; font-size: 0.9rem; } }
 
 #recStop:hover { color: #fff; background: #c81e1e; border-color: #c81e1e; }
+.vp-login-hint { text-align: center; margin-top: 4px; } .vp-login-hint a { color: var(--orange-deep); font-weight: 700; }

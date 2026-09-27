@@ -220,13 +220,14 @@
   }
 
   // Tải ảnh (đại diện hoặc bìa): thân request là chính tệp ảnh, không multipart.
-  async function uploadImage(path, file) {
+  // Cũng dùng cho bản ghi âm người donate gửi kèm đơn (POST, cần đăng nhập nên phải kèm CSRF).
+  async function uploadImage(path, file, method = 'PUT') {
     const headers = { 'content-type': file.type };
     if (csrfToken) headers['x-csrf-token'] = csrfToken;
     let response;
     try {
       response = await fetch(API_PREFIX + path, {
-        method: 'PUT',
+        method,
         headers,
         credentials: 'same-origin',
         body: file,

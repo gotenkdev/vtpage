@@ -11,6 +11,28 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
+// --- Quay lại trang donate sau khi đăng nhập ---
+// Người xem bấm "Tạo lệnh donate" khi chưa đăng nhập: lưu trang donate (chỉ nhận dạng /username, không bao giờ là link ngoài) vào
+// sessionStorage, đăng nhập xong (mật khẩu hay Google) thì đưa về đúng trang đó.
+const RETURN_KEY = 'vtp-return';
+function rememberReturn(path) {
+  try {
+    sessionStorage.setItem(RETURN_KEY, path);
+  } catch {
+    // trình duyệt chặn lưu trữ: đăng nhập xong về trang chủ
+  }
+}
+function afterLoginTarget() {
+  try {
+    const path = sessionStorage.getItem(RETURN_KEY);
+    sessionStorage.removeItem(RETURN_KEY);
+    if (path && /^\/[A-Za-z0-9_]{3,20}$/.test(path)) return path;
+  } catch {
+    // bỏ qua
+  }
+  return '/';
+}
+
 // --- Đăng nhập bằng Google (/sign-in, sign-up.html) ---
 // Chỉ hiện nút khi máy chủ đã cấu hình Google; chưa cấu hình thì gỡ hẳn khối nút khỏi trang (các đoạn code bên dưới có bật lại
 // khối này cũng không hiện ra). Bấm nút là chuyển thẳng sang Google (máy chủ lo state, PKCE, cookie chống giả mạo).
@@ -163,7 +185,7 @@ if (signupForm) {
   // Đã đăng nhập sẵn (phiên còn hiệu lực) thì không cần đăng ký lại.
   window.VTApi.me()
     .then((me) => {
-      if (me && !(me.mfa.enabled && !me.mfa.verified)) window.location.href = '/';
+      if (me && !(me.mfa.enabled && !me.mfa.verified)) window.location.href = afterLoginTarget();
     })
     .catch((err) => console.error(err));
 }
@@ -242,7 +264,7 @@ if (signinForm) {
         if (result.mfaRequired) {
           showMfaStep();
         } else {
-          window.location.href = '/';
+          window.location.href = afterLoginTarget();
         }
       } catch (err) {
         showError(errorBox, errorText, err.message);
@@ -263,7 +285,7 @@ if (signinForm) {
           mfaMode === 'email' ? '/auth/mfa/email/verify' : '/auth/mfa/verify',
           { code },
         );
-        window.location.href = '/';
+        window.location.href = afterLoginTarget();
       } catch (err) {
         showError(mfaErrorBox, mfaErrorText, err.message);
         mfaCodeInput.select();
@@ -279,7 +301,7 @@ if (signinForm) {
       if (me.mfa.enabled && !me.mfa.verified) {
         showMfaStep();
       } else {
-        window.location.href = '/';
+        window.location.href = afterLoginTarget();
       }
     })
     .catch((err) => console.error(err));
@@ -314,7 +336,7 @@ if (completeForm) {
         try {
           const result = await window.VTApi.call('POST', '/auth/register/complete', { token, password });
           window.VTApi.setCsrf(result.csrfToken);
-          window.location.href = '/';
+          window.location.href = afterLoginTarget();
         } catch (err) {
           showError(errorBox, errorText, err.message);
           if (err.status === 400 && err.body && err.body.message === 'Liên kết không hợp lệ hoặc đã hết hạn') {
@@ -1590,20 +1612,52 @@ if (donateProfile && notFoundBox) {
   recStop.addEventListener('click', () => recording.recorder && recording.recorder.state === 'recording' && recording.recorder.stop());
   recDelete.addEventListener('click', resetRecording);
   async function uploadRecording() {
-    const res = await fetch(`/api/v1/profiles/${encodeURIComponent(username)}/recordings`, {
-      method: 'POST',
-      headers: { 'content-type': recording.blob.type || 'audio/webm' },
-      credentials: 'same-origin',
-      body: recording.blob,
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(window.VTApi.describe(data.message) || 'Không gửi được bản ghi âm.');
-    return data.recordingKey;
+    const blob = recording.blob.type ? recording.blob : new Blob([recording.blob], { type: 'audio/webm' });
+    try {
+      const data = await window.VTApi.uploadImage(`/profiles/${encodeURIComponent(username)}/recordings`, blob, 'POST');
+      return data.recordingKey;
+    } catch (err) {
+      throw new Error(err.message || 'Không gửi được bản ghi âm.');
+    }
   }
 
-  donateForm.addEventListener('submit', (event) => {
+  // Bản nháp đơn donate khi phải đi đăng nhập: điền lại khi quay về đúng trang này (ghi âm không giữ được, phải thu lại).
+  const DRAFT_KEY = 'vtp-donate-draft';
+  try {
+    const draft = JSON.parse(sessionStorage.getItem(DRAFT_KEY) || 'null');
+    sessionStorage.removeItem(DRAFT_KEY);
+    if (draft && draft.username === username) {
+      if (draft.amount) amountInput.value = String(draft.amount);
+      donorNameInput.value = draft.donorName || '';
+      messageInput.value = draft.message || '';
+      amountInput.dispatchEvent(new Event('input', { bubbles: true }));
+      messageInput.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+  } catch {
+    // bỏ qua nháp hỏng
+  }
+
+  const loginLink = document.getElementById('vpLoginLink');
+  if (loginLink) loginLink.addEventListener('click', () => rememberReturn('/' + username));
+
+  donateForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     hideError(donateErrorBox);
+    // Bắt buộc đăng nhập mới tạo được đơn: chưa đăng nhập thì lưu nháp và sang trang đăng nhập, xong sẽ quay lại đây.
+    const viewer = await window.VTApi.me().catch(() => null);
+    if (!viewer || (viewer.mfa.enabled && !viewer.mfa.verified)) {
+      try {
+        sessionStorage.setItem(
+          DRAFT_KEY,
+          JSON.stringify({ username, amount: Number(amountInput.value) || null, donorName: donorNameInput.value, message: messageInput.value }),
+        );
+      } catch {
+        // không lưu được nháp: người xem nhập lại
+      }
+      rememberReturn('/' + username);
+      window.location.href = '/sign-in';
+      return;
+    }
     const amount = Number(amountInput.value);
     const donorName = donorNameInput.value.trim();
     const message = messageInput.value.trim();
@@ -1726,6 +1780,13 @@ if (authButtons) {
   window.VTApi.me()
     .then((me) => {
       if (!me) return; // chưa đăng nhập: giữ nguyên nút Đăng nhập/Đăng ký mặc định trong HTML
+      if (window.location.pathname === '/' && !(me.mfa.enabled && !me.mfa.verified)) {
+        const target = afterLoginTarget();
+        if (target !== '/') {
+          window.location.href = target;
+          return;
+        }
+      }
 
       if (me.mfa.enabled && !me.mfa.verified) {
         authButtons.innerHTML = `<a href="/sign-in" class="btn btn-outline">Hoàn tất đăng nhập (2FA)</a>`;
