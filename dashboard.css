@@ -275,3 +275,22 @@
   .pay-account, .pay-fee { grid-column: 1 / -1; }
   .pay-actions-col { grid-row: 1; grid-column: 2; }
 }
+
+/* Khung thiết lập Ngân hàng · SePay (kiểu Zypage) */
+.pay-panel-head { align-items: flex-start; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.pay-box { display: grid; gap: 14px; margin-top: 14px; padding: 18px 20px; border-radius: 16px; background: var(--plate); border: 1px solid var(--line); }
+.pay-box .form-field { margin: 0; }
+.pay-box-title { margin: 0; font: 700 1rem/1.2 var(--font-display); }
+.pay-box .pe-prefixed input { padding-left: 12px; }
+.pay-check {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 16px; border-radius: 14px;
+  background: #fff; border: 1px solid rgba(20, 22, 26, 0.1); cursor: pointer;
+}
+.pay-check:has(input:checked) { border-color: var(--orange); }
+.pay-check span { display: grid; gap: 4px; }
+.pay-check small { color: var(--ink-3); font-size: 0.86rem; line-height: 1.45; }
+.pay-check input { width: 22px; height: 22px; flex: none; accent-color: var(--orange); cursor: pointer; }
+#bankForm > .btn-submit { margin-top: 16px; }
+.pay-box .link-btn { padding: 0; border: 0; background: none; color: var(--orange-deep); font: inherit; font-weight: 600; text-decoration: underline; cursor: pointer; }
+.pe-copy.is-copied { color: #1f7a45; }
+@media (max-width: 560px) { .pay-box { padding: 14px; } }

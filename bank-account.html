@@ -11,7 +11,7 @@
   <link rel="preload" href="fonts/doto-latin-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css">
   <link rel="stylesheet" href="style.css?v=8">
-  <link rel="stylesheet" href="dashboard.css?v=8">
+  <link rel="stylesheet" href="dashboard.css?v=9">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
 </head>
 <body class="page-auth" data-dash="bank">
@@ -111,40 +111,79 @@
 
           <section class="pay-panel" id="bankPanel" hidden aria-labelledby="bankPanelTitle">
             <div class="pay-panel-head">
-              <h2 class="pay-h2" id="bankPanelTitle">Ngân hàng (QR Code) · SePay</h2>
-              <button type="button" class="btn btn-ghost btn-sm" id="bankPanelClose">Đóng</button>
-            </div>
-          <div id="bankListWrap">
-            <h3 class="section-heading">Đã liên kết</h3>
-            <div class="bank-list" id="bankList"></div>
-            <p class="auth-subtitle" id="bankEmpty" hidden>Chưa liên kết tài khoản ngân hàng nào.</p>
-          </div>
-
-          <h3 class="section-heading">Liên kết tài khoản mới</h3>
-          <p class="form-hint" style="margin-bottom: 14px;">Tài khoản đầu tiên dùng được ngay. Khi đổi sang tài khoản khác, tài khoản mới cần được duyệt trước khi nhận tiền; trong lúc chờ, tài khoản đang dùng vẫn giữ nguyên.</p>
-          <form class="sign-in-form" id="bankForm">
-            <div class="form-field">
-              <label for="bankCode">Ngân hàng</label>
-              <select id="bankCode" required></select>
+              <span class="pay-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 3.5v5M15 3.5v5"/><path d="M6.5 8.5h11V12a5.5 5.5 0 0 1-11 0z"/><path d="M12 17.5v3"/></svg></span>
+              <div class="pay-card-text">
+                <h2 class="pay-h2" id="bankPanelTitle">Ngân hàng (QR Code) · SePay</h2>
+                <p class="pay-desc">Tài khoản, API Key và điều kiện nhận thanh toán.</p>
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm" id="bankPanelClose" aria-label="Đóng">✕</button>
             </div>
 
-            <div class="form-field">
-              <label for="accountNumber">Số tài khoản</label>
-              <input id="accountNumber" required maxlength="40" autocomplete="off" inputmode="numeric">
+            <div class="pay-box" id="bankListWrap">
+              <h3 class="pay-box-title">Tài khoản đã liên kết</h3>
+              <div class="bank-list" id="bankList"></div>
+              <p class="pay-desc" id="bankEmpty" hidden>Chưa liên kết tài khoản ngân hàng nào.</p>
             </div>
 
-            <div class="form-field">
-              <label for="holderName">Tên chủ tài khoản</label>
-              <input id="holderName" required maxlength="200" autocomplete="off">
-              <p class="form-hint">Đúng như ngân hàng hiển thị, có dấu hay không đều được — hệ thống tự chuẩn hoá.</p>
-            </div>
+            <form class="sign-in-form" id="bankForm" novalidate>
+              <div class="pay-box">
+                <h3 class="pay-box-title">Tài khoản nhận thanh toán</h3>
+                <p class="pay-state" id="sepayState"></p>
 
-            <p class="form-error" id="bankError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="bankErrorText"></span></p>
+                <div class="form-field">
+                  <label for="sepayUrl">URL webhook (dán vào SePay)</label>
+                  <div class="pe-prefixed">
+                    <input id="sepayUrl" readonly>
+                    <button type="button" class="pe-copy" data-copy="sepayUrl" aria-label="Sao chép URL webhook" title="Sao chép"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
+                  </div>
+                </div>
 
-            <button type="submit" class="btn btn-primary btn-lg btn-submit">Gửi liên kết</button>
-          </form>
+                <div class="form-field">
+                  <label for="sepayKey">API Key</label>
+                  <div class="pe-prefixed">
+                    <input id="sepayKey" type="password" maxlength="200" autocomplete="off" spellcheck="false" placeholder="Để trống nếu không đổi">
+                    <button type="button" class="pe-copy" id="sepayKeyEye" aria-label="Hiện API Key" title="Hiện/ẩn"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
+                    <button type="button" class="pe-copy" data-copy="sepayKey" aria-label="Sao chép API Key" title="Sao chép"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
+                  </div>
+                  <p class="form-hint">Đúng khóa bạn đặt trong mục Webhook của SePay (ít nhất 32 ký tự: chữ, số, _ hoặc -). Chưa có? <button type="button" class="link-btn" id="sepayKeyGen">Tạo khóa ngẫu nhiên</button> rồi dán sang SePay.</p>
+                </div>
 
-          <!-- Ô xác minh lại (step-up), dùng chung cho gửi/huỷ tài khoản ở trang này -->
+                <div class="form-field">
+                  <label for="bankCode">Ngân hàng</label>
+                  <select id="bankCode"></select>
+                </div>
+                <div class="form-field">
+                  <label for="accountNumber">Số tài khoản</label>
+                  <input id="accountNumber" maxlength="40" autocomplete="off" inputmode="numeric" placeholder="Để trống nếu không đổi tài khoản">
+                </div>
+                <div class="form-field">
+                  <label for="holderName">Chủ tài khoản</label>
+                  <input id="holderName" maxlength="200" autocomplete="off">
+                  <p class="form-hint">Đúng như ngân hàng hiển thị, có dấu hay không đều được. Tài khoản đầu tiên dùng được ngay; đổi sang tài khoản khác thì cần được duyệt.</p>
+                </div>
+              </div>
+
+              <div class="pay-box">
+                <h3 class="pay-box-title">Kiểm tra trước khi kết nối</h3>
+                <label class="pay-check">
+                  <span><strong>Từ khóa giao dịch VTPAGE</strong><small>Nội dung chuyển khoản của mọi đơn donate bắt đầu bằng VTPAGE. Nếu SePay có cấu hình mã thanh toán, hãy đặt tiền tố VTPAGE.</small></span>
+                  <input type="checkbox" class="pay-check-box">
+                </label>
+                <label class="pay-check">
+                  <span><strong>Webhook thanh toán</strong><small>Trong SePay, thêm webhook với URL ở trên, kiểu chứng thực API Key, để VT Page nhận được thông báo tiền vào.</small></span>
+                  <input type="checkbox" class="pay-check-box">
+                </label>
+                <label class="pay-check">
+                  <span><strong>API Key</strong><small>API Key trên SePay và VT Page phải giống nhau.</small></span>
+                  <input type="checkbox" class="pay-check-box">
+                </label>
+              </div>
+
+              <p class="form-error" id="bankError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="bankErrorText"></span></p>
+              <p class="form-hint is-good" id="bankSaved" hidden></p>
+              <button type="submit" class="btn btn-primary btn-lg btn-submit" id="bankSave" disabled>Lưu kết nối</button>
+            </form>
+
           <div id="stepUpPanel" class="step-up-panel" hidden>
             <p class="auth-subtitle">Cần xác minh lại để tiếp tục — nhập mã 2FA hiện tại:</p>
             <form class="mfa-form" id="stepUpForm">
@@ -173,8 +212,8 @@
   </dialog>
 
   <script src="fx.js"></script>
-  <script src="api.js?v=3"></script>
-  <script src="auth.js?v=8"></script>
-  <script src="dashboard.js?v=3"></script>
+  <script src="api.js?v=4"></script>
+  <script src="auth.js?v=9"></script>
+  <script src="dashboard.js?v=4"></script>
 </body>
 </html>

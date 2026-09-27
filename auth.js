@@ -986,21 +986,115 @@ if (bankForm && bankGate) {
     if (event.target === methodDialog) methodDialog.close();
   });
 
+  // ---- Kết nối SePay: API Key tự nhập + tài khoản ngân hàng + danh sách kiểm tra (kiểu Zypage) ----
+  const sepayUrl = document.getElementById('sepayUrl');
+  const sepayKey = document.getElementById('sepayKey');
+  const sepayState = document.getElementById('sepayState');
+  const bankSave = document.getElementById('bankSave');
+  const bankSaved = document.getElementById('bankSaved');
+  const checks = [...bankForm.querySelectorAll('.pay-check-box')];
+  let endpoint = null;
+
+  function renderEndpoint() {
+    sepayUrl.value = location.origin + '/api/v1/webhooks/sepay';
+    if (!endpoint) {
+      sepayState.className = 'pay-state is-wait';
+      sepayState.innerHTML = '<span class="dot"></span>Chưa kết nối SePay — nhập API Key để kết nối';
+      return;
+    }
+    if (endpoint.sharedUrl) sepayUrl.value = endpoint.sharedUrl;
+    const ok = endpoint.verified;
+    sepayState.className = 'pay-state' + (ok ? '' : ' is-wait');
+    sepayState.innerHTML =
+      '<span class="dot"></span>' +
+      escapeHtml(
+        `Đã kết nối · API Key ••••${endpoint.secretHint} · ` +
+          (ok ? 'đã nhận thông báo thử từ SePay' : 'chưa nhận thông báo thử từ SePay (bấm "Gửi thử" trong SePay)'),
+      );
+  }
+  async function loadEndpoint() {
+    try {
+      endpoint = (await window.VTApi.call('GET', '/me/payment-endpoint')).endpoint;
+    } catch {
+      endpoint = null;
+    }
+    renderEndpoint();
+  }
+
+  const updateSave = () => {
+    bankSave.disabled = !checks.every((c) => c.checked);
+  };
+  checks.forEach((c) => c.addEventListener('change', updateSave));
+
+  document.getElementById('sepayKeyGen').addEventListener('click', () => {
+    const bytes = crypto.getRandomValues(new Uint8Array(30));
+    const b64 = btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    sepayKey.value = 'vtpk_' + b64;
+    sepayKey.type = 'text';
+  });
+  document.getElementById('sepayKeyEye').addEventListener('click', () => {
+    sepayKey.type = sepayKey.type === 'password' ? 'text' : 'password';
+  });
+  bankForm.querySelectorAll('[data-copy]').forEach((btn) =>
+    btn.addEventListener('click', async () => {
+      const input = document.getElementById(btn.dataset.copy);
+      if (!input.value) return;
+      try {
+        await navigator.clipboard.writeText(input.value);
+        btn.classList.add('is-copied');
+        setTimeout(() => btn.classList.remove('is-copied'), 1200);
+      } catch {
+        input.select();
+      }
+    }),
+  );
+
   bankForm.addEventListener('submit', (event) => {
     event.preventDefault();
     hideError(bankErrorBox);
+    bankSaved.hidden = true;
+    const apiKey = sepayKey.value.trim();
     const bankCode = bankCodeSelect.value;
     const accountNumber = accountNumberInput.value.trim();
     const holderName = holderNameInput.value.trim();
-    const button = bankForm.querySelector('button[type="submit"]');
-    void submitWithLock(button, async () => {
+    if (!apiKey && !accountNumber) {
+      showError(bankErrorBox, bankErrorText, 'Nhập API Key hoặc tài khoản ngân hàng cần lưu.');
+      return;
+    }
+    if (accountNumber && !holderName) {
+      showError(bankErrorBox, bankErrorText, 'Vui lòng nhập tên chủ tài khoản.');
+      return;
+    }
+    void submitWithLock(bankSave, async () => {
+      const done = [];
       try {
-        await withStepUp(stepUpPanel, () =>
-          window.VTApi.call('POST', '/me/bank-accounts', { bankCode, accountNumber, holderName }),
-        );
-        bankForm.reset();
+        if (apiKey) {
+          await withStepUp(stepUpPanel, () =>
+            endpoint
+              ? window.VTApi.call('POST', '/me/payment-endpoint/rotate-secret', { apiKey, revokeOldNow: true })
+              : window.VTApi.call('POST', '/me/payment-endpoint', { apiKey }),
+          );
+          sepayKey.value = '';
+          sepayKey.type = 'password';
+          done.push('API Key');
+          await loadEndpoint();
+        }
+        if (accountNumber) {
+          await withStepUp(stepUpPanel, () =>
+            window.VTApi.call('POST', '/me/bank-accounts', { bankCode, accountNumber, holderName }),
+          );
+          accountNumberInput.value = '';
+          holderNameInput.value = '';
+          done.push('tài khoản ngân hàng');
+        }
         await loadBankList();
+        bankSaved.textContent = 'Đã lưu ' + done.join(' và ') + '.';
+        bankSaved.hidden = false;
       } catch (err) {
+        if (done.length) {
+          bankSaved.textContent = 'Đã lưu ' + done.join(' và ') + '.';
+          bankSaved.hidden = false;
+        }
         showError(bankErrorBox, bankErrorText, err.message);
       }
     });
@@ -1041,7 +1135,7 @@ if (bankForm && bankGate) {
         .map((bank) => `<option value="${escapeHtml(bank.code)}">${escapeHtml(bank.name)}</option>`)
         .join('');
       bankContent.hidden = false;
-      await loadBankList();
+      await Promise.all([loadBankList(), loadEndpoint()]);
     })
     .catch((err) => {
       console.error(err);

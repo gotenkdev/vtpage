@@ -40,7 +40,6 @@
     { id: 'bank', label: 'Thanh toán', href: 'bank-account.html', icon: 'bank' },
     { id: 'donations', label: 'Lịch sử donate', href: 'donations.html', icon: 'list' },
     { id: 'overlay', label: 'Overlay OBS', href: 'overlay-settings.html', icon: 'screen' },
-    { id: 'sepay', label: 'Kết nối SePay', icon: 'plug', soon: true },
   ];
   const PERSONAL_ITEMS = [{ id: 'security', label: 'Tài khoản & bảo mật', href: 'security.html', icon: 'shield' }];
 
