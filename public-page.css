@@ -101,3 +101,10 @@
 .theme-sticker .donor-name-row { border: 1px solid #000; border-radius: 16px; background: #fff; }
 .donate-paid-box { display: grid; gap: 10px; justify-items: center; text-align: center; }
 .donate-paid-box[hidden] { display: none; }
+/* Máy tính: chỉ ảnh đại diện nhô lên ảnh bìa; tên + @username nằm dưới đường viền bìa, không chạm vạch. */
+@media (min-width: 901px) {
+  .vp-hero-row { margin-top: 0; padding-top: 16px; align-items: flex-start; }
+  .vp-avatar { margin-top: -72px; }
+  .vp-id { padding-bottom: 0; }
+  .vp-actions { align-self: center; }
+}
