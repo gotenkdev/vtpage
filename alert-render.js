@@ -174,7 +174,8 @@
     const c = d.classic;
     const wow = settings.other.wowEnabled && event.amount >= settings.other.wowMinAmount;
     const root = document.createElement('div');
-    root.className = `va-alert va-pos-${d.position} va-theme-${d.theme}` + (wow ? ' is-wow' : '');
+    // Thông báo luôn ở giữa khung hình (chủ dự án bỏ lựa chọn vị trí 2026-09-27).
+    root.className = `va-alert va-pos-center va-theme-${d.theme}` + (wow ? ' is-wow' : '');
     root.style.setProperty('--va-msg-size', d.messageSize + 'px');
     root.style.setProperty('--va-name-size', (isClassic(d.theme) ? c.nameSize : Math.round(d.messageSize * 1.1)) + 'px');
     root.style.opacity = String(d.opacity / 100);
