@@ -266,7 +266,18 @@
       push(event) {
         const { settings } = getSettings();
         if (event.amount < (settings.other.minAmount || 0) && !event.test) return;
+        // Tên đã bị streamer chặn (Lịch sử donate → Chặn): không hiện lên live.
+        const blocked = (settings.other.blockedDonors || []).map((n) => n.toLowerCase());
+        if (!event.test && blocked.includes(String(event.donorName || '').toLowerCase())) return;
         queue.push(event);
+        void pump();
+      },
+      // Tắt thông báo đang phát (lệnh "Tắt donate đang phát"), GIỮ các thông báo đang chờ phía sau.
+      skip() {
+        gen += 1;
+        busy = false;
+        stage.textContent = '';
+        if (window.speechSynthesis) window.speechSynthesis.cancel();
         void pump();
       },
       clear() {

@@ -11,6 +11,7 @@
   <link rel="preload" href="fonts/doto-latin-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css">
   <link rel="stylesheet" href="style.css?v=11">
+  <link rel="stylesheet" href="donate-settings.css?v=7">
   <link rel="stylesheet" href="dashboard.css?v=11">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
 </head>
@@ -53,34 +54,65 @@
 
   <main class="settings">
     <div class="wrap">
-      <section class="auth-plate settings-card" aria-labelledby="settings-title">
-        <h1 class="auth-title" id="settings-title">Donate của bạn</h1>
+      <section class="auth-plate settings-card" id="dhLoading">
         <p class="auth-subtitle" id="settingsSubtitle">Đang tải...</p>
-
-        <div class="settings-skeleton" id="settingsSkeleton">
-          <div class="skeleton-block"></div>
-          <div class="skeleton-block"></div>
-        </div>
-
-        <div id="donationsContent" hidden>
-          <div id="reviewSection" hidden>
-            <h2 class="section-heading">Cần bạn xem</h2>
-            <p class="form-hint" style="margin-bottom: 14px;">Tiền đã về tài khoản của bạn, nhưng khoản này lệch số tiền hoặc không có mã đối soát nên chưa hiện lên màn hình livestream. Chọn hiện hoặc ẩn — mỗi khoản chỉ quyết định được một lần.</p>
-            <div class="bank-list" id="reviewList"></div>
-            <p class="form-error" id="reviewError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="reviewErrorText"></span></p>
-          </div>
-
-          <h2 class="section-heading">Lịch sử</h2>
-          <div class="bank-list" id="donationList"></div>
-          <p class="auth-subtitle" id="donationEmpty" hidden>Chưa có khoản donate nào.</p>
-        </div>
+        <div class="settings-skeleton" id="settingsSkeleton"><div class="skeleton-block"></div><div class="skeleton-block"></div></div>
       </section>
+
+      <div class="dh" id="donationsContent" hidden>
+        <section class="pe-card" id="reviewSection" hidden aria-labelledby="reviewTitle">
+          <h2 class="pe-h" id="reviewTitle">Cần bạn xem</h2>
+          <p class="pe-sub">Tiền đã về tài khoản của bạn, nhưng khoản này lệch số tiền hoặc không có mã đối soát nên chưa hiện lên live. Chọn hiện hoặc ẩn; mỗi khoản chỉ quyết định được một lần.</p>
+          <div class="bank-list" id="reviewList"></div>
+          <p class="form-error" id="reviewError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="reviewErrorText"></span></p>
+        </section>
+
+        <section class="pe-card dh-card" aria-labelledby="dhTitle">
+          <div class="dh-head"><h2 class="pe-h" id="dhTitle">Lịch sử Donate</h2><span class="dh-caption">Bộ lọc và điều khiển</span></div>
+          <div class="dh-filters">
+            <div class="form-field dh-search"><label for="dhSearch">Tìm kiếm</label><input id="dhSearch" type="search" placeholder="Tên người donate hoặc lời nhắn" autocomplete="off"></div>
+            <div class="form-field"><label for="dhType">Loại donate</label><select id="dhType"><option value="all">Tất cả</option><option value="donate">Donate</option><option value="music">Yêu cầu nhạc</option></select></div>
+            <div class="form-field"><span class="pe-label" id="dhLoaded">Đang tải…</span><button type="button" class="btn btn-outline" id="dhRefresh">Làm mới</button></div>
+          </div>
+          <div class="dh-row2">
+            <div class="dh-box">
+              <div class="pe-label-row"><label for="dhMin"><strong>Số tiền tối thiểu</strong></label><output id="dhMinOut">0đ</output></div>
+              <input id="dhMin" type="range" min="0" max="1000000" step="5000" value="0">
+            </div>
+            <div class="dh-box dh-switch">
+              <div><strong id="dhAutoLabel">Tự động tải lại</strong><p class="pe-sub">Tải lại mỗi 10 giây khi bật.</p></div>
+              <button type="button" class="switch" role="switch" id="dhAuto" aria-checked="false" aria-labelledby="dhAutoLabel"><span></span></button>
+            </div>
+          </div>
+          <div class="dh-controls">
+            <span class="dh-caption">Điều khiển phát trên live</span>
+            <div class="dh-control-btns">
+              <button type="button" class="btn btn-outline btn-sm" data-control="skip_alert">Tắt donate đang phát</button>
+              <button type="button" class="btn btn-outline btn-sm" data-control="skip_music">Tắt nhạc đang phát</button>
+              <button type="button" class="btn btn-outline btn-sm" data-control="toggle_music">Dừng/Phát nhạc</button>
+            </div>
+          </div>
+          <p class="form-hint is-good" id="dhControlOk" role="status" hidden></p>
+          <div class="dh-table" role="table" aria-label="Lịch sử donate">
+            <div class="dh-tr dh-th" role="row"><span role="columnheader">Người dùng</span><span role="columnheader">Số tiền</span><span role="columnheader">Lời nhắn</span><span role="columnheader">Thời gian</span><span role="columnheader" class="dh-act"></span></div>
+            <div id="donationList"></div>
+          </div>
+          <p class="pe-sub dh-empty" id="donationEmpty" hidden>Không có khoản donate nào khớp bộ lọc.</p>
+        </section>
+
+        <section class="pe-card" id="dhBlocked" hidden aria-labelledby="dhBlockedTitle">
+          <h2 class="pe-h" id="dhBlockedTitle">Người đã chặn</h2>
+          <p class="pe-sub">Donate của những tên này vẫn được ghi nhận (tiền vẫn về tài khoản của bạn) nhưng không hiện lên live, không vào Gần đây và Bảng xếp hạng.</p>
+          <div class="ds-tags" id="dhBlockedList"></div>
+        </section>
+      </div>
     </div>
   </main>
 
   <script src="fx.js"></script>
   <script src="api.js?v=7"></script>
-  <script src="auth.js?v=13"></script>
+  <script src="auth.js?v=15"></script>
+  <script src="donations-page.js?v=1"></script>
   <script src="dashboard.js?v=6"></script>
 </body>
 </html>

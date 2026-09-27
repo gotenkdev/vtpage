@@ -59,6 +59,13 @@
     };
     source.addEventListener('donation.confirmed', handle(false));
     source.addEventListener('overlay.test', handle(true));
+    source.addEventListener('overlay.control', (event) => {
+      try {
+        if (JSON.parse(event.data).action === 'skip_alert') player.skip();
+      } catch {
+        // lệnh hỏng: bỏ qua
+      }
+    });
     // Rớt mạng: EventSource tự nối lại theo chuẩn SSE, Last-Event-ID gửi kèm nên không bỏ sót donate nào.
     source.onerror = () => console.warn('Kết nối overlay bị ngắt, trình duyệt sẽ tự thử lại.');
   }

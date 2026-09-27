@@ -167,7 +167,30 @@
   api.src = 'https://www.youtube.com/iframe_api';
   document.head.append(api);
 
+  // Lệnh "Dừng/Phát nhạc" từ trang Lịch sử donate (qua kênh sự kiện của overlay). Lúc tạm dừng, thời gian phát không trôi.
+  let pausedAt = 0;
+  const control = new EventSource(base.replace(/\/music$/, '') + '/stream');
+  control.addEventListener('overlay.control', (event) => {
+    let action = '';
+    try {
+      action = JSON.parse(event.data).action;
+    } catch {
+      return;
+    }
+    if (action !== 'toggle_music' || !player || !ready || !playing) return;
+    if (pausedAt) {
+      playing.startedAtMs += Date.now() - pausedAt;
+      pausedAt = 0;
+      player.playVideo();
+    } else {
+      pausedAt = Date.now();
+      player.pauseVideo();
+    }
+  });
+
   void tick();
-  setInterval(tick, 3000);
+  setInterval(() => {
+    if (!pausedAt) void tick();
+  }, 3000);
   setInterval(render, 1000);
 })();

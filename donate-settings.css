@@ -79,3 +79,44 @@
 .ds-preset[aria-pressed="true"] { border-color: var(--orange); box-shadow: none; background: rgba(255, 90, 31, 0.06); }
 .ds-preset:focus-visible { outline: 2px solid var(--orange-deep); outline-offset: 2px; }
 .ds-credit a { color: inherit; }
+
+/* ---- Trang Lịch sử donate (/donations) ---- */
+.dh { display: grid; gap: 14px; }
+.dh[hidden] { display: none; }
+.dh-card { gap: 16px; }
+.dh-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.dh-caption { color: var(--ink-3); font-size: 0.88rem; }
+.dh-filters { display: grid; grid-template-columns: minmax(0, 1fr) 200px 200px; gap: 12px; align-items: end; }
+.dh-filters .form-field { margin: 0; display: grid; gap: 6px; }
+.dh-filters .btn { width: 100%; }
+.dh-row2 { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 12px; }
+.dh-box { display: grid; gap: 10px; padding: 14px 16px; border-radius: 14px; background: var(--plate); border: 1px solid var(--line); }
+.dh-box output { font-weight: 800; color: var(--orange-deep); }
+.dh-box input[type="range"] { width: 100%; accent-color: var(--orange); }
+.dh-switch { grid-template-columns: 1fr auto; align-items: center; }
+.dh-switch .pe-sub { margin: 4px 0 0; }
+.dh-controls { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding-top: 14px; border-top: 1px solid var(--line); }
+.dh-control-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.dh-table { border-radius: 14px; border: 1px solid var(--line); overflow: hidden; background: #fff; }
+.dh-tr { display: grid; grid-template-columns: minmax(0, 1.1fr) 130px minmax(0, 2fr) 120px 96px; gap: 14px; align-items: center; padding: 14px 16px; border-top: 1px solid var(--line); }
+.dh-th { border-top: 0; padding-block: 11px; background: var(--plate); color: var(--ink-3); font-size: 0.85rem; }
+.dh-user { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-width: 0; }
+.dh-user strong { overflow-wrap: anywhere; }
+.dh-tag { padding: 3px 8px; border-radius: 99px; font: 700 0.72rem/1.2 var(--font-text); }
+.dh-tag.is-wait { background: #fff4d6; color: #7a4a00; }
+.dh-tag.is-off { background: var(--plate-2); color: var(--ink-2); }
+.dh-amount { display: grid; gap: 2px; text-align: right; }
+.dh-amount span { color: var(--ink-3); font-size: 0.82rem; }
+.dh-msg { color: var(--ink-2); overflow-wrap: anywhere; line-height: 1.45; }
+.dh-time { color: var(--ink-3); font-size: 0.86rem; font-variant-numeric: tabular-nums; }
+.dh-act { text-align: right; }
+.dh-empty { margin: 0; text-align: center; }
+@media (max-width: 860px) {
+  .dh-filters, .dh-row2 { grid-template-columns: minmax(0, 1fr); }
+  .dh-th { display: none; }
+  .dh-tr { grid-template-columns: minmax(0, 1fr) auto; row-gap: 6px; }
+  .dh-msg { grid-column: 1 / -1; }
+  .dh-time { grid-column: 1; }
+  .dh-act { grid-column: 2; grid-row: 1; }
+  .dh-amount { grid-column: 2; grid-row: 2; }
+}
