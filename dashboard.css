@@ -211,3 +211,67 @@
   .pe-bar .form-error { position: absolute; left: 0; right: 0; bottom: calc(100% + 6px); padding: 10px 12px; border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px var(--line); }
 }
 @media (max-width: 560px) { .pe-bar { margin-left: 52px; } }
+
+/* ---- Trang Thanh toán (bank-account.html) kiểu Zypage, màu website ---- */
+.pay-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+.pay-card { display: grid; gap: 14px; padding: 18px 20px; border-radius: 18px; background: #fff; border: 1px solid rgba(20, 22, 26, 0.08); }
+.pay-card-top { display: flex; align-items: flex-start; gap: 14px; }
+.pay-card-text { flex: 1; min-width: 0; }
+.pay-ic { width: 40px; height: 40px; flex: none; display: grid; place-items: center; border-radius: 12px; background: rgba(255, 90, 31, 0.1); color: var(--orange-deep); }
+.pay-ic svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.pay-title { margin: 0; font: 800 1.08rem/1.2 var(--font-display); }
+.pay-h2 { margin: 0; font: 800 1.15rem/1.2 var(--font-display); display: flex; align-items: center; gap: 8px; }
+.pay-desc { margin: 4px 0 0; color: var(--ink-3); font-size: 0.9rem; }
+.pay-foot { margin: 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: 0.9rem; display: flex; align-items: center; gap: 8px; overflow-wrap: anywhere; }
+.pay-foot a { color: var(--orange-deep); font-weight: 600; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: #1f9d55; flex: none; }
+.dot.is-off { background: var(--ink-3); }
+.pay-count { font: 700 0.8rem/1 var(--font-text); padding: 4px 8px; border-radius: 99px; background: var(--plate-2); color: var(--ink-2); }
+.pay-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+
+/* Công tắc */
+.switch { position: relative; width: 46px; height: 26px; flex: none; border: 0; border-radius: 99px; background: rgba(20, 22, 26, 0.2); cursor: pointer; transition: background 0.2s; }
+.switch span { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25); transition: transform 0.2s var(--ease-out); }
+.switch[aria-checked="true"] { background: var(--orange); }
+.switch[aria-checked="true"] span { transform: translateX(20px); }
+.switch:focus-visible { outline: 2px solid var(--orange-deep); outline-offset: 2px; }
+.switch:disabled { opacity: 0.6; }
+
+/* Bảng phương thức */
+.pay-table { border-radius: 18px; background: #fff; border: 1px solid rgba(20, 22, 26, 0.08); overflow: hidden; }
+.pay-row { display: grid; grid-template-columns: 1.4fr 1.4fr 0.8fr auto; gap: 14px; align-items: center; padding: 16px 20px; }
+.pay-row + .pay-row, #methodRows .pay-row { border-top: 1px solid var(--line); }
+.pay-row-head { padding-block: 12px; background: var(--plate); color: var(--ink-3); font-size: 0.85rem; }
+.pay-method { display: flex; align-items: center; gap: 12px; }
+.pay-method strong, .pay-account strong, .pay-fee strong { display: block; font-weight: 700; }
+.pay-method small { color: var(--ink-3); }
+.pay-account { display: grid; gap: 4px; }
+.pay-state { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #1f7a45; }
+.pay-state.is-wait { color: #9a5b00; }
+.pay-state.is-wait .dot { background: #e0a100; }
+.pay-actions-col { text-align: right; }
+.pay-empty { margin: 0; padding: 22px 20px; color: var(--ink-3); border-top: 1px solid var(--line); }
+
+.pay-panel { margin-top: 18px; padding: 20px 22px; border-radius: 18px; background: #fff; border: 1px solid rgba(20, 22, 26, 0.08); }
+.pay-panel-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+
+/* Cửa sổ Thêm phương thức */
+.pay-dialog { width: min(520px, calc(100vw - 32px)); padding: 0; border: 0; border-radius: 22px; background: var(--plate); color: var(--ink); box-shadow: 0 30px 70px -20px rgba(20, 22, 26, 0.55); }
+.pay-dialog::backdrop { background: rgba(20, 22, 26, 0.45); }
+.pay-dialog-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 20px 22px 16px; border-bottom: 1px solid var(--line); }
+.pay-options { display: grid; gap: 10px; padding: 16px 22px 22px; }
+.pay-option { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(20, 22, 26, 0.1); background: #fff; text-align: left; cursor: pointer; color: inherit; font: inherit; }
+.pay-option:hover:not(:disabled) { border-color: var(--orange); }
+.pay-option:disabled { cursor: not-allowed; background: var(--plate); }
+.pay-option:disabled .pay-option-text strong { color: var(--ink-2); }
+.pay-option-text { flex: 1; display: grid; gap: 2px; }
+.pay-option-text small { color: var(--ink-3); font-size: 0.82rem; }
+.pay-option-mark { font-size: 1.2rem; color: var(--orange-deep); }
+
+@media (max-width: 760px) {
+  .pay-cards { grid-template-columns: 1fr; }
+  .pay-row-head { display: none; }
+  .pay-row { grid-template-columns: 1fr auto; }
+  .pay-account, .pay-fee { grid-column: 1 / -1; }
+  .pay-actions-col { grid-row: 1; grid-column: 2; }
+}

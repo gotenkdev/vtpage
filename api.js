@@ -93,6 +93,7 @@
     'donorName:custom': 'Tên không hợp lệ (tối đa 50 ký tự, không chứa ký tự lạ).',
     'message:invalid_type': 'Lời nhắn không hợp lệ.',
     'message:custom': 'Lời nhắn không hợp lệ (một dòng, tối đa 200 ký tự, không chứa ký tự lạ).',
+    donations_paused: 'Streamer đang tạm ngưng nhận donate. Hãy quay lại sau.',
     streamer_not_ready: 'Streamer chưa sẵn sàng nhận donate lúc này. Hãy quay lại sau.',
     not_reviewable: 'Khoản donate này không cần xem.',
     already_reviewed: 'Khoản donate này đã được xử lý rồi.',

@@ -827,6 +827,7 @@ if (bankForm && bankGate) {
 
   async function loadBankList() {
     const { bankAccounts } = await window.VTApi.call('GET', '/me/bank-accounts');
+    renderMethods(bankAccounts);
     bankListEl.innerHTML = '';
     bankEmpty.hidden = bankAccounts.length > 0;
     for (const account of bankAccounts) {
@@ -875,6 +876,116 @@ if (bankForm && bankGate) {
     }
   }
 
+  // ---- Trang Thanh toán kiểu Zypage: công tắc Nhận donate, bảng phương thức, cửa sổ Thêm phương thức ----
+  const acceptSwitch = document.getElementById('acceptSwitch');
+  const bankPanel = document.getElementById('bankPanel');
+  const methodRows = document.getElementById('methodRows');
+  const methodDialog = document.getElementById('methodDialog');
+  const PAY_ICONS = {
+    bank: '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2h-2zM18 18h2v2h-2zM14 18h2M18 14h2"/>',
+    momo: '<rect x="3" y="3" width="18" height="18" rx="5"/><path d="M7 10.5v-2l2.2 2 2.3-2v2M12.5 10.5v-2l2.2 2 2.3-2v2M7 15.5a2 2 0 1 0 4 0 2 2 0 1 0-4 0M13 15.5a2 2 0 1 0 4 0 2 2 0 1 0-4 0"/>',
+    wallet: '<path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H18v3"/><rect x="4" y="8" width="16" height="11" rx="2.5"/><path d="M16 13.5h.01"/>',
+  };
+  const METHODS = [
+    { id: 'bank', name: 'Ngân hàng (QR Code) · SePay', currency: 'VND', icon: 'bank', ready: true },
+    { id: 'momo', name: 'Ví điện tử Momo · SePay', currency: 'VND', icon: 'momo', ready: false, note: 'Chưa kết nối · sắp có' },
+    { id: 'wallet', name: 'Ví VTPage', currency: 'VND', icon: 'wallet', ready: false, note: 'Người xem nạp tiền vào ví để donate · sắp có' },
+  ];
+  const payIcon = (name) =>
+    `<span class="pay-ic" aria-hidden="true"><svg viewBox="0 0 24 24">${PAY_ICONS[name]}</svg></span>`;
+  let bankInstalled = false;
+
+  function setAccept(on) {
+    acceptSwitch.setAttribute('aria-checked', String(on));
+    document.getElementById('acceptText').textContent = on ? 'Đang bật' : 'Đang tắt — trang không nhận donate mới';
+    document.getElementById('acceptDot').classList.toggle('is-off', !on);
+  }
+  acceptSwitch.addEventListener('click', async () => {
+    const next = acceptSwitch.getAttribute('aria-checked') !== 'true';
+    if (!next && !window.confirm('Tắt nhận donate? Người xem sẽ không tạo được đơn donate mới cho tới khi bạn bật lại.')) return;
+    const errBox = document.getElementById('acceptError');
+    hideError(errBox);
+    acceptSwitch.disabled = true;
+    try {
+      const { profile } = await window.VTApi.call('PATCH', '/me/profile', { acceptingDonations: next });
+      setAccept(profile.acceptingDonations);
+    } catch (err) {
+      showError(errBox, document.getElementById('acceptErrorText'), err.message);
+    } finally {
+      acceptSwitch.disabled = false;
+    }
+  });
+
+  function openBankPanel() {
+    if (methodDialog.open) methodDialog.close();
+    bankPanel.hidden = false;
+    bankPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  document.getElementById('bankPanelClose').addEventListener('click', () => {
+    bankPanel.hidden = true;
+  });
+
+  function renderMethods(accounts) {
+    const active = accounts.find((a) => a.status === 'active');
+    const pending = accounts.find((a) => a.status === 'pending_review');
+    bankInstalled = Boolean(active || pending);
+    methodRows.textContent = '';
+    document.getElementById('methodCount').textContent = bankInstalled ? '1' : '0';
+    document.getElementById('methodEmpty').hidden = bankInstalled;
+    if (bankInstalled) {
+      const row = document.createElement('div');
+      row.className = 'pay-row';
+      row.setAttribute('role', 'row');
+      const main = active || pending;
+      const lines = [];
+      lines.push(`<strong>${escapeHtml(main.bankName)} · •••• ${escapeHtml(main.accountLast4)}</strong>`);
+      lines.push(
+        active
+          ? '<span class="pay-state"><span class="dot"></span>Đang nhận tiền</span>'
+          : '<span class="pay-state is-wait"><span class="dot"></span>Đang chờ duyệt</span>',
+      );
+      if (active && pending) {
+        lines.push(`<span class="pay-state is-wait"><span class="dot"></span>Đổi sang ${escapeHtml(pending.bankName)} •••• ${escapeHtml(pending.accountLast4)}: chờ duyệt</span>`);
+      }
+      row.innerHTML = `
+        <span role="cell" class="pay-method">${payIcon('bank')}<span><strong>Ngân hàng (QR Code) · SePay</strong><small>VND</small></span></span>
+        <span role="cell" class="pay-account">${lines.join('')}</span>
+        <span role="cell" class="pay-fee"><strong>Không phụ phí</strong></span>
+        <span role="cell" class="pay-actions-col"></span>`;
+      const edit = document.createElement('button');
+      edit.type = 'button';
+      edit.className = 'btn btn-outline btn-sm';
+      edit.textContent = 'Chỉnh sửa';
+      edit.addEventListener('click', openBankPanel);
+      row.lastElementChild.append(edit);
+      methodRows.append(row);
+    }
+  }
+
+  function renderOptions() {
+    const box = document.getElementById('methodOptions');
+    box.textContent = '';
+    for (const m of METHODS) {
+      const installed = m.id === 'bank' && bankInstalled;
+      const option = document.createElement('button');
+      option.type = 'button';
+      option.className = 'pay-option';
+      option.disabled = !m.ready;
+      const sub = installed ? m.currency + ' · Đã cài đặt' : m.ready ? m.currency : m.note;
+      option.innerHTML = `${payIcon(m.icon)}<span class="pay-option-text"><strong>${escapeHtml(m.name)}</strong><small>${escapeHtml(sub)}</small></span><span class="pay-option-mark" aria-hidden="true">${installed ? '✓' : m.ready ? '+' : ''}</span>`;
+      if (m.ready) option.addEventListener('click', openBankPanel);
+      box.append(option);
+    }
+  }
+  document.getElementById('addMethodBtn').addEventListener('click', () => {
+    renderOptions();
+    methodDialog.showModal();
+  });
+  document.getElementById('methodDialogClose').addEventListener('click', () => methodDialog.close());
+  methodDialog.addEventListener('click', (event) => {
+    if (event.target === methodDialog) methodDialog.close();
+  });
+
   bankForm.addEventListener('submit', (event) => {
     event.preventDefault();
     hideError(bankErrorBox);
@@ -921,7 +1032,11 @@ if (bankForm && bankGate) {
         return;
       }
 
-      subtitle.textContent = 'Tài khoản nhận donate của bạn.';
+      subtitle.hidden = true; // đầu trang của khung thiết lập đã có mô tả
+      setAccept(profileData.profile.acceptingDonations !== false);
+      const pageLink = document.getElementById('payPageLink');
+      pageLink.href = '/' + encodeURIComponent(profileData.profile.username);
+      pageLink.textContent = location.host + '/' + profileData.profile.username;
       bankCodeSelect.innerHTML = banksData.banks
         .map((bank) => `<option value="${escapeHtml(bank.code)}">${escapeHtml(bank.name)}</option>`)
         .join('');
@@ -1470,7 +1585,10 @@ if (donateProfile && notFoundBox) {
         avatarFallback.textContent = avatarInitial(profile.username);
       }
       donateProfile.hidden = false;
-      if (profile.bank) donateFormCard.hidden = false;
+      if (profile.acceptingDonations === false) {
+        donateNotReady.querySelector('p').textContent = 'Streamer đang tạm ngưng nhận donate. Hãy quay lại sau.';
+        donateNotReady.hidden = false;
+      } else if (profile.bank) donateFormCard.hidden = false;
       else donateNotReady.hidden = false;
     } catch (err) {
       console.error(err);
@@ -1556,7 +1674,7 @@ if (authButtons) {
                 </a>
                 <div class="acct-group">Thiết lập trang donate</div>
                 <a class="acct-item" href="profile.html">${acctIcon('profile')}<span>Hồ sơ trang</span></a>
-                <a class="acct-item" href="bank-account.html">${acctIcon('bank')}<span>Ngân hàng</span></a>
+                <a class="acct-item" href="bank-account.html">${acctIcon('bank')}<span>Thanh toán</span></a>
                 <a class="acct-item" href="donations.html">${acctIcon('list')}<span>Lịch sử donate</span></a>
                 <a class="acct-item" href="overlay-settings.html">${acctIcon('screen')}<span>Overlay OBS</span></a>
                 <a class="acct-item" id="acctView" href="profile.html" hidden>${acctIcon('eye')}<span>Xem trang donate</span></a>

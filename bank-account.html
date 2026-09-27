@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ngân hàng - VT Page</title>
+  <title>Thanh toán - VT Page</title>
   <meta name="theme-color" content="#E9EAEE">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -11,7 +11,7 @@
   <link rel="preload" href="fonts/doto-latin-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css">
   <link rel="stylesheet" href="style.css?v=8">
-  <link rel="stylesheet" href="dashboard.css?v=7">
+  <link rel="stylesheet" href="dashboard.css?v=8">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
 </head>
 <body class="page-auth" data-dash="bank">
@@ -54,7 +54,7 @@
   <main class="settings">
     <div class="wrap">
       <section class="auth-plate settings-card" aria-labelledby="settings-title">
-        <h1 class="auth-title" id="settings-title">Ngân hàng</h1>
+        <h1 class="auth-title" id="settings-title">Thanh toán</h1>
         <p class="auth-subtitle" id="settingsSubtitle">Đang tải...</p>
 
         <div class="settings-skeleton" id="settingsSkeleton">
@@ -68,13 +68,59 @@
         </div>
 
         <div id="bankContent" hidden>
+          <div class="pay-cards">
+            <div class="pay-card">
+              <div class="pay-card-top">
+                <span class="pay-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h4"/></svg></span>
+                <div class="pay-card-text">
+                  <h2 class="pay-title" id="acceptLabel">Nhận donate</h2>
+                  <p class="pay-desc">Cho phép người xem tạo đơn donate trên trang của bạn.</p>
+                </div>
+                <button type="button" class="switch" id="acceptSwitch" role="switch" aria-checked="true" aria-labelledby="acceptLabel"><span></span></button>
+              </div>
+              <p class="pay-foot"><span class="dot" id="acceptDot"></span><span id="acceptText">Đang bật</span></p>
+            </div>
+            <div class="pay-card">
+              <div class="pay-card-top">
+                <span class="pay-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20s-7.5-4.4-7.5-9.9A4.4 4.4 0 0 1 12 7.2a4.4 4.4 0 0 1 7.5 2.9C19.5 15.6 12 20 12 20z"/></svg></span>
+                <div class="pay-card-text">
+                  <h2 class="pay-title">Trang donate</h2>
+                  <p class="pay-desc">Địa chỉ người xem dùng để donate cho bạn.</p>
+                </div>
+              </div>
+              <p class="pay-foot"><a id="payPageLink" target="_blank" rel="noopener"></a></p>
+            </div>
+          </div>
+          <p class="form-error" id="acceptError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="acceptErrorText"></span></p>
+
+          <div class="pay-head">
+            <div>
+              <h2 class="pay-h2">Phương thức thanh toán <span class="pay-count" id="methodCount">0</span></h2>
+              <p class="pay-desc">Quản lý tài khoản nhận tiền theo từng phương thức.</p>
+            </div>
+            <button type="button" class="btn btn-primary" id="addMethodBtn">+ Thêm phương thức</button>
+          </div>
+
+          <div class="pay-table" role="table" aria-label="Phương thức thanh toán">
+            <div class="pay-row pay-row-head" role="row">
+              <span role="columnheader">Phương thức</span><span role="columnheader">Tài khoản nhận tiền</span><span role="columnheader">Phụ phí</span><span role="columnheader" class="pay-actions-col">Thao tác</span>
+            </div>
+            <div id="methodRows"></div>
+            <p class="pay-empty" id="methodEmpty" hidden>Chưa có phương thức nào. Bấm <strong>Thêm phương thức</strong> để liên kết tài khoản nhận tiền.</p>
+          </div>
+
+          <section class="pay-panel" id="bankPanel" hidden aria-labelledby="bankPanelTitle">
+            <div class="pay-panel-head">
+              <h2 class="pay-h2" id="bankPanelTitle">Ngân hàng (QR Code) · SePay</h2>
+              <button type="button" class="btn btn-ghost btn-sm" id="bankPanelClose">Đóng</button>
+            </div>
           <div id="bankListWrap">
-            <h2 class="section-heading">Đã liên kết</h2>
+            <h3 class="section-heading">Đã liên kết</h3>
             <div class="bank-list" id="bankList"></div>
             <p class="auth-subtitle" id="bankEmpty" hidden>Chưa liên kết tài khoản ngân hàng nào.</p>
           </div>
 
-          <h2 class="section-heading">Liên kết tài khoản mới</h2>
+          <h3 class="section-heading">Liên kết tài khoản mới</h3>
           <p class="form-hint" style="margin-bottom: 14px;">Tài khoản đầu tiên dùng được ngay. Khi đổi sang tài khoản khác, tài khoản mới cần được duyệt trước khi nhận tiền; trong lúc chờ, tài khoản đang dùng vẫn giữ nguyên.</p>
           <form class="sign-in-form" id="bankForm">
             <div class="form-field">
@@ -109,14 +155,26 @@
               <button type="submit" class="btn btn-primary btn-lg btn-submit">Xác nhận</button>
             </form>
           </div>
+          </section>
         </div>
       </section>
     </div>
   </main>
 
+  <dialog class="pay-dialog" id="methodDialog" aria-labelledby="methodDialogTitle">
+    <div class="pay-dialog-head">
+      <div>
+        <h2 class="pay-h2" id="methodDialogTitle">Thêm phương thức thanh toán</h2>
+        <p class="pay-desc">Chọn một cổng để thiết lập tài khoản nhận tiền.</p>
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm" id="methodDialogClose" aria-label="Đóng">✕</button>
+    </div>
+    <div class="pay-options" id="methodOptions"></div>
+  </dialog>
+
   <script src="fx.js"></script>
-  <script src="api.js?v=2"></script>
-  <script src="auth.js?v=7"></script>
-  <script src="dashboard.js?v=2"></script>
+  <script src="api.js?v=3"></script>
+  <script src="auth.js?v=8"></script>
+  <script src="dashboard.js?v=3"></script>
 </body>
 </html>

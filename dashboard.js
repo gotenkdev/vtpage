@@ -11,7 +11,7 @@
 
   const PAGES = {
     profile: { group: 'Trang donate', title: 'Hồ sơ trang', desc: 'Tên hiển thị, ảnh đại diện và lời giới thiệu hiện trên trang donate của bạn.' },
-    bank: { group: 'Trang donate', title: 'Ngân hàng nhận tiền', desc: 'Tiền donate vào thẳng tài khoản này. Tài khoản đầu tiên dùng được ngay; đổi tài khoản khác thì cần được duyệt.' },
+    bank: { group: 'Trang donate', title: 'Thanh toán', desc: 'Quản lý các kênh nhận donate. Tài khoản ngân hàng đầu tiên dùng được ngay; đổi tài khoản khác thì cần được duyệt.' },
     donations: { group: 'Trang donate', title: 'Lịch sử donate', desc: 'Các khoản donate đã nhận. Duyệt hoặc ẩn khoản cần xem trước khi hiện lên stream.' },
     overlay: { group: 'Trang donate', title: 'Overlay OBS', desc: 'Địa chỉ dán vào OBS để hiện thông báo donate trên livestream.' },
     security: { group: 'Cá nhân', title: 'Tài khoản & bảo mật', desc: 'Xác thực 2 lớp, đổi mật khẩu và email đăng nhập.' },
@@ -37,7 +37,7 @@
 
   const DONATE_ITEMS = [
     { id: 'profile', label: 'Hồ sơ trang', href: 'profile.html', icon: 'profile' },
-    { id: 'bank', label: 'Ngân hàng', href: 'bank-account.html', icon: 'bank' },
+    { id: 'bank', label: 'Thanh toán', href: 'bank-account.html', icon: 'bank' },
     { id: 'donations', label: 'Lịch sử donate', href: 'donations.html', icon: 'list' },
     { id: 'overlay', label: 'Overlay OBS', href: 'overlay-settings.html', icon: 'screen' },
     { id: 'sepay', label: 'Kết nối SePay', icon: 'plug', soon: true },
