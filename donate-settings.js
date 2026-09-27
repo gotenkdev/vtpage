@@ -207,7 +207,7 @@
     '1f680', '1f525', '2764_fe0f', '1f496', '1f929', '1f973', '1f60d', '1f970', '1f44f', '1f4af',
   ];
   const presetSrc = (code) =>
-    code.startsWith('z') ? '/assets/donate/zypage/img' + code.slice(1) + '.png' : '/assets/donate/img/' + code + '.webp';
+    code.startsWith('z') ? '/assets/donate/zypage/img' + code.slice(1) + '.png?v=2' : '/assets/donate/img/' + code + '.webp';
   const presetBox = $('dsImagePresets');
   IMAGE_PRESETS.forEach((code) => {
     const b = document.createElement('button');
