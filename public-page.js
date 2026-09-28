@@ -23,7 +23,24 @@
   }
 
   // ---- Nút đầu trang ----
-  $('vpMessage').addEventListener('click', () => toast('Tính năng nhắn tin sẽ sớm có.'));
+  // Nhắn tin cho trang: chưa đăng nhập thì sang đăng nhập (xong quay lại trang này); đã đăng nhập thì mở cuộc trò chuyện.
+  const msgBtn = $('vpMessage');
+  msgBtn.removeAttribute('title');
+  msgBtn.addEventListener('click', async () => {
+    if (!me || (me.mfa && me.mfa.enabled && !me.mfa.verified)) {
+      if (typeof rememberReturn === 'function') rememberReturn('/' + username);
+      window.location.href = '/sign-in';
+      return;
+    }
+    msgBtn.disabled = true;
+    try {
+      const { id } = await window.VTApi.call('POST', '/conversations', { username });
+      window.location.href = '/messages?c=' + encodeURIComponent(id);
+    } catch (err) {
+      toast(err.message);
+      msgBtn.disabled = false;
+    }
+  });
 
   const followBtn = $('vpFollow');
   function renderFollow(state) {

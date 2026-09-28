@@ -1990,7 +1990,9 @@ if (authButtons) {
             </button>
             <div class="dropdown-panel" id="chatPanel" hidden>
               <div class="dropdown-title">Tin nhắn</div>
-              <p class="dropdown-empty">Chưa có cuộc trò chuyện nào.<br>Bản xem giao diện — nhắn tin thật giữa các thành viên sẽ có sau.</p>
+              <ul class="chat-mini" id="chatMini"></ul>
+              <p class="dropdown-empty" id="chatMiniEmpty">Chưa có cuộc trò chuyện nào.</p>
+              <a class="chat-mini-all" href="/messages">Xem tất cả tin nhắn</a>
             </div>
 
             <button type="button" class="icon-btn" id="notifBtn" aria-label="Thông báo" aria-expanded="false">
@@ -2042,6 +2044,46 @@ if (authButtons) {
           </div>
         </div>
       `;
+
+      // Tin nhắn: chấm đếm chưa đọc trên nút chat + 5 cuộc gần nhất trong khung thả xuống. Chữ vào bằng textContent.
+      const chatBtnEl = document.getElementById('chatBtn');
+      const refreshChat = () =>
+        window.VTApi.call('GET', '/conversations')
+          .then(({ conversations, unread }) => {
+            let dot = chatBtnEl.querySelector('.chat-dot');
+            if (unread > 0) {
+              if (!dot) {
+                dot = document.createElement('span');
+                dot.className = 'chat-dot';
+                chatBtnEl.append(dot);
+              }
+              dot.textContent = unread > 9 ? '9+' : String(unread);
+              chatBtnEl.setAttribute('aria-label', `Tin nhắn (${unread} chưa đọc)`);
+            } else if (dot) {
+              dot.remove();
+              chatBtnEl.setAttribute('aria-label', 'Tin nhắn');
+            }
+            const ul = document.getElementById('chatMini');
+            ul.textContent = '';
+            for (const c of conversations.slice(0, 5)) {
+              const li = document.createElement('li');
+              const a = document.createElement('a');
+              a.href = '/messages?c=' + encodeURIComponent(c.id);
+              a.className = c.unread ? 'is-unread' : '';
+              const name = document.createElement('strong');
+              name.textContent = c.other.name;
+              const last = document.createElement('span');
+              last.textContent = c.lastMessage ? (c.lastMessage.fromMe ? 'Bạn: ' : '') + c.lastMessage.body : 'Chưa có tin nhắn';
+              a.append(name, last);
+              li.append(a);
+              ul.append(li);
+            }
+            document.getElementById('chatMiniEmpty').hidden = conversations.length > 0;
+          })
+          .catch(() => undefined);
+      refreshChat();
+      setInterval(() => !document.hidden && refreshChat(), 60000);
+      chatBtnEl.addEventListener('click', refreshChat);
 
       const panels = [
         { button: document.getElementById('chatBtn'), panel: document.getElementById('chatPanel') },

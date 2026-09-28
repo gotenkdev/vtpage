@@ -1502,3 +1502,13 @@ img.acct-avatar { object-fit: cover; }
 .terms-check input { width: 18px; height: 18px; margin: 2px 0 0; flex: none; accent-color: var(--ink); }
 .terms-check a, .terms-note a { color: var(--orange-deep); font-weight: 600; }
 .terms-note { margin: 8px 0 0; font-size: 0.82rem; line-height: 1.5; color: var(--ink-3); text-align: center; }
+/* Khung tin nhắn ở thanh đầu trang */
+.icon-btn { position: relative; }
+.chat-dot { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 99px; background: var(--orange); color: var(--ink); font: 800 0.68rem/18px var(--font-text); text-align: center; box-shadow: 0 0 0 2px #fff; }
+.chat-mini { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; }
+.chat-mini a { display: grid; gap: 2px; padding: 8px 10px; border-radius: 10px; text-decoration: none; color: var(--ink); }
+.chat-mini a:hover { background: var(--plate); }
+.chat-mini strong, .chat-mini span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chat-mini span { font-size: 0.85rem; color: var(--ink-3); }
+.chat-mini a.is-unread span { color: var(--ink); font-weight: 600; }
+.chat-mini-all { display: block; margin-top: 8px; padding: 8px 10px; border-top: 1px solid var(--line); color: var(--orange-deep); font-weight: 700; text-decoration: none; text-align: center; }

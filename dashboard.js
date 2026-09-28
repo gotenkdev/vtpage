@@ -18,6 +18,7 @@
     overlay: { group: 'Trang donate', title: 'Cài đặt Donate', desc: 'Toàn bộ công cụ tương tác trên live: thông báo donate, âm thanh, giọng đọc, ghi âm, phát nhạc, mục tiêu.' },
     account: { group: 'Cá nhân', title: 'Hồ sơ cá nhân', desc: 'Một hồ sơ nhất quán cho mọi hoạt động của bạn trên VT Pay.' },
     myorders: { group: 'Cá nhân', title: 'Đơn hàng cá nhân', desc: 'Các lệnh donate bạn đã tạo: tìm kiếm, xem trạng thái và chi tiết.' },
+    messages: { group: 'Cá nhân', title: 'Tin nhắn', desc: 'Trò chuyện giữa bạn và các trang, hoặc người xem nhắn cho trang của bạn.' },
     following: { group: 'Cá nhân', title: 'Đang theo dõi', desc: 'Các trang bạn đang theo dõi.' },
     security: { group: 'Cá nhân', title: 'Tài khoản & bảo mật', desc: 'Xác thực 2 lớp, đổi mật khẩu và email đăng nhập.' },
   };
@@ -38,6 +39,7 @@
     receipt: '<path d="M6 3.5h12v17l-2.5-1.6-2 1.6-1.5-1.2-1.5 1.2-2-1.6L6 20.5z"/><path d="M9 8.5h6M9 12h6M9 15.5h3.5"/>',
     trophy: '<path d="M7.5 4.5h9v5a4.5 4.5 0 0 1-9 0z"/><path d="M7.5 6.5H4.5a3 3 0 0 0 3 4M16.5 6.5h3a3 3 0 0 1-3 4"/><path d="M12 14v3.5M8.5 20h7M9.5 17.5h5"/>',
     bag: '<path d="M5.5 8h13l-1 12h-11z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/>',
+    chat: '<path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.5 8.6 8.6 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 12.5 3a8.4 8.4 0 0 1 8.5 8.5z"/>',
     store: '<path d="M4 9.5 5.5 4.5h13L20 9.5"/><path d="M4 9.5a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0"/><path d="M5.5 11.5v8h13v-8"/><path d="M10 19.5v-4h4v4"/>',
   };
   const svg = (name, cls = 'dash-ic') =>
@@ -53,6 +55,7 @@
   ];
   const ACTIVITY_ITEMS = [
     { id: 'myorders', label: 'Đơn hàng', href: '/my-orders', icon: 'bag' },
+    { id: 'messages', label: 'Tin nhắn', href: '/messages', icon: 'chat', unread: true },
     { id: 'following', label: 'Đang theo dõi', href: '/my-following', icon: 'heart', count: true },
   ];
   const PERSONAL_ITEMS = [
@@ -101,11 +104,16 @@
   paneMe.append(meCard);
   paneMe.append(Object.assign(el('div', { class: 'dash-group-title' }), { textContent: 'Hoạt động cá nhân' }));
   let followCount = null;
+  let unreadCount = null;
   ACTIVITY_ITEMS.forEach((i) => {
     const a = link(i);
     if (i.count) {
       followCount = el('span', { class: 'dash-count' });
       a.append(followCount);
+    }
+    if (i.unread) {
+      unreadCount = el('span', { class: 'dash-count dash-unread' });
+      a.append(unreadCount);
     }
     paneMe.append(a);
   });
@@ -128,6 +136,11 @@
       else meAvatar.textContent = (account.displayName || account.email).slice(0, 1).toUpperCase();
     })
     .catch(() => (meName.textContent = 'Tài khoản của bạn'));
+  window.VTApi.call('GET', '/conversations')
+    .then(({ unread }) => {
+      if (unreadCount) unreadCount.textContent = unread > 0 ? String(unread) : '';
+    })
+    .catch(() => undefined);
   window.VTApi.call('GET', '/me/following')
     .then(({ following }) => {
       if (followCount) followCount.textContent = String(following.length);

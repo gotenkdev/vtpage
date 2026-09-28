@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đơn hàng - VT Pay</title>
+  <title>Tin nhắn - VT Pay</title>
   <meta name="theme-color" content="#E9EAEE">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="dashboard.css?v=14">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
 </head>
-<body class="page-auth" data-dash="orders">
+<body class="page-auth" data-dash="messages">
   <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden"><symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="4.5" width="4" height="15" rx="1.3" fill="currentColor"/><rect x="14" y="4.5" width="4" height="15" rx="1.3" fill="currentColor"/></symbol><symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></symbol>
     <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.6h.01"/></symbol>
     <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></symbol>
@@ -54,37 +54,39 @@
 
   <main class="settings">
     <div class="wrap">
-      <section class="auth-plate settings-card" id="odLoading">
+      <section class="auth-plate settings-card" id="msgLoading">
         <p class="auth-subtitle" id="settingsSubtitle">Đang tải...</p>
         <div class="settings-skeleton" id="settingsSkeleton"><div class="skeleton-block"></div><div class="skeleton-block"></div></div>
       </section>
 
-      <div class="dh" id="ordersContent" hidden>
-        <div class="od-stats">
-          <div class="od-stat is-main"><span>Đã thanh toán</span><strong id="odPaid">0</strong><p>Đơn đã nhận tiền, gồm cả đơn cần đối soát</p></div>
-          <div class="od-stat"><span>Chưa thanh toán</span><strong id="odPending">0</strong><p>Lệnh donate còn chờ người xem chuyển khoản</p></div>
-          <div class="od-stat"><span>Giá trị đơn hàng</span><strong id="odValue">0đ</strong><p>Tổng tiền đã nhận trong danh sách đang xem</p></div>
-        </div>
-
-        <section class="pe-card dh-card" aria-labelledby="odTitle">
-          <div class="dh-head"><h2 class="pe-h" id="odTitle">Đơn hàng của trang</h2><span class="dh-caption" id="odLoaded">Đang tải…</span></div>
-          <div class="od-filters">
-            <div class="form-field dh-search"><label for="odSearch">Tìm kiếm</label><input id="odSearch" type="search" placeholder="Tên người donate hoặc mã đơn hàng" autocomplete="off"></div>
-            <div class="form-field"><label for="odStatus">Trạng thái</label><select id="odStatus"><option value="all">Tất cả</option><option value="pending">Chưa thanh toán</option><option value="paid">Đã thanh toán</option><option value="review">Đã thanh toán, cần đối soát</option><option value="expired">Hết hạn</option><option value="cancelled">Đã hủy</option></select></div>
-            <button type="button" class="btn btn-outline" id="odExport">Xuất dữ liệu</button>
-            <button type="button" class="btn btn-outline" id="odRefresh">Làm mới</button>
+      <div class="msg" id="msgContent" hidden>
+        <aside class="msg-list" aria-label="Cuộc trò chuyện">
+          <div class="msg-list-head"><h2 class="pe-h">Tin nhắn</h2><span class="dh-caption" id="msgUnread"></span></div>
+          <ul class="msg-convs" id="msgConvs"></ul>
+          <p class="pe-sub msg-empty" id="msgConvsEmpty" hidden>Chưa có cuộc trò chuyện nào. Bấm <b>Nhắn tin</b> trên trang donate của một streamer để bắt đầu.</p>
+        </aside>
+        <section class="msg-thread" id="msgThread" aria-live="polite">
+          <div class="msg-thread-empty" id="msgPick"><p>Chọn một cuộc trò chuyện ở bên trái.</p></div>
+          <div class="msg-thread-inner" id="msgOpen" hidden>
+            <header class="msg-thread-head">
+              <button type="button" class="btn btn-ghost btn-sm msg-back" id="msgBack">← Danh sách</button>
+              <span class="msg-ava" id="msgAva"></span>
+              <div class="msg-who"><strong id="msgName"></strong><a id="msgLink" hidden></a></div>
+              <button type="button" class="btn btn-outline btn-sm" id="msgBlock" hidden>Chặn</button>
+            </header>
+            <div class="msg-scroll" id="msgScroll">
+              <button type="button" class="btn btn-ghost btn-sm msg-more" id="msgMore" hidden>Xem tin cũ hơn</button>
+              <ol class="msg-items" id="msgItems"></ol>
+            </div>
+            <p class="msg-blocked" id="msgBlockedNote" hidden></p>
+            <form class="msg-compose" id="msgForm">
+              <label class="sr-only" for="msgInput">Nội dung tin nhắn</label>
+              <textarea id="msgInput" rows="1" maxlength="1000" placeholder="Nhập tin nhắn… (Enter để gửi, Shift+Enter xuống dòng)"></textarea>
+              <button type="submit" class="btn btn-primary" id="msgSend">Gửi</button>
+            </form>
+            <p class="form-error" id="msgError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="msgErrorText"></span></p>
           </div>
-          <div class="dh-table" role="table" aria-label="Đơn hàng của trang">
-            <div class="od-tr dh-th" role="row"><span role="columnheader">Mã đơn hàng · Thời gian</span><span role="columnheader">Khách hàng · Loại đơn</span><span role="columnheader">Số tiền · Thanh toán</span><span role="columnheader">Trạng thái</span><span role="columnheader" class="dh-act">Thao tác</span></div>
-            <div id="orderList"></div>
-          </div>
-          <p class="pe-sub dh-empty" id="orderEmpty" hidden>Không có đơn hàng nào khớp bộ lọc.</p>
         </section>
-
-        <dialog class="vp-dialog od-dialog" id="odDialog" aria-labelledby="odDialogTitle">
-          <div class="vp-dialog-head"><h2 class="pe-h" id="odDialogTitle">Chi tiết đơn hàng</h2><button type="button" class="btn btn-ghost btn-sm" id="odClose">Đóng</button></div>
-          <div class="od-detail" id="odDetail"></div>
-        </dialog>
       </div>
     </div>
   </main>
@@ -92,7 +94,7 @@
   <script src="fx.js"></script>
   <script src="api.js?v=11"></script>
   <script src="auth.js?v=31"></script>
-  <script src="orders-page.js?v=2"></script>
+  <script src="messages-page.js?v=2"></script>
   <script src="dashboard.js?v=13"></script>
 </body>
 </html>
