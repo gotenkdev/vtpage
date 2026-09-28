@@ -122,3 +122,6 @@
   .vp-cover { aspect-ratio: auto; width: 100%; height: clamp(260px, 32vw, 460px); max-height: none; }
   body:has(.donate-page) .bar-inner { max-width: 1464px; padding-inline: 24px; }
 }
+.donor-anon { display: flex; align-items: flex-start; gap: 8px; margin-top: 8px; font-size: 0.9rem; color: var(--ink-2); cursor: pointer; }
+.donor-anon input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--ink); flex: none; }
+.donor-name-row.is-anon strong { color: var(--ink-3); font-style: italic; }

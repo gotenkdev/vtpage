@@ -1490,3 +1490,9 @@ html[data-motion="off"] .reveal { opacity: 1 !important; transform: none !import
 .foot-links a { color: #C9CDD8; text-decoration: none; font-size: 0.95rem; }
 .foot-links a:hover { color: var(--orange); }
 img.acct-avatar { object-fit: cover; }
+/* Thông báo hệ thống (Cài đặt chung của quản trị viên) */
+.site-banner { position: relative; z-index: 60; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 10px 44px; font-weight: 600; font-size: 0.95rem; text-align: center; border-bottom: 1px solid rgba(0, 0, 0, 0.15); }
+.site-banner.is-info { background: #dceeff; color: #0d2b55; }
+.site-banner.is-warning { background: #ffe9a8; color: #5a3b00; }
+.site-banner.is-success { background: #c9f2dc; color: #0f4a2b; }
+.site-banner-close { position: absolute; right: 12px; top: 50%; translate: 0 -50%; width: 28px; height: 28px; border: 0; border-radius: 50%; background: rgba(0, 0, 0, 0.08); color: inherit; font-size: 1.1rem; cursor: pointer; }

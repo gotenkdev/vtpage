@@ -11,6 +11,42 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
+// --- Thông báo hệ thống (quản trị viên bật trong Cài đặt chung): dải ở đầu mọi trang, nội dung vào bằng textContent ---
+(function initSiteBanner() {
+  if (!window.VTApi) return;
+  window.VTApi.call('GET', '/site-settings')
+    .then((s) => {
+      if (!s || !s.banner) return;
+      const bar = document.createElement('div');
+      bar.className = 'site-banner is-' + s.banner.tone;
+      bar.setAttribute('role', 'status');
+      const text = document.createElement('span');
+      text.textContent = s.banner.text;
+      const close = document.createElement('button');
+      close.type = 'button';
+      close.className = 'site-banner-close';
+      close.setAttribute('aria-label', 'Ẩn thông báo');
+      close.textContent = '×';
+      const key = 'vtp-banner-hidden';
+      try {
+        if (sessionStorage.getItem(key) === s.banner.text) return;
+      } catch {
+        // bỏ qua
+      }
+      close.addEventListener('click', () => {
+        bar.remove();
+        try {
+          sessionStorage.setItem(key, s.banner.text);
+        } catch {
+          // bỏ qua
+        }
+      });
+      bar.append(text, close);
+      document.body.prepend(bar);
+    })
+    .catch(() => undefined);
+})();
+
 // --- Quay lại trang donate sau khi đăng nhập ---
 // Người xem bấm "Tạo lệnh donate" khi chưa đăng nhập: lưu trang donate (chỉ nhận dạng /username, không bao giờ là link ngoài) vào
 // sessionStorage, đăng nhập xong (mật khẩu hay Google) thì đưa về đúng trang đó.
@@ -86,6 +122,7 @@ function afterLoginTarget() {
       email_unverified: 'Email Google của bạn chưa được xác minh.',
       inactive: 'Tài khoản này đang bị khóa.',
       busy: 'Thao tác quá nhiều lần, hãy chờ một lát rồi thử lại.',
+      signups_disabled: 'VT Pay đang tạm ngưng nhận đăng ký tài khoản mới.',
     };
     const box = document.getElementById('formError');
     const text = document.getElementById('formErrorText');
@@ -1704,6 +1741,15 @@ if (donateProfile && notFoundBox) {
       if (nameHint) nameHint.hidden = !!accountName;
     })
     .catch(() => undefined);
+  const anonBox = document.getElementById('donorAnon');
+  if (anonBox) {
+    anonBox.addEventListener('change', () => {
+      const row = document.querySelector('.donor-name-row');
+      if (row) row.classList.toggle('is-anon', anonBox.checked);
+      if (nameText) nameText.textContent = anonBox.checked ? 'Ẩn danh' : accountName || 'Chưa đặt tên hiển thị';
+      if (nameHint) nameHint.hidden = anonBox.checked || !!accountName;
+    });
+  }
 
   const loginLink = document.getElementById('vpLoginLink');
   if (loginLink) loginLink.addEventListener('click', () => rememberReturn('/' + username));
@@ -1726,7 +1772,9 @@ if (donateProfile && notFoundBox) {
       window.location.href = '/sign-in';
       return;
     }
-    if (!accountName) {
+    const anon = document.getElementById('donorAnon');
+    const anonymous = !!(anon && anon.checked);
+    if (!accountName && !anonymous) {
       if (nameHint) nameHint.hidden = false;
       showError(donateErrorBox, donateErrorText, 'Hãy đặt tên hiển thị trong Hồ sơ cá nhân trước khi donate (bấm Thay đổi).');
       return;
@@ -1735,7 +1783,8 @@ if (donateProfile && notFoundBox) {
     const donorName = donorNameInput.value.trim();
     const message = messageInput.value.trim();
     const body = { amount };
-    if (donorName) body.donorName = donorName;
+    if (anonymous) body.anonymous = true;
+    else if (donorName) body.donorName = donorName;
     if (message) body.message = message;
     const button = donateForm.querySelector('button[type="submit"]');
     void submitWithLock(button, async () => {
