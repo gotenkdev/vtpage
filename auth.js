@@ -11,11 +11,70 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
+// --- Thương hiệu (trang quản trị "Giao diện & thương hiệu"): logo, tên, favicon, tiêu đề, mô tả, từ khóa. Chữ vào bằng textContent /
+// thuộc tính, ảnh chỉ từ /api/v1/site-assets (cùng tên miền). Mặc định trong HTML giữ nguyên khi chưa cấu hình. ---
+function applyBranding(b) {
+  const DEFAULT_NAME = 'VT Pay';
+  // Tiêu đề: trang chủ dùng tiêu đề riêng; trang khác thay đuôi "VT Pay" bằng tên thương hiệu (kể cả khi trang tự đổi tiêu đề sau).
+  // Chỉ thay ĐUÔI "VT Pay" một lần: tên mới có thể chứa "VT Pay" (vd "VT Pay Pro"), nên đã kết thúc bằng tên mới thì dừng — nếu
+  // không, việc đổi tiêu đề lại kích hoạt chính nó và lặp vô hạn (lỗi đã gặp khi thử).
+  const fixTitle = () => {
+    const t = document.title;
+    let want = t;
+    if (window.location.pathname === '/') want = b.title;
+    else if (!t.endsWith(b.siteName) && t.endsWith(DEFAULT_NAME)) {
+      want = t.slice(0, -DEFAULT_NAME.length) + b.siteName;
+    }
+    if (want && t !== want) document.title = want;
+  };
+  fixTitle();
+  const titleEl = document.querySelector('title');
+  if (titleEl && b.siteName !== DEFAULT_NAME) new MutationObserver(fixTitle).observe(titleEl, { childList: true });
+
+  const meta = (name, content) => {
+    if (!content) return;
+    let tag = document.querySelector(`meta[name="${name}"]`);
+    if (!tag) {
+      tag = document.createElement('meta');
+      tag.setAttribute('name', name);
+      document.head.append(tag);
+    }
+    tag.setAttribute('content', content);
+  };
+  meta('description', b.description);
+  meta('keywords', b.keywords);
+
+  if (b.faviconUrl && b.faviconUrl.startsWith('/api/v1/site-assets/')) {
+    document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach((l) => l.remove());
+    for (const rel of ['icon', 'apple-touch-icon']) {
+      const link = document.createElement('link');
+      link.rel = rel;
+      link.type = 'image/png';
+      link.href = b.faviconUrl;
+      document.head.append(link);
+    }
+  }
+
+  document.querySelectorAll('.logo').forEach((logo) => {
+    const name = logo.querySelector('span');
+    if (name) name.textContent = b.siteName;
+    const mark = logo.querySelector('svg.mark, img.mark');
+    if (b.logoUrl && b.logoUrl.startsWith('/api/v1/site-assets/') && mark) {
+      const img = document.createElement('img');
+      img.className = 'mark mark-img';
+      img.src = b.logoUrl;
+      img.alt = '';
+      mark.replaceWith(img);
+    }
+  });
+}
+
 // --- Thông báo hệ thống (quản trị viên bật trong Cài đặt chung): dải ở đầu mọi trang, nội dung vào bằng textContent ---
 (function initSiteBanner() {
   if (!window.VTApi) return;
   window.VTApi.call('GET', '/site-settings')
     .then((s) => {
+      if (s && s.branding) applyBranding(s.branding);
       if (!s || !s.banner) return;
       const bar = document.createElement('div');
       bar.className = 'site-banner is-' + s.banner.tone;
