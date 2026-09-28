@@ -10,7 +10,7 @@
   <link rel="preload" href="fonts/bricolage-grotesque-latin-600-800.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/doto-latin-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css">
-  <link rel="stylesheet" href="style.css?v=17">
+  <link rel="stylesheet" href="style.css?v=18">
   <link rel="stylesheet" href="sticker.css?v=10">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
 </head>
@@ -84,6 +84,7 @@
             <svg class="ic-brand" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-google"/></svg>
             Continue with Google
           </button>
+          <p class="terms-note">Tiếp tục bằng Google nghĩa là bạn đồng ý <a href="/terms" target="_blank" rel="noopener">Điều khoản sử dụng</a> và <a href="/privacy" target="_blank" rel="noopener">Chính sách bảo mật</a>.</p>
         </div>
 
         <div class="divider">
@@ -95,6 +96,11 @@
             <label for="email">Email</label>
             <input type="email" id="email" name="email" autocomplete="username" required>
           </div>
+
+          <label class="terms-check">
+            <input type="checkbox" id="acceptTerms" required>
+            <span>Tôi đã đọc và đồng ý <a href="/terms" target="_blank" rel="noopener">Điều khoản sử dụng</a> và <a href="/privacy" target="_blank" rel="noopener">Chính sách bảo mật</a> của VT Pay.</span>
+          </label>
 
           <p class="form-error" id="formError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="formErrorText"></span></p>
 
@@ -113,6 +119,6 @@
 
   <script src="fx.js"></script>
   <script src="api.js?v=10"></script>
-  <script src="auth.js?v=29"></script>
+  <script src="auth.js?v=30"></script>
 </body>
 </html>

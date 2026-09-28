@@ -1497,3 +1497,8 @@ img.acct-avatar { object-fit: cover; }
 .site-banner.is-success { background: #c9f2dc; color: #0f4a2b; }
 .site-banner-close { position: absolute; right: 12px; top: 50%; translate: 0 -50%; width: 28px; height: 28px; border: 0; border-radius: 50%; background: rgba(0, 0, 0, 0.08); color: inherit; font-size: 1.1rem; cursor: pointer; }
 .mark-img { width: auto; max-width: 160px; height: 36px; object-fit: contain; border-radius: 0; box-shadow: none; }
+/* Đồng ý Điều khoản khi đăng ký */
+.terms-check { display: flex; align-items: flex-start; gap: 10px; margin: 4px 0 14px; font-size: 0.9rem; line-height: 1.5; color: var(--ink-2); cursor: pointer; }
+.terms-check input { width: 18px; height: 18px; margin: 2px 0 0; flex: none; accent-color: var(--ink); }
+.terms-check a, .terms-note a { color: var(--orange-deep); font-weight: 600; }
+.terms-note { margin: 8px 0 0; font-size: 0.82rem; line-height: 1.5; color: var(--ink-3); text-align: center; }

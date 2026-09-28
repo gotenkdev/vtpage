@@ -269,10 +269,16 @@ if (signupForm) {
     hideError(errorBox);
     const email = emailInput.value.trim();
     if (!email) return;
+    const terms = document.getElementById('acceptTerms');
+    if (terms && !terms.checked) {
+      showError(errorBox, errorText, 'Hãy đọc và tích ô đồng ý Điều khoản sử dụng và Chính sách bảo mật.');
+      terms.focus();
+      return;
+    }
     const button = signupForm.querySelector('button[type="submit"]');
     void submitWithLock(button, async () => {
       try {
-        await window.VTApi.call('POST', '/auth/register', { email });
+        await window.VTApi.call('POST', '/auth/register', { email, acceptTerms: true });
         signupForm.hidden = true;
         if (federated) federated.hidden = true;
         if (divider) divider.hidden = true;
