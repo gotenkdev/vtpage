@@ -1546,3 +1546,5 @@ img.acct-avatar { object-fit: cover; }
 /* Trang pháp lý: bản tiếng Việt (chính thức) và bản English (tham khảo) — hiện theo ngôn ngữ đang chọn (i18n.js đặt html[lang]). */
 html[lang="en"] [data-lang="vi"] { display: none !important; }
 html[lang="en"] [data-lang="en"] { display: block !important; }
+/* Chữ tên thương hiệu cạnh logo: ẩn khỏi màn hình (2026-09-29), vẫn giữ cho trình đọc màn hình làm tên liên kết logo. */
+.logo > span { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

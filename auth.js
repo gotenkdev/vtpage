@@ -11,25 +11,12 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-// --- Thương hiệu (trang quản trị "Giao diện & thương hiệu"): logo, tên, favicon, tiêu đề, mô tả, từ khóa. Chữ vào bằng textContent /
+// --- Thương hiệu (trang quản trị "Giao diện & thương hiệu"): logo, favicon, tiêu đề, mô tả, từ khóa. Chữ vào bằng textContent /
 // thuộc tính, ảnh chỉ từ /api/v1/site-assets (cùng tên miền). Mặc định trong HTML giữ nguyên khi chưa cấu hình. ---
 function applyBranding(b) {
   const DEFAULT_NAME = 'VT Pay';
-  // Tiêu đề: trang chủ dùng tiêu đề riêng; trang khác thay đuôi "VT Pay" bằng tên thương hiệu (kể cả khi trang tự đổi tiêu đề sau).
-  // Chỉ thay ĐUÔI "VT Pay" một lần: tên mới có thể chứa "VT Pay" (vd "VT Pay Pro"), nên đã kết thúc bằng tên mới thì dừng — nếu
-  // không, việc đổi tiêu đề lại kích hoạt chính nó và lặp vô hạn (lỗi đã gặp khi thử).
-  const fixTitle = () => {
-    const t = document.title;
-    let want = t;
-    if (window.location.pathname === '/') want = b.title;
-    else if (!t.endsWith(b.siteName) && t.endsWith(DEFAULT_NAME)) {
-      want = t.slice(0, -DEFAULT_NAME.length) + b.siteName;
-    }
-    if (want && t !== want) document.title = want;
-  };
-  fixTitle();
-  const titleEl = document.querySelector('title');
-  if (titleEl && b.siteName !== DEFAULT_NAME) new MutationObserver(fixTitle).observe(titleEl, { childList: true });
+  // Tiêu đề: chỉ trang chủ dùng tiêu đề do quản trị viên đặt (tên thương hiệu cuối tiêu đề các trang khác đã bỏ, 2026-09-29).
+  if (window.location.pathname === '/' && b.title && document.title !== b.title) document.title = b.title;
 
   const meta = (name, content) => {
     if (!content) return;
@@ -56,8 +43,6 @@ function applyBranding(b) {
   }
 
   document.querySelectorAll('.logo').forEach((logo) => {
-    const name = logo.querySelector('span');
-    if (name) name.textContent = b.siteName;
     const mark = logo.querySelector('svg.mark, img.mark');
     if (b.logoUrl && b.logoUrl.startsWith('/api/v1/site-assets/') && mark) {
       const img = document.createElement('img');
