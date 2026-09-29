@@ -2,8 +2,8 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <script src="i18n-app.js?v=4"></script>
-  <script src="i18n.js?v=5"></script>
+  <script src="i18n-app.js?v=5"></script>
+  <script src="i18n.js?v=6"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cài đặt Donate - VT Pay</title>
   <meta name="theme-color" content="#E9EAEE">
@@ -92,6 +92,7 @@
                 <p class="form-hint">Chèn {name} để hiện tên và {amount} cho số tiền.</p>
               </div>
               <div class="form-field"><label for="dsMinSeconds">Thời gian hiển thị tối thiểu (giây)</label><input id="dsMinSeconds" type="number" min="3" max="60" data-k="display.minSeconds"></div>
+              <div class="form-field"><label for="dsMinAmount">Số tiền tối thiểu (VND)</label><input id="dsMinAmount" type="number" min="1000" step="1000" data-k="other.minAmount"><p class="form-hint">Người xem chỉ donate được từ mức này trở lên, và mọi donate đều được đọc (khi bật Giọng đọc). Thấp nhất 1.000đ.</p></div>
               <div class="ds-row">
                 <div class="form-field"><div class="pe-label-row"><label for="dsMsgSize">Kích cỡ lời nhắn</label><output data-for="dsMsgSize"></output></div><input id="dsMsgSize" type="range" min="10" max="100" data-k="display.messageSize" data-unit="px"></div>
                 <div class="form-field"><div class="pe-label-row"><label for="dsOpacity">Độ trong suốt</label><output data-for="dsOpacity"></output></div><input id="dsOpacity" type="range" min="10" max="100" data-k="display.opacity" data-unit="%"></div>
@@ -156,10 +157,7 @@
                 <textarea id="dsTtsTemplate" data-k="tts.template" rows="2" maxlength="300"></textarea>
                 <p class="form-hint">{name}: tên, {amount}: số tiền, {text}: lời nhắn.</p>
               </div>
-              <div class="ds-row">
-                <div class="form-field"><label for="dsVoice">Giọng đọc</label><select id="dsVoice" data-k="tts.voice"><option value="edge_hoaimy">Giọng đọc 1</option><option value="edge_namminh">Giọng đọc 2</option><option value="google_translate">Giọng đọc 3</option></select></div>
-                <div class="form-field"><label for="dsTtsMin">Số tiền tối thiểu để đọc (VND)</label><input id="dsTtsMin" type="number" min="0" step="1000" data-k="tts.minAmount"></div>
-              </div>
+              <div class="form-field"><label for="dsVoice">Giọng đọc</label><select id="dsVoice" data-k="tts.voice"><option value="edge_hoaimy">Giọng đọc 1</option><option value="edge_namminh">Giọng đọc 2</option><option value="google_translate">Giọng đọc 3</option></select></div>
               <label class="pay-check"><span><strong>Không đọc nội dung có chứa liên kết</strong></span><input type="checkbox" data-k="tts.skipLinks"></label>
               <label class="pay-check"><span><strong>Không đọc nội dung spam</strong><small>Ký tự hoặc từ lặp lại liên tục, lời nhắn quá dài.</small></span><input type="checkbox" data-k="tts.skipSpam"></label>
               <div class="form-field"><div class="pe-label-row"><label for="dsTtsVol">Âm lượng</label><output data-for="dsTtsVol"></output></div><input id="dsTtsVol" type="range" min="0" max="100" data-k="tts.volume"></div>
@@ -312,11 +310,11 @@
 
   <script src="fx.js"></script>
   <script src="api.js?v=14"></script>
-  <script src="auth.js?v=34"></script>
+  <script src="auth.js?v=35"></script>
   <script src="alert-render.js?v=11"></script>
   <script src="goal-render.js?v=4"></script>
   <script src="music-render.js?v=3"></script>
-  <script src="donate-settings.js?v=11"></script>
+  <script src="donate-settings.js?v=12"></script>
   <script src="dashboard.js?v=13"></script>
   <script src="select-menu.js?v=1"></script>
 </body>

@@ -4,6 +4,9 @@
  */
 window.VTI18N_EXTRA = {
   'Trang donate': 'Donation page',
+  'Số tiền tối thiểu (VND)': 'Minimum amount (VND)',
+  'Người xem chỉ donate được từ mức này trở lên, và mọi donate đều được đọc (khi bật Giọng đọc). Thấp nhất 1.000đ.':
+    'Viewers can only donate this amount or more, and every donation is read aloud (when Text-to-speech is on). Lowest is 1,000 VND.',
   // ---- Hồ sơ trang ----
   'Hồ sơ': 'Profile',
   'Thông tin trang': 'Page info',

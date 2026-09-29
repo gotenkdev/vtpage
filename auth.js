@@ -1608,6 +1608,8 @@ if (donateProfile && notFoundBox) {
   const instFx = document.getElementById('instFx');
   const PRESETS = { VND: [10000, 20000, 50000, 100000, 200000, 500000], USD: [1, 2, 5, 10, 20, 50] };
   let currency = 'VND';
+  let vndMin = 1000;
+  const minHint = () => `Tối thiểu ${vndMin.toLocaleString('vi-VN')}đ`;
   let fx = null; // { rate, source, at } từ GET /fx/usd
   const fmtUsd = (n) =>
     '$' + n.toLocaleString('vi-VN', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 });
@@ -1668,7 +1670,8 @@ if (donateProfile && notFoundBox) {
       amountInput.type = 'number';
       amountInput.removeAttribute('inputmode');
       amountInput.removeAttribute('pattern');
-      amountInput.placeholder = 'Tối thiểu 1.000đ';
+      amountInput.min = String(vndMin);
+      amountInput.placeholder = minHint();
     }
     renderPresets();
     updateFxHint();
@@ -2028,6 +2031,10 @@ if (donateProfile && notFoundBox) {
       if (profile.donate) {
         setupRecording(profile.donate.recording);
         // Ô link YouTube (tab Phát nhạc) do public-page.js điều khiển.
+        // Mức tối thiểu streamer đặt (sàn 1.000đ): giới hạn ô nhập và hiện chữ mờ "Tối thiểu …".
+        vndMin = Math.max(1000, Number(profile.donate.minAmount) || 1000);
+        amountInput.min = String(vndMin);
+        if (currency === 'VND') amountInput.placeholder = minHint();
         void setupUsd(profile.donate.allowUsd);
       }
       if (profile.acceptingDonations === false) {

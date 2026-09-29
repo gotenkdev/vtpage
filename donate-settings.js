@@ -319,6 +319,11 @@
     player.clear();
     player.push(sample(3));
   });
+  // Một ô "Số tiền tối thiểu" dùng chung: xem trước ở đây cũng đọc theo cùng mức (máy chủ đồng bộ khi lưu).
+  $('dsMinAmount').addEventListener('input', () => {
+    const v = Number($('dsMinAmount').value) || 0;
+    form.tts.minAmount = Math.max(1000, v);
+  });
   // "Nghe thử" dùng giọng máy chủ qua tài khoản đang đăng nhập (overlay dùng token của nó).
   A.ttsFetch = (voice, text) => window.VTApi.fetchBlob('/me/tts/preview', { voice, text });
   $('dsTtsTest').addEventListener('click', () => {

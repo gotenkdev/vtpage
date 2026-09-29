@@ -418,6 +418,7 @@
       (m) => `Donate from ${m[1]} to pick a song; each song plays up to 3 min 30 s, first come first served.`,
     ],
     [/^Thiết lập · (.+)$/, (m) => `Settings · ${tr(m[1]) || m[1]}`],
+    [/^Tối thiểu ([\d.]+)đ$/, (m) => `Minimum ${m[1].replace(/\./g, ',')} VND`],
     [/^Cổ điển (\d+)$/, (m) => `Classic ${m[1]}`],
     [/^Âm thanh (\d+)$/, (m) => `Sound ${m[1]}`],
     [/^VIP (\d+) trở lên$/, (m) => `VIP ${m[1]} or higher`],
