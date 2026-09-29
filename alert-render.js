@@ -71,7 +71,11 @@
     const female = vi.find((v) => /female|nữ|linh|hoaimy|mai/i.test(v.name));
     return (kind === 'vi_male' ? male : female) || vi[0];
   }
-  function speak(text, voiceKind, volume) {
+  // Giọng tạo ở máy chủ (Edge, Google Dịch, Google Cloud): trang nhúng đặt VTAlerts.ttsFetch(voice, text) → Promise<Blob>.
+  // Lỗi hoặc chưa đặt thì dùng giọng của máy (cùng giới tính).
+  const SERVER_VOICES = { edge_hoaimy: 'vi_female', edge_namminh: 'vi_male', google_translate: 'vi_female', gcloud_b: 'vi_male', gcloud_d: 'vi_male' };
+  let currentAudio = null;
+  function speakBrowser(text, voiceKind, volume) {
     return new Promise((resolve) => {
       if (!window.speechSynthesis || !text) return resolve();
       const u = new SpeechSynthesisUtterance(text);
@@ -86,6 +90,48 @@
       window.speechSynthesis.speak(u);
       setTimeout(done, 30000);
     });
+  }
+  // Bắt đầu tải giọng máy chủ sớm (ngay khi thông báo hiện) để lúc tới lượt đọc thì âm thanh đã sẵn sàng. null = không dùng giọng máy chủ.
+  function prepareSpeech(text, voiceKind) {
+    const fetcher = window.VTAlerts && window.VTAlerts.ttsFetch;
+    if (!text || !SERVER_VOICES[voiceKind] || typeof fetcher !== 'function') return null;
+    const p = fetcher(voiceKind, text);
+    p.catch(() => undefined);
+    return p;
+  }
+  async function speak(text, voiceKind, volume, prepared) {
+    if (!text) return;
+    const pending = prepared || prepareSpeech(text, voiceKind);
+    if (pending) {
+      try {
+        const blob = await pending;
+        const url = URL.createObjectURL(blob);
+        await new Promise((resolve, reject) => {
+          const a = new Audio(url);
+          currentAudio = a;
+          a.volume = Math.max(0, Math.min(100, volume)) / 100;
+          const t = setTimeout(resolve, 45000);
+          a.onended = () => { clearTimeout(t); resolve(); };
+          a.onerror = () => { clearTimeout(t); reject(new Error('audio')); };
+          a.play().catch((e) => { clearTimeout(t); reject(e); });
+        }).finally(() => {
+          currentAudio = null;
+          URL.revokeObjectURL(url);
+        });
+        return;
+      } catch {
+        // máy chủ không đọc được: dùng giọng của máy bên dưới
+      }
+    }
+    await speakBrowser(text, SERVER_VOICES[voiceKind] || voiceKind, volume);
+  }
+  // Dừng giọng đang đọc (nút "Tắt donate đang phát").
+  function stopSpeech() {
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio = null;
+    }
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
   }
   if (window.speechSynthesis) window.speechSynthesis.getVoices();
 
@@ -212,6 +258,22 @@
       const { root, inner, message, wow } = buildAlert(stage, settings, media, event);
       const started = Date.now();
       const waits = [];
+      // Câu giọng đọc ghép ngay từ đầu để tải trước từ máy chủ, song song với âm thanh/ghi âm.
+      let spoken = '';
+      if (settings.tts.enabled && event.amount >= settings.tts.minAmount) {
+        let text = message;
+        if ((settings.tts.skipLinks && LINK.test(text)) || (settings.tts.skipSpam && isSpam(text))) text = '';
+        spoken = settings.tts.template
+          .replace(/\{name\}/g, event.donorName || 'Ẩn danh')
+          .replace(
+            /\{amount\}/g,
+            event.usdCents
+              ? new Intl.NumberFormat('vi-VN').format(event.usdCents / 100) + ' đô la'
+              : new Intl.NumberFormat('vi-VN').format(event.amount) + ' đồng',
+          )
+          .replace(/\{text\}/g, text);
+      }
+      const preparedSpeech = spoken ? prepareSpeech(spoken, settings.tts.voice) : null;
       if (settings.sound.enabled) playSound(settings.sound.source, media.soundUrl, settings.sound.volume);
       await sleep(900);
       if (stale()) return root.remove();
@@ -232,20 +294,7 @@
         );
         await waits[waits.length - 1];
       }
-      if (settings.tts.enabled && event.amount >= settings.tts.minAmount) {
-        let text = message;
-        if ((settings.tts.skipLinks && LINK.test(text)) || (settings.tts.skipSpam && isSpam(text))) text = '';
-        const spoken = settings.tts.template
-          .replace(/\{name\}/g, event.donorName || 'Ẩn danh')
-          .replace(
-            /\{amount\}/g,
-            event.usdCents
-              ? new Intl.NumberFormat('vi-VN').format(event.usdCents / 100) + ' đô la'
-              : new Intl.NumberFormat('vi-VN').format(event.amount) + ' đồng',
-          )
-          .replace(/\{text\}/g, text);
-        await speak(spoken, settings.tts.voice, settings.tts.volume);
-      }
+      if (spoken) await speak(spoken, settings.tts.voice, settings.tts.volume, preparedSpeech);
       const minMs = (d.minSeconds + (wow ? 3 : 0)) * 1000;
       const left = minMs - (Date.now() - started);
       if (left > 0 && !stale()) await sleep(left);
@@ -285,7 +334,7 @@
         gen += 1;
         busy = false;
         stage.textContent = '';
-        if (window.speechSynthesis) window.speechSynthesis.cancel();
+        stopSpeech();
         void pump();
       },
       clear() {
@@ -293,10 +342,10 @@
         busy = false;
         queue.length = 0;
         stage.textContent = '';
-        if (window.speechSynthesis) window.speechSynthesis.cancel();
+        stopSpeech();
       },
     };
   }
 
-  window.VTAlerts = { THEMES, POSITIONS, TEXT_EFFECTS, IN_ANIMATIONS, OUT_ANIMATIONS, SOUNDS, createPlayer, playSound, speak, isClassic };
+  window.VTAlerts = { THEMES, POSITIONS, TEXT_EFFECTS, IN_ANIMATIONS, OUT_ANIMATIONS, SOUNDS, createPlayer, playSound, speak, stopSpeech, isClassic, ttsFetch: null };
 })();

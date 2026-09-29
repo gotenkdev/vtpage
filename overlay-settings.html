@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <script src="i18n-app.js?v=2"></script>
+  <script src="i18n-app.js?v=3"></script>
   <script src="i18n.js?v=4"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cài đặt Donate - VT Pay</title>
@@ -157,7 +157,7 @@
                 <p class="form-hint">{name}: tên, {amount}: số tiền, {text}: lời nhắn.</p>
               </div>
               <div class="ds-row">
-                <div class="form-field"><label for="dsVoice">Giọng đọc</label><select id="dsVoice" data-k="tts.voice"><option value="vi_female">Tiếng Việt · Nữ</option><option value="vi_male">Tiếng Việt · Nam</option><option value="default">Mặc định của máy</option></select></div>
+                <div class="form-field"><label for="dsVoice">Giọng đọc</label><select id="dsVoice" data-k="tts.voice"><option value="edge_hoaimy">Edge HoàiMy · Nữ</option><option value="edge_namminh">Edge NamMinh · Nam</option><option value="google_translate">Google Dịch · Nữ</option><option value="gcloud_b">Google Cloud B · Nam</option><option value="gcloud_d">Google Cloud D · Nam</option><option value="vi_female">Giọng máy OBS · Nữ</option><option value="vi_male">Giọng máy OBS · Nam</option><option value="default">Giọng máy OBS · Mặc định</option></select></div>
                 <div class="form-field"><label for="dsTtsMin">Số tiền tối thiểu để đọc (VND)</label><input id="dsTtsMin" type="number" min="0" step="1000" data-k="tts.minAmount"></div>
               </div>
               <label class="pay-check"><span><strong>Không đọc nội dung có chứa liên kết</strong></span><input type="checkbox" data-k="tts.skipLinks"></label>
@@ -311,12 +311,12 @@
   </main>
 
   <script src="fx.js"></script>
-  <script src="api.js?v=12"></script>
+  <script src="api.js?v=13"></script>
   <script src="auth.js?v=33"></script>
-  <script src="alert-render.js?v=9"></script>
+  <script src="alert-render.js?v=10"></script>
   <script src="goal-render.js?v=4"></script>
   <script src="music-render.js?v=3"></script>
-  <script src="donate-settings.js?v=9"></script>
+  <script src="donate-settings.js?v=10"></script>
   <script src="dashboard.js?v=13"></script>
   <script src="select-menu.js?v=1"></script>
 </body>

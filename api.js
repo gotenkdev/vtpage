@@ -260,5 +260,19 @@
     return data;
   }
 
-  window.VTApi = { call, me, setCsrf, uploadAvatar, uploadImage, ApiError, describe };
+  // POST JSON và nhận lại tệp (âm thanh giọng đọc "Nghe thử"). Cần đăng nhập + CSRF như call().
+  async function fetchBlob(path, body) {
+    const headers = { 'content-type': 'application/json' };
+    if (csrfToken) headers['x-csrf-token'] = csrfToken;
+    const response = await fetch(API_PREFIX + path, {
+      method: 'POST',
+      headers,
+      credentials: 'same-origin',
+      body: JSON.stringify(body),
+    });
+    if (!response.ok) throw new ApiError(response.status, {});
+    return response.blob();
+  }
+
+  window.VTApi = { call, me, setCsrf, uploadAvatar, uploadImage, fetchBlob, ApiError, describe };
 })();

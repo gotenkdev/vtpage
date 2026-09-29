@@ -319,6 +319,8 @@
     player.clear();
     player.push(sample(3));
   });
+  // "Nghe thử" dùng giọng máy chủ qua tài khoản đang đăng nhập (overlay dùng token của nó).
+  A.ttsFetch = (voice, text) => window.VTApi.fetchBlob('/me/tts/preview', { voice, text });
   $('dsTtsTest').addEventListener('click', () => {
     const text = form.tts.template
       .replace(/\{name\}/g, 'VT Pay')

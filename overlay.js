@@ -31,6 +31,18 @@
     }
   }
 
+  // Giọng đọc tạo ở máy chủ, xác thực bằng token của overlay.
+  window.VTAlerts.ttsFetch = async (voice, text) => {
+    const res = await fetch(base + '/tts', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      credentials: 'omit',
+      cache: 'no-store',
+      body: JSON.stringify({ voice, text }),
+    });
+    if (!res.ok) throw new Error('tts ' + res.status);
+    return res.blob();
+  };
   const player = window.VTAlerts.createPlayer(stage, () => current);
 
   function toEvent(data, test) {
