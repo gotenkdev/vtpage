@@ -388,6 +388,9 @@
       "Couldn't reach the server. Check your connection and try again.",
   };
 
+  // Từ điển các trang thiết lập (i18n-app.js, nạp trước tệp này trên những trang đó).
+  if (window.VTI18N_EXTRA) Object.assign(EN, window.VTI18N_EXTRA);
+
   // Câu có số/biến: [mẫu tiếng Việt, hàm dựng câu English].
   const rateEn = (t) =>
     t.replace(/tỷ giá quốc tế/g, 'international rate').replace(/tỷ giá niêm yết/g, 'posted rate').replace(/tỷ giá /g, '');
@@ -414,6 +417,29 @@
       (m) => `Donate from ${m[1]} to pick a song; each song plays up to 3 min 30 s, first come first served.`,
     ],
     [/^Thiết lập · (.+)$/, (m) => `Settings · ${tr(m[1]) || m[1]}`],
+    [/^Cổ điển (\d+)$/, (m) => `Classic ${m[1]}`],
+    [/^Âm thanh (\d+)$/, (m) => `Sound ${m[1]}`],
+    [/^VIP (\d+) trở lên$/, (m) => `VIP ${m[1]} or higher`],
+    [/^Chọn ảnh có sẵn (\S+)$/, (m) => `Choose built-in image ${m[1]}`],
+    [/^Hạng (\d+)$/, (m) => `Rank ${m[1]}`],
+    [/^Chi tiết đơn (\S+)$/, (m) => `Order details ${m[1]}`],
+    [/^Bỏ chặn (.+)$/, (m) => `Unblock ${m[1]}`],
+    [/^(\d+) kết quả · Trang (\d+) \/ (\d+)$/, (m) => `${m[1]} result${m[1] === '1' ? '' : 's'} · Page ${m[2]} / ${m[3]}`],
+    [/^(.+) · gửi lúc (.+)$/, (m) => `${m[1]} · submitted ${m[2]}`],
+    [/^Đã kết nối · API Key ••••(\S*) · (.+)$/, (m) => `Connected · API key ••••${m[1]} · ${tr(m[2]) || m[2]}`],
+    [/^Đã nhận (.+) · (\d+) lượt$/, (m) => `Received ${m[1]} · ${m[2]} donation${m[2] === '1' ? '' : 's'}`],
+    [/^Giao diện: (.+)$/, (m) => `Theme: ${m[1]}`],
+    [/^(\d+) chưa đọc$/, (m) => `${m[1]} unread`],
+    [/^(\d+) đã chọn$/, (m) => `${m[1]} selected`],
+    [/^Lý do: (.+)$/, (m) => `Reason: ${m[1]}`],
+    [/^Đổi sang (.+) •••• (\d+): chờ duyệt$/, (m) => `Switch to ${m[1]} •••• ${m[2]}: pending approval`],
+    [/^Đã kết nối · API Key ••••(\S*) ·$/, (m) => `Connected · API key ••••${m[1]} ·`],
+    [/^Token overlay đã tạo lúc (.+)\.$/, (m) => `Overlay token created at ${m[1]}.`],
+    [/^(Tắt|Huỷ) tài khoản (.+)\?$/, (m) => `${m[1] === 'Tắt' ? 'Turn off' : 'Cancel'} account ${m[2]}?`],
+    [/^Chặn "(.+)"\? Donate của tên này vẫn được ghi nhận nhưng không hiện lên live, không vào Gần đây và Bảng xếp hạng\.$/,
+      (m) => `Block "${m[1]}"? Donations from this name are still recorded but won't appear on stream, in Recent or on the Leaderboard.`],
+    [/^Đã tải (.+)$/, (m) => `Loaded ${m[1].replace(/(\d+) giây trước/, '$1 s ago').replace(/(\d+) phút trước/, '$1 min ago')}`],
+    [/^(\d+) đơn$/, (m) => `${m[1]} order${m[1] === '1' ? '' : 's'}`],
     [/^Tin nhắn \((\d+) chưa đọc\)$/, (m) => `Messages (${m[1]} unread)`],
     [/^(.+) - VT Pay$/, (m) => `${tr(m[1]) || m[1]} - VT Pay`],
     [/^Donate (.+) với lời nhắn$/, (m) => `Donated ${m[1]} with a message`],
@@ -462,6 +488,8 @@
   const skipped = (el) =>
     !el ||
     el.closest('script,style,textarea,[data-i18n-skip],[contenteditable="true"]') !== null;
+  // Thuộc tính (gợi ý, nhãn) của ô nhập/textarea vẫn dịch; chỉ nội dung người dùng gõ là không.
+  const skippedAttrs = (el) => !el || el.closest('[data-i18n-skip],[contenteditable="true"]') !== null;
 
   function doText(node) {
     const parent = node.parentElement;
@@ -489,7 +517,7 @@
     node.nodeValue = lead + t + trail;
   }
   function doAttrs(el) {
-    if (skipped(el)) return;
+    if (skippedAttrs(el)) return;
     let saved = origAttr.get(el);
     for (const a of ATTRS) {
       if (!el.hasAttribute(a)) continue;
@@ -597,6 +625,18 @@
       })
       .catch(() => undefined);
   }
+
+  // Hộp thoại của trình duyệt (confirm/alert/prompt) không nằm trong trang: dịch câu hỏi trước khi hiện.
+  for (const fn of ['confirm', 'alert', 'prompt']) {
+    const orig = window[fn];
+    if (typeof orig !== 'function') continue;
+    window[fn] = function (msg, ...rest) {
+      const text = typeof msg === 'string' && lang === 'en' ? tr(msg.trim()) || msg : msg;
+      return orig.call(window, text, ...rest);
+    };
+  }
+
+  Object.assign(EN, { 'Không phụ phí': 'No fee', 'Chưa có người ủng hộ': 'No supporters yet' });
 
   window.VTI18n = {
     get lang() {
