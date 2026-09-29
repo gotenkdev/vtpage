@@ -140,8 +140,11 @@
         displayName: nameInput.value.trim() || null,
         country: select.value || null,
       });
+      const countryChanged = (saved && saved.country) !== account.country;
       saved = account;
       $('apStatus').textContent = 'Đã lưu.';
+      // Đổi Quốc gia thì đổi ngôn ngữ website theo (khác Việt Nam → English).
+      if (countryChanged && window.VTI18n) window.VTI18n.followCountry(account.country);
     } catch (err) {
       showError(err.message);
       $('apStatus').textContent = '';

@@ -2,6 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
+  <script src="i18n.js?v=1"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Donate - VT Pay</title>
   <meta name="theme-color" content="#E9EAEE">
@@ -10,9 +11,9 @@
   <link rel="preload" href="fonts/bricolage-grotesque-latin-600-800.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/doto-latin-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css">
-  <link rel="stylesheet" href="style.css?v=21">
+  <link rel="stylesheet" href="style.css?v=23">
   <link rel="stylesheet" href="public-page.css?v=10">
-  <link rel="stylesheet" href="sticker.css?v=10">
+  <link rel="stylesheet" href="sticker.css?v=11">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
 </head>
 <body class="page-auth theme-sticker">
@@ -75,7 +76,7 @@
               <div class="avatar-fallback" id="creatorAvatarFallback" aria-hidden="true"></div>
             </div>
             <div class="vp-id">
-              <h1 class="vp-name" id="creatorName"></h1>
+              <h1 class="vp-name" id="creatorName" data-i18n-skip></h1>
               <p class="vp-handle"><span id="creatorUsername"></span><span class="vp-dot" aria-hidden="true">·</span><span id="vpFollowers">0 người theo dõi</span></p>
             </div>
             <div class="vp-actions">
@@ -93,7 +94,7 @@
             <span class="verified-badge" id="verifiedBadge" hidden><svg class="ic"><use href="#i-check"/></svg> Đã xác minh</span>
             <span class="creator-chip" id="creatorCategory" hidden></span>
             <h3 class="vp-sub">Giới thiệu</h3>
-            <p class="creator-bio" id="creatorBio" hidden></p>
+            <p class="creator-bio" id="creatorBio" data-i18n-skip hidden></p>
             <p class="vp-muted" id="vpNoBio">Streamer chưa viết giới thiệu.</p>
             <div class="creator-tags" id="creatorTags" hidden></div>
             <h3 class="vp-sub">Mạng xã hội</h3>

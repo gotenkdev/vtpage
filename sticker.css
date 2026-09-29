@@ -32,6 +32,10 @@
 .theme-sticker .btn-federated { border: var(--stk-line); box-shadow: none; background: #fff; }
 .theme-sticker .motion-toggle,
 .theme-sticker .icon-btn { box-shadow: none; border: var(--stk-line); background: #fff; }
+/* Điện thoại: nút tạm dừng + nút ngôn ngữ nổi ở góc dưới — nền trắng thì chữ/biểu tượng phải màu mực (trước đây trắng trên trắng). */
+@media (max-width: 640px) {
+  .theme-sticker .motion-toggle { background: #fff; color: var(--stk-ink); }
+}
 
 /* ---------- Thanh đầu trang: viên thuốc nổi, viền đen ---------- */
 .theme-sticker .bar { background: transparent; }

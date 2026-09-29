@@ -1538,3 +1538,8 @@ img.acct-avatar { object-fit: cover; }
 .sel-list li[aria-selected="true"] { font-weight: 700; }
 .sel-list li[aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
 .sel-list .sel-empty { color: var(--muted, #6b7280); cursor: default; }
+.lang-toggle { font-family: inherit; font-size: 13px; font-weight: 800; line-height: 1; letter-spacing: .04em; cursor: pointer; }
+/* Điện thoại: nút tạm dừng nổi ở góc trái dưới, nút ngôn ngữ đứng ngay cạnh. */
+@media (max-width: 640px) {
+  .motion-toggle.lang-toggle { left: 60px; background: var(--ink); color: var(--plate); }
+}
