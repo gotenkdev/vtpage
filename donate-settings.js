@@ -61,7 +61,7 @@
     item.querySelector('span').textContent = label;
     item.querySelector('button').addEventListener('click', (e) => {
       e.preventDefault();
-      A.playSound('builtin:' + (i + 1), null, form ? Math.max(form.sound.volume, 30) : 60);
+      A.previewSound('builtin:' + (i + 1), null, form ? Math.max(form.sound.volume, 30) : 60);
     });
     soundsBox.append(item);
   });
@@ -70,7 +70,7 @@
   customItem.innerHTML = '<input type="radio" name="dsSound" value="custom"><span>Âm thanh đã tải lên</span><button type="button" class="ds-play" aria-label="Nghe thử">▶</button>';
   customItem.querySelector('button').addEventListener('click', (e) => {
     e.preventDefault();
-    if (media.soundUrl) A.playSound('custom', media.soundUrl, form.sound.volume);
+    if (media.soundUrl) A.previewSound('custom', media.soundUrl, form.sound.volume);
   });
   soundsBox.append(customItem);
 
@@ -322,6 +322,9 @@
   // "Nghe thử" dùng giọng máy chủ qua tài khoản đang đăng nhập (overlay dùng token của nó).
   A.ttsFetch = (voice, text) => window.VTApi.fetchBlob('/me/tts/preview', { voice, text });
   $('dsTtsTest').addEventListener('click', () => {
+    // Bấm lại: dừng câu đang đọc và âm thanh nghe thử, không đọc chồng lên nhau.
+    A.stopSpeech();
+    A.stopPreviewSound();
     const text = form.tts.template
       .replace(/\{name\}/g, 'VT Pay')
       .replace(/\{amount\}/g, '100.000 đồng')

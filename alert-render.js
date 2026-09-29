@@ -62,6 +62,33 @@
     return 3;
   }
 
+  // Nghe thử trong Cài đặt Donate: chỉ một âm thanh mỗi lúc — bấm âm thanh khác thì âm thanh đang phát dừng ngay.
+  let previewAudio = null;
+  function stopPreviewSound() {
+    if (previewAudio) {
+      previewAudio.pause();
+      previewAudio.currentTime = 0;
+      previewAudio = null;
+    }
+  }
+  function previewSound(source, customUrl, volume) {
+    stopPreviewSound();
+    const vol = Math.max(0, Math.min(100, volume)) / 100;
+    let url = customUrl;
+    if (source !== 'custom') {
+      const preset = SOUNDS[Number(String(source).split(':')[1]) - 1] || SOUNDS[0];
+      url = preset[1];
+    }
+    if (!url || vol === 0) return;
+    const audio = new Audio(url);
+    audio.volume = vol;
+    previewAudio = audio;
+    audio.onended = () => {
+      if (previewAudio === audio) previewAudio = null;
+    };
+    audio.play().catch(() => undefined);
+  }
+
   // ---- Giọng đọc của trình duyệt (miễn phí). Chọn giọng tiếng Việt nếu máy có. ----
   function pickVoice(kind) {
     const voices = (window.speechSynthesis && window.speechSynthesis.getVoices()) || [];
@@ -347,5 +374,5 @@
     };
   }
 
-  window.VTAlerts = { THEMES, POSITIONS, TEXT_EFFECTS, IN_ANIMATIONS, OUT_ANIMATIONS, SOUNDS, createPlayer, playSound, speak, stopSpeech, isClassic, ttsFetch: null };
+  window.VTAlerts = { THEMES, POSITIONS, TEXT_EFFECTS, IN_ANIMATIONS, OUT_ANIMATIONS, SOUNDS, createPlayer, playSound, previewSound, stopPreviewSound, speak, stopSpeech, isClassic, ttsFetch: null };
 })();
