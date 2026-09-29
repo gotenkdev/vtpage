@@ -10,7 +10,7 @@
   <link rel="preload" href="fonts/bricolage-grotesque-latin-600-800.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/doto-latin-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css">
-  <link rel="stylesheet" href="style.css?v=19">
+  <link rel="stylesheet" href="style.css?v=20">
   <link rel="stylesheet" href="dashboard.css?v=14">
   <link rel="stylesheet" href="alert-themes.css?v=4">
   <link rel="stylesheet" href="donate-settings.css?v=15">
@@ -175,6 +175,7 @@
               <div class="form-field"><label for="dsVip">Hiện huy hiệu VIP khi người donate đạt</label><select id="dsVip" data-k="other.vipBadgeLevel" data-number></select>
                 <p class="form-hint">VIP tính theo tổng đã donate cho trang của bạn (gom theo tên): VIP 1 từ 50.000đ, VIP 5 từ 1.000.000đ, VIP 10 từ 50.000.000đ.</p></div>
               <label class="pay-check"><span><strong>Hiện bảng xếp hạng</strong><small>Top người donate trên trang donate công khai.</small></span><input type="checkbox" data-k="other.showLeaderboard"></label>
+              <label class="pay-check"><span><strong>Cho phép donate bằng USD ($)</strong><small>Người xem chọn nhập số đô; họ vẫn chuyển khoản bằng VND theo tỷ giá Vietcombank lúc tạo lệnh. Trên live hiện "$10".</small></span><input type="checkbox" data-k="other.allowUsd"></label>
               <label class="pay-check"><span><strong>Hiện danh sách Gần đây</strong><small>Donate mới nhất kèm lời nhắn trên trang donate công khai (từ khóa bị lọc được che).</small></span><input type="checkbox" data-k="other.showRecent"></label>
               <div class="form-field">
                 <label for="dsKeyword">Lọc từ khóa</label>
@@ -308,9 +309,9 @@
   </main>
 
   <script src="fx.js"></script>
-  <script src="api.js?v=11"></script>
-  <script src="auth.js?v=31"></script>
-  <script src="alert-render.js?v=8"></script>
+  <script src="api.js?v=12"></script>
+  <script src="auth.js?v=32"></script>
+  <script src="alert-render.js?v=9"></script>
   <script src="goal-render.js?v=4"></script>
   <script src="music-render.js?v=3"></script>
   <script src="donate-settings.js?v=9"></script>

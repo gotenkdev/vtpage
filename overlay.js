@@ -37,6 +37,8 @@
     return {
       donorName: data.donorName,
       amount: Number(data.amount) || 0,
+      // Donate hiển thị bằng USD (đã trả đúng số VND quy đổi): hiện "$9.99" thay cho số đồng.
+      usdCents: Number.isInteger(data.usdCents) && data.usdCents > 0 ? data.usdCents : null,
       message: data.message || '',
       vipLevel: Number(data.vipLevel) || 0,
       recordingUrl:

@@ -1616,6 +1616,96 @@ if (donateProfile && notFoundBox) {
     }
   });
 
+  // ---- Donate hiển thị bằng USD: người xem nhập đô, trả bằng VND theo tỷ giá chốt lúc tạo lệnh ----
+  const curToggle = document.getElementById('curToggle');
+  const curHint = document.getElementById('curHint');
+  const amountLabel = document.getElementById('donateAmountLabel');
+  const instFx = document.getElementById('instFx');
+  const PRESETS = { VND: [10000, 20000, 50000, 100000, 200000, 500000], USD: [1, 2, 5, 10, 20, 50] };
+  let currency = 'VND';
+  let fx = null; // { rate, source, at } từ GET /fx/usd
+  const fmtUsd = (n) =>
+    '$' + n.toLocaleString('vi-VN', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 });
+  const fxSource = (s) => ({ vietcombank: 'Vietcombank', open_er_api: 'tỷ giá quốc tế', fixed: 'tỷ giá niêm yết' })[s] || s;
+  const fxTime = (iso) => {
+    const d = new Date(iso);
+    const p2 = (n) => String(n).padStart(2, '0');
+    return `${p2(d.getHours())}:${p2(d.getMinutes())} ${p2(d.getDate())}/${p2(d.getMonth() + 1)}`;
+  };
+  // "9,99" hoặc "9.99" → 999 xu; sai định dạng (quá 2 số lẻ, chữ...) → null.
+  const usdCentsOf = (v) => {
+    const m = /^\s*(\d{1,4})(?:[.,](\d{1,2}))?\s*$/.exec(String(v));
+    return m ? Number(m[1]) * 100 + Number((m[2] || '').padEnd(2, '0')) : null;
+  };
+  // Cùng công thức với máy chủ: làm tròn LÊN tới đồng (số máy chủ trả về mới là số chính thức).
+  const vndFor = (cents) => Math.ceil((cents * Math.round(fx.rate * 100)) / 10000);
+
+  function renderPresets() {
+    amountPresets.textContent = '';
+    for (const v of PRESETS[currency]) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn amount-preset';
+      b.dataset.amount = String(v);
+      b.textContent = currency === 'USD' ? fmtUsd(v) : v.toLocaleString('vi-VN');
+      amountPresets.append(b);
+    }
+  }
+  function updateFxHint() {
+    if (currency !== 'USD' || !fx) {
+      curHint.hidden = true;
+      return;
+    }
+    const cents = usdCentsOf(amountInput.value);
+    const rate = `tỷ giá ${fxSource(fx.source)} ${fx.rate.toLocaleString('vi-VN')} đ/$ (${fxTime(fx.at)})`;
+    curHint.textContent =
+      cents && cents >= 100
+        ? `≈ ${vnd(vndFor(cents))} theo ${rate}. Bạn thanh toán bằng VND; số chính xác chốt lúc tạo lệnh.`
+        : `Nhập từ $1, tối đa 2 số lẻ (vd 9,99). Quy đổi theo ${rate}.`;
+    curHint.hidden = false;
+  }
+  function setCurrency(next) {
+    currency = next;
+    for (const b of curToggle.querySelectorAll('.cur-opt')) {
+      const on = b.dataset.cur === next;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-checked', String(on));
+    }
+    amountInput.value = '';
+    if (next === 'USD') {
+      amountLabel.textContent = 'Số tiền (USD)';
+      amountInput.type = 'text';
+      amountInput.inputMode = 'decimal';
+      amountInput.pattern = '\\s*\\d{1,4}([.,]\\d{1,2})?\\s*';
+      amountInput.placeholder = 'vd 9,99';
+    } else {
+      amountLabel.textContent = 'Số tiền (VND)';
+      amountInput.type = 'number';
+      amountInput.removeAttribute('inputmode');
+      amountInput.removeAttribute('pattern');
+      amountInput.placeholder = '';
+    }
+    renderPresets();
+    updateFxHint();
+  }
+  curToggle.addEventListener('click', (e) => {
+    const b = e.target.closest('.cur-opt');
+    if (b && b.dataset.cur !== currency) setCurrency(b.dataset.cur);
+  });
+  amountInput.addEventListener('input', updateFxHint);
+  amountPresets.addEventListener('click', () => updateFxHint());
+  async function setupUsd(allowUsd) {
+    if (!allowUsd) return;
+    try {
+      const r = await window.VTApi.call('GET', '/fx/usd');
+      if (!r.available) return;
+      fx = r;
+      curToggle.hidden = false;
+    } catch {
+      // không lấy được tỷ giá: chỉ donate bằng VND
+    }
+  }
+
   let pollTimer = null;
   let countdownTimer = null;
 
@@ -1705,6 +1795,8 @@ if (donateProfile && notFoundBox) {
     instQr.hidden = true;
     instQr.removeAttribute('src');
     donateForm.reset();
+    instFx.hidden = true;
+    if (currency !== 'VND') setCurrency('VND');
     for (const b of amountPresets.querySelectorAll('.amount-preset')) b.classList.remove('is-active');
     donateFormCard.hidden = false;
     donateFormCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1844,10 +1936,19 @@ if (donateProfile && notFoundBox) {
       showError(donateErrorBox, donateErrorText, 'Hãy đặt tên hiển thị trong Hồ sơ cá nhân trước khi donate (bấm Thay đổi).');
       return;
     }
-    const amount = Number(amountInput.value);
+    let amount = Number(amountInput.value);
     const donorName = donorNameInput.value.trim();
     const message = messageInput.value.trim();
-    const body = { amount };
+    let body = { amount };
+    if (currency === 'USD') {
+      const cents = usdCentsOf(amountInput.value);
+      if (!cents || cents < 100) {
+        showError(donateErrorBox, donateErrorText, 'Nhập số tiền USD từ $1, tối đa 2 số lẻ (vd 9,99).');
+        return;
+      }
+      body = { usdCents: cents };
+      amount = fx ? vndFor(cents) : 0;
+    }
     if (anonymous) body.anonymous = true;
     else if (donorName) body.donorName = donorName;
     if (message) body.message = message;
@@ -1870,6 +1971,22 @@ if (donateProfile && notFoundBox) {
         instAccount.textContent = donation.bank.accountNumber;
         instHolder.textContent = donation.bank.holderName;
         instAmount.textContent = vnd(donation.amount);
+        // Đơn USD: ghi rõ phép quy đổi đã chốt; tiền chuyển là VND.
+        instFx.textContent = '';
+        if (donation.usd) {
+          const u = donation.usd;
+          const b1 = document.createElement('b');
+          b1.textContent = fmtUsd(u.cents / 100);
+          const b2 = document.createElement('b');
+          b2.textContent = `${donation.amount.toLocaleString('vi-VN')} VND`;
+          instFx.append(
+            b1,
+            ` × ${u.rate.toLocaleString('vi-VN')} (${fxSource(u.source)}, ${fxTime(u.at)}) = `,
+            b2,
+            '. Bạn thanh toán bằng VND; số USD là giá trị quy đổi để hiển thị trên live.',
+          );
+        }
+        instFx.hidden = !donation.usd;
         instContent.textContent = donation.content;
         donateInstructions.hidden = false;
         // Mã QR VietQR do CHÍNH SERVER dựng (backend/src/donations/vietqr.ts), nhúng sẵn dạng data URI
@@ -1927,6 +2044,7 @@ if (donateProfile && notFoundBox) {
         setupRecording(profile.donate.recording);
         // Ô link YouTube (tab Phát nhạc) do public-page.js điều khiển.
         if (profile.donate.minAmount > 2000) amountInput.min = String(profile.donate.minAmount);
+        void setupUsd(profile.donate.allowUsd);
       }
       if (profile.acceptingDonations === false) {
         donateNotReady.querySelector('p').textContent = 'Streamer đang tạm ngưng nhận donate. Hãy quay lại sau.';

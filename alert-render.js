@@ -91,6 +91,9 @@
 
   // ---- Nội dung ----
   const vnd = (amount) => new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
+  const usd = (cents) => '$' + (cents / 100).toFixed(cents % 100 === 0 ? 0 : 2);
+  // Số tiền hiện trên live: đơn USD hiện "$9.99", còn lại hiện số đồng.
+  const money = (event) => (event.usdCents ? usd(event.usdCents) : vnd(event.amount));
   const LINK = /(https?:\/\/|www\.|\b[a-z0-9-]+\.(com|net|vn|org|io|gg|me|tv|xyz|link|site)\b)/i;
   const isSpam = (text) => /(.)\1{6,}/u.test(text) || /(\b\S+\b)(\s+\1){3,}/iu.test(text) || text.length > 180;
   function maskKeywords(text, keywords) {
@@ -103,7 +106,7 @@
     return out;
   }
   // Dựng câu từ mẫu "{name} ... {amount}": chữ thường là text node, tên/số tiền là span riêng (để tô màu/hiệu ứng).
-  function renderTemplate(target, template, name, amount) {
+  function renderTemplate(target, template, name, amountText) {
     const parts = String(template).split(/(\{name\}|\{amount\})/);
     for (const part of parts) {
       if (part === '{name}') {
@@ -114,7 +117,7 @@
       } else if (part === '{amount}') {
         const s = document.createElement('span');
         s.className = 'va-amount';
-        s.textContent = vnd(amount);
+        s.textContent = amountText;
         target.append(s);
       } else if (part) {
         target.append(document.createTextNode(part));
@@ -162,7 +165,7 @@
     const line = document.createElement('div');
     line.className = 'va-line';
     const name = event.donorName || 'Ẩn danh';
-    renderTemplate(line, d.template, name, event.amount);
+    renderTemplate(line, d.template, name, money(event));
     card.append(line);
     if (event.vipLevel && event.vipLevel >= Math.max(1, settings.other.vipBadgeLevel)) {
       const vip = document.createElement('span');
@@ -234,7 +237,12 @@
         if ((settings.tts.skipLinks && LINK.test(text)) || (settings.tts.skipSpam && isSpam(text))) text = '';
         const spoken = settings.tts.template
           .replace(/\{name\}/g, event.donorName || 'Ẩn danh')
-          .replace(/\{amount\}/g, new Intl.NumberFormat('vi-VN').format(event.amount) + ' đồng')
+          .replace(
+            /\{amount\}/g,
+            event.usdCents
+              ? new Intl.NumberFormat('vi-VN').format(event.usdCents / 100) + ' đô la'
+              : new Intl.NumberFormat('vi-VN').format(event.amount) + ' đồng',
+          )
           .replace(/\{text\}/g, text);
         await speak(spoken, settings.tts.voice, settings.tts.volume);
       }

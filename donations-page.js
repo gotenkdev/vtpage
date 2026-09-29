@@ -78,9 +78,11 @@
       if (isBlocked) user.append(tag('Đã chặn', 'is-off'));
       const amount = cell('dh-amount');
       const b = document.createElement('strong');
-      b.textContent = money(d.amount);
+      // Donate bằng USD: hiện "$9.99", số VND thực nhận ghi nhỏ bên dưới.
+      b.textContent = d.usdCents ? '$' + (d.usdCents / 100).toFixed(2) : money(d.amount);
       const kind = document.createElement('span');
-      kind.textContent = d.kind === 'music' ? 'Yêu cầu nhạc' : 'Donate';
+      kind.textContent =
+        (d.kind === 'music' ? 'Yêu cầu nhạc' : 'Donate') + (d.usdCents ? ' · ≈ ' + money(d.amount) : '');
       amount.append(b, kind);
       const msg = cell('dh-msg');
       msg.textContent = d.message || '';
