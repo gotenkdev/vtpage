@@ -11,7 +11,7 @@
   <link rel="preload" href="fonts/doto-latin-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css">
   <link rel="stylesheet" href="style.css?v=20">
-  <link rel="stylesheet" href="donate-settings.css?v=15">
+  <link rel="stylesheet" href="donate-settings.css?v=16">
   <link rel="stylesheet" href="dashboard.css?v=14">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
 </head>
@@ -75,7 +75,14 @@
           <form class="ap-fields" id="apForm" novalidate>
             <div class="form-field ap-wide"><label for="apName">Tên hiển thị</label><input id="apName" maxlength="50" autocomplete="nickname" placeholder="Tên của bạn"></div>
             <div class="form-field"><label for="apEmail">Email</label><input id="apEmail" type="email" readonly><p class="form-hint">Đổi email ở <a href="/security">Tài khoản &amp; bảo mật</a>.</p></div>
-            <div class="form-field"><label for="apCountry">Quốc gia</label><select id="apCountry"><option value="">Chưa chọn</option></select></div>
+            <div class="form-field country-field"><label for="apCountryBtn" id="apCountryLbl">Quốc gia</label>
+              <input type="hidden" id="apCountry" value="">
+              <button type="button" class="country-btn" id="apCountryBtn" aria-haspopup="listbox" aria-expanded="false"><span id="apCountryText">Chưa chọn</span><svg viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <div class="country-pop" id="apCountryPop" hidden>
+                <input type="search" id="apCountrySearch" placeholder="Tìm quốc gia…" autocomplete="off" aria-label="Tìm quốc gia">
+                <ul class="country-list" id="apCountryList" role="listbox" aria-labelledby="apCountryLbl"></ul>
+              </div>
+            </div>
             <p class="form-error ap-wide" id="apError" role="alert" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="apErrorText"></span></p>
             <div class="ap-actions ap-wide"><span class="pe-status" id="apStatus" role="status"></span><button type="submit" class="btn btn-primary" id="apSave" disabled>Lưu thay đổi</button></div>
           </form>
@@ -102,7 +109,7 @@
   <script src="fx.js"></script>
   <script src="api.js?v=12"></script>
   <script src="auth.js?v=32"></script>
-  <script src="my-profile-page.js?v=2"></script>
+  <script src="my-profile-page.js?v=3"></script>
   <script src="dashboard.js?v=13"></script>
 </body>
 </html>

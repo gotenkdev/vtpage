@@ -16,11 +16,86 @@
     names = { of: (c) => c };
   }
   const countryName = (c) => (c ? names.of(c) || c : 'Chưa chọn');
+  // Giá trị lưu ở ô ẩn #apCountry (mã ISO); phần hiển thị là nút + danh sách tự dựng có ô tìm kiếm.
   const select = $('apCountry');
   const opts = CODES.map((c) => [c, countryName(c)]).sort((a, b) => a[1].localeCompare(b[1], 'vi'));
   const vn = opts.findIndex(([c]) => c === 'VN');
   if (vn > 0) opts.unshift(opts.splice(vn, 1)[0]); // Việt Nam lên đầu
-  for (const [c, n] of opts) select.append(new Option(n, c));
+  opts.unshift(['', 'Chưa chọn']);
+  const fold = (t) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
+  const btn = $('apCountryBtn');
+  const pop = $('apCountryPop');
+  const search = $('apCountrySearch');
+  const list = $('apCountryList');
+  let shown = [];
+  let hl = 0;
+  function setCountry(code) {
+    select.value = code;
+    $('apCountryText').textContent = countryName(code);
+  }
+  function renderList() {
+    const q = fold(search.value.trim());
+    shown = opts.filter(([c, n]) => !q || fold(n).includes(q) || c.toLowerCase() === q);
+    hl = Math.max(0, shown.findIndex(([c]) => c === select.value));
+    if (q) hl = 0;
+    list.textContent = '';
+    shown.forEach(([c, n], i) => {
+      const li = document.createElement('li');
+      li.role = 'option';
+      li.id = 'apc-' + (c || 'none');
+      li.textContent = n;
+      li.setAttribute('aria-selected', String(c === select.value));
+      if (i === hl) li.classList.add('is-hl');
+      li.addEventListener('mousedown', (e) => e.preventDefault());
+      li.addEventListener('click', () => pick(c));
+      list.append(li);
+    });
+    if (!shown.length) {
+      const li = document.createElement('li');
+      li.className = 'country-empty';
+      li.textContent = 'Không tìm thấy';
+      list.append(li);
+    }
+    moveHl(0);
+  }
+  function moveHl(d) {
+    if (!shown.length) return;
+    hl = (hl + d + shown.length) % shown.length;
+    [...list.children].forEach((li, i) => li.classList.toggle('is-hl', i === hl));
+    const cur = list.children[hl];
+    if (cur) {
+      cur.scrollIntoView({ block: 'nearest' });
+      search.setAttribute('aria-activedescendant', cur.id);
+    }
+  }
+  function openPop() {
+    pop.hidden = false;
+    btn.setAttribute('aria-expanded', 'true');
+    search.value = '';
+    renderList();
+    search.focus();
+  }
+  function closePop(focusBtn) {
+    pop.hidden = true;
+    btn.setAttribute('aria-expanded', 'false');
+    if (focusBtn) btn.focus();
+  }
+  function pick(code) {
+    setCountry(code);
+    closePop(true);
+    select.dispatchEvent(new Event('change'));
+  }
+  btn.addEventListener('click', () => (pop.hidden ? openPop() : closePop(false)));
+  search.addEventListener('input', renderList);
+  search.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); moveHl(1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); moveHl(-1); }
+    else if (e.key === 'Enter') { e.preventDefault(); if (shown[hl]) pick(shown[hl][0]); }
+    else if (e.key === 'Escape') { e.preventDefault(); closePop(true); }
+  });
+  document.addEventListener('click', (e) => {
+    if (!pop.hidden && !e.target.closest('.country-field')) closePop(false);
+  });
 
   const nameInput = $('apName');
   let saved = null;
@@ -47,7 +122,6 @@
   // Ô chọn quốc gia: nghe cả 'change' (một số trình duyệt điện thoại không phát 'input' cho <select>).
   const onEdit = () => { $('apStatus').textContent = ''; renderPreview(); };
   nameInput.addEventListener('input', onEdit);
-  select.addEventListener('input', onEdit);
   select.addEventListener('change', onEdit);
 
   function showError(msg) {
@@ -129,7 +203,7 @@
       saved = (await window.VTApi.call('GET', '/me/account-profile')).account;
       nameInput.value = saved.displayName || '';
       $('apEmail').value = saved.email;
-      select.value = saved.country || '';
+      setCountry(saved.country || '');
       avatarUrl = saved.avatarUrl;
       renderAvatar();
       renderPreview();
