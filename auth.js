@@ -1668,7 +1668,7 @@ if (donateProfile && notFoundBox) {
       amountInput.type = 'number';
       amountInput.removeAttribute('inputmode');
       amountInput.removeAttribute('pattern');
-      amountInput.placeholder = '';
+      amountInput.placeholder = 'Tối thiểu 1.000đ';
     }
     renderPresets();
     updateFxHint();
@@ -2028,7 +2028,6 @@ if (donateProfile && notFoundBox) {
       if (profile.donate) {
         setupRecording(profile.donate.recording);
         // Ô link YouTube (tab Phát nhạc) do public-page.js điều khiển.
-        if (profile.donate.minAmount > 2000) amountInput.min = String(profile.donate.minAmount);
         void setupUsd(profile.donate.allowUsd);
       }
       if (profile.acceptingDonations === false) {

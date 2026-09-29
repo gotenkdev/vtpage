@@ -90,7 +90,7 @@
     bank_account_unavailable: 'Không thể lưu tài khoản này lúc này, hãy thử lại.',
     not_changeable: 'Tài khoản này không còn thay đổi được nữa.',
     'amount:invalid_type': 'Vui lòng nhập số tiền.',
-    'amount:too_small': 'Số tiền tối thiểu là 2.000đ.',
+    'amount:too_small': 'Số tiền tối thiểu là 1.000đ.',
     'amount:too_big': 'Số tiền tối đa là 50.000.000đ.',
     'donorName:invalid_type': 'Vui lòng nhập tên.',
     'donorName:custom': 'Tên không hợp lệ (tối đa 50 ký tự, không chứa ký tự lạ).',
