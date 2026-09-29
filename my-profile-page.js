@@ -44,7 +44,11 @@
     $('apSave').disabled = !dirty;
     if (!avatarUrl) renderAvatar();
   }
-  [nameInput, select].forEach((e) => e.addEventListener('input', () => { $('apStatus').textContent = ''; renderPreview(); }));
+  // Ô chọn quốc gia: nghe cả 'change' (một số trình duyệt điện thoại không phát 'input' cho <select>).
+  const onEdit = () => { $('apStatus').textContent = ''; renderPreview(); };
+  nameInput.addEventListener('input', onEdit);
+  select.addEventListener('input', onEdit);
+  select.addEventListener('change', onEdit);
 
   function showError(msg) {
     $('apError').hidden = !msg;
