@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <script src="i18n.js?v=3"></script>
+  <script src="i18n.js?v=4"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chính sách bảo mật - VT Pay</title>
   <meta name="description" content="Dữ liệu nào được thu thập, dùng để làm gì và quyền của bạn.">
@@ -12,7 +12,7 @@
   <link rel="preload" href="fonts/bricolage-grotesque-latin-600-800.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/doto-latin-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css">
-  <link rel="stylesheet" href="style.css?v=23">
+  <link rel="stylesheet" href="style.css?v=24">
   <link rel="stylesheet" href="legal.css?v=2">
   <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.VTFX)document.documentElement.classList.remove('js');},3500);</script>
 </head>
@@ -65,7 +65,7 @@
           <h1>Chính sách bảo mật</h1>
           <p class="lg-meta">Cập nhật lần cuối: 27/09/2026</p>
         </header>
-
+<div data-lang="vi">
 <p class="lg-lead">CÔNG TY TNHH VT ESPORTS tôn trọng quyền riêng tư của bạn và xử lý dữ liệu cá nhân theo Luật Bảo vệ dữ liệu cá nhân số 91/2025/QH15 và Nghị định 356/2025/NĐ-CP. Chính sách này nói rõ VT Pay thu thập gì, vì sao và bạn có những quyền gì.</p>
 <h2>1. Dữ liệu được thu thập</h2>
 <div class="lg-table" role="table">
@@ -104,6 +104,48 @@
   <li><b>Fanpage Facebook:</b> <span class="lg-fill">[ĐIỀN: link Fanpage Facebook]</span></li>
   <li><b>Discord:</b> <span class="lg-fill">[ĐIỀN: link máy chủ Discord]</span></li>
 </ul>
+</div>
+<div data-lang="en" lang="en" hidden>
+<p class="lg-note">This English version is provided for reference only. In case of any difference, the Vietnamese version prevails.</p>
+<p class="lg-lead">VT ESPORTS COMPANY LIMITED respects your privacy and processes personal data in accordance with the Personal Data Protection Law No. 91/2025/QH15 and Decree 356/2025/ND-CP. This policy explains what VT Pay collects, why, and what rights you have.</p>
+<h2>1. Data we collect</h2>
+<div class="lg-table" role="table">
+  <div role="row"><b role="columnheader">Data</b><b role="columnheader">Purpose</b></div>
+  <div role="row"><span>Email, password (stored only as an unreadable hash), two-factor settings</span><span>Sign-in, account protection, sending verification codes</span></div>
+  <div role="row"><span>Display name, username, avatar, cover image, bio, social links</span><span>Displaying the streamer's page</span></div>
+  <div role="row"><span>Streamer's bank account (account number encrypted; only the last 4 digits shown), SePay API key</span><span>Generating QR codes and confirming incoming payments</span></div>
+  <div role="row"><span>Viewers' display name, message, voice recording, music request and amount when donating</span><span>Showing donations on stream, donation history, leaderboard</span></div>
+  <div role="row"><span>Bank transaction details sent by SePay (amount, note, time)</span><span>Reconciling and recording donations</span></div>
+  <div role="row"><span>IP address, access times, security logs</span><span>Fraud prevention, rate limiting, incident investigation</span></div>
+</div>
+<h2>2. Cookies and browser storage</h2>
+<p>VT Pay only uses cookies needed for sign-in and protection against request forgery (CSRF). A few interface choices (such as the open tab or language) are stored in your browser. VT Pay does not use advertising cookies.</p>
+<h2>3. Sharing with third parties</h2>
+<p>VT Pay does not sell personal data. Data is only shared as needed with:</p>
+<ul>
+  <li><b>SePay</b>: receiving notifications of the streamer's bank transactions.</li>
+  <li><b>Cloudflare</b>: delivering the website and protecting it from attacks.</li>
+  <li><b>Email provider</b>: sending verification codes, sign-in codes and password resets.</li>
+  <li><b>Google</b>: only if you choose to sign in with Google.</li>
+  <li><b>YouTube</b>: the music player in OBS when a streamer enables music requests.</li>
+  <li><b>Competent state authorities</b>: upon a lawful request.</li>
+</ul>
+<h2>4. Public information on donation pages</h2>
+<p>Your display name, message and donation amount may appear publicly on stream, in the streamer's Recent list and Leaderboard. You can donate as "Anonymous".</p>
+<h2>5. Security</h2>
+<p>Connections are encrypted with HTTPS; passwords are hashed; bank account numbers and secret keys are encrypted at rest; data access is separated per user; administrative actions are recorded in a tamper-proof log.</p>
+<h2>6. Retention</h2>
+<p>Account data is kept while you use the service. Transaction data and logs are kept for the periods required by law for accounting, tax and fraud prevention, and are then deleted or anonymized.</p>
+<h2>7. Your rights</h2>
+<p>You have the right to be informed, to access, correct and request deletion of your personal data, to restrict processing, to withdraw consent, and to complain about how your data is processed. You can edit most information yourself in Settings; send other requests to <a href="mailto:cskh@vtpay.vn">cskh@vtpay.vn</a>. VT Pay responds within 24 hours.</p>
+<h2>8. Personal data contact</h2>
+<ul class="lg-contact">
+  <li><b>Email:</b> <a href="mailto:cskh@vtpay.vn">cskh@vtpay.vn</a></li>
+  <li><b>Phone / Zalo:</b> <span class="lg-fill">[TO FILL: support phone / Zalo]</span></li>
+  <li><b>Facebook page:</b> <span class="lg-fill">[TO FILL: Facebook page link]</span></li>
+  <li><b>Discord:</b> <span class="lg-fill">[TO FILL: Discord server link]</span></li>
+</ul>
+</div>
 
         <footer class="lg-foot">
           <p><b>CÔNG TY TNHH VT ESPORTS</b> · MST 0319668560 · Phường Bến Thành, Quận 1, Thành phố Hồ Chí Minh</p>

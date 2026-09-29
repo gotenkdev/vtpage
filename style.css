@@ -1543,3 +1543,6 @@ img.acct-avatar { object-fit: cover; }
 @media (max-width: 640px) {
   .motion-toggle.lang-toggle { left: 60px; background: var(--ink); color: var(--plate); }
 }
+/* Trang pháp lý: bản tiếng Việt (chính thức) và bản English (tham khảo) — hiện theo ngôn ngữ đang chọn (i18n.js đặt html[lang]). */
+html[lang="en"] [data-lang="vi"] { display: none !important; }
+html[lang="en"] [data-lang="en"] { display: block !important; }

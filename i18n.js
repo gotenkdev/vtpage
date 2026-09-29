@@ -636,7 +636,18 @@
     };
   }
 
-  Object.assign(EN, { 'Không phụ phí': 'No fee', 'Chưa có người ủng hộ': 'No supporters yet' });
+  Object.assign(EN, {
+    'Không phụ phí': 'No fee',
+    'Chưa có người ủng hộ': 'No supporters yet',
+    // Khung trang pháp lý (nội dung có bản English riêng trong trang)
+    'Pháp lý': 'Legal',
+    'VT Pay · Pháp lý': 'VT Pay · Legal',
+    'Cập nhật lần cuối: 27/09/2026': 'Last updated: 27/09/2026',
+    'MST 0319668560 · Phường Bến Thành, Quận 1, Thành phố Hồ Chí Minh':
+      'Tax code 0319668560 · Ben Thanh Ward, District 1, Ho Chi Minh City',
+    '· MST 0319668560 · Phường Bến Thành, Quận 1, Thành phố Hồ Chí Minh':
+      '· Tax code 0319668560 · Ben Thanh Ward, District 1, Ho Chi Minh City',
+  });
 
   window.VTI18n = {
     get lang() {
